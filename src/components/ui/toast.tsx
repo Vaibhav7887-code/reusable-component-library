@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const toastVariants = cva(
@@ -31,7 +31,7 @@ const toastVariants = cva(
 );
 
 export interface ToastProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<HTMLMotionProps<"div">, "animate" | "initial" | "transition" | "variants">,
     VariantProps<typeof toastVariants> {
   title?: string;
   description?: string;
@@ -107,7 +107,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         animate={visible ? "visible" : "exit"}
         variants={animationVariants}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        {...props as any}
+        {...props}
       >
         <div className="flex-grow mr-2">
           {title && <div className="text-sm font-semibold">{title}</div>}

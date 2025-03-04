@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -50,7 +51,9 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     const [hasError, setHasError] = React.useState(false);
 
     const handleLoad = () => setIsLoaded(true);
-    const handleError = () => setHasError(true);
+    const handleError = () => {
+      setHasError(true);
+    };
 
     const showFallback = !src || hasError || !isLoaded;
     
@@ -79,25 +82,26 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         {...props}
       >
         {!showFallback ? (
-          <img 
-            src={src} 
-            alt={alt || "Avatar"} 
-            onLoad={handleLoad}
-            onError={handleError}
-            className={cn(
-              "aspect-square h-full w-full object-cover",
-              isAnimated && "hover:scale-110 transition-transform duration-300"
-            )}
-          />
+          <div className="relative aspect-square h-full w-full">
+            <Image
+              src={src}
+              alt={alt || ""}
+              fill
+              className="rounded-full object-cover"
+              onLoad={handleLoad}
+              onError={handleError}
+            />
+          </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center" style={{ backgroundColor: "hsl(var(--muted))" }}>
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
             {fallback ? (
-              <span className="text-sm font-medium uppercase" style={{ color: "hsl(var(--muted-foreground))" }}>
-                {fallback}
-              </span>
+              <span className="text-sm font-medium uppercase">{fallback}</span>
             ) : (
-              <span className="text-sm font-medium uppercase" style={{ color: "hsl(var(--muted-foreground))" }}>
-                {alt ? alt.charAt(0) : "A"}
+              <span className="text-muted-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
               </span>
             )}
           </div>

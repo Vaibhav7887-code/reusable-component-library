@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ComponentCard } from "./component-card";
+// import { ComponentCard } from "./component-card";
 import { cn } from "@/lib/utils";
 
 interface ComponentGroupProps {

@@ -49,7 +49,6 @@ function Tab({ title, isActive, onClick }: TabProps) {
 // Main Component Showcase
 export function ComponentShowcase() {
   const [activeTab, setActiveTab] = React.useState("buttons");
-  const [showToast, setShowToast] = React.useState(false);
   const [activeToast, setActiveToast] = React.useState<string | null>(null);
   
   const tabs = [
