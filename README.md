@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Modern UI Component Library
 
-## Getting Started
+A showcase of beautiful, reusable UI components with animations and interactions, designed specifically for UX Engineer role applications.
 
-First, run the development server:
+## 🎯 Project Overview
+
+This project demonstrates my ability to:
+- Create modern, responsive UI components
+- Implement animation and interaction patterns
+- Build reusable components with consistent APIs
+- Structure code in a maintainable way
+- Balance aesthetics and functionality in UX design
+
+## ✨ Component Library Features
+
+The library includes the following component categories:
+
+### Buttons
+- Multiple variants (default, destructive, outline, etc.)
+- Size variations (small, default, large)
+- Animation options (pulse, bounce, spin)
+- Gradient background options
+
+### Cards
+- Different styles and hover effects
+- Interactive animation variants
+- Consistent design patterns
+- Gradient and outline options
+
+### Badges
+- Status indicators
+- Animation effects
+- Gradient options
+- Multiple display variants
+
+### Avatars
+- Image support with fallbacks
+- Size variants 
+- Color ring options
+- Hover animations
+
+### Inputs
+- Multiple style variants
+- Focus animations
+- Size variations
+- Icon support
+
+### Loaders
+- Skeleton screens
+- Various animation patterns (pulse, shimmer, wave)
+- Pre-built composite skeletons
+- Customizable sizing
+
+### Notifications
+- Toast messages with animations
+- Multiple animation patterns
+- Status variants
+- Interactive dismissal
+
+## 🛠️ Technical Stack
+
+- **Framework**: Next.js with App Router
+- **Styling**: Tailwind CSS
+- **Type Safety**: TypeScript
+- **Animation**: Framer Motion
+- **Components**: Class Variance Authority for variant management
+- **Design System**: Custom CSS variables for theming
+
+## 🚀 Getting Started
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/reusable-component-library.git
+
+# Navigate to project directory
+cd reusable-component-library
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000` to see the component library in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📝 Code Organization
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/src/components/ui`: Individual UI components
+- `/src/components/showcase`: Component demonstration system
+- `/src/lib`: Utility functions
+- `/src/app`: Next.js app structure
 
-## Learn More
+## 📄 License
 
-To learn more about Next.js, take a look at the following resources:
+This project is available for review and evaluation as part of my UX Engineer job application. The code may be used as a reference but please credit the author if reused.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 👤 About Me
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+I'm a UX Engineer with a passion for creating beautiful, functional interfaces. This component library showcases my ability to blend design and development skills to create cohesive user experiences.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to reach out with any questions about this project or my experience!
