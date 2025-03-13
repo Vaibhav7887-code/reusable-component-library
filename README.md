@@ -93,11 +93,11 @@ Visit `http://localhost:3000` to see the component library in action.
 
 ## 📄 License
 
-This project is available for review and evaluation as part of my UX Engineer job application. The code may be used as a reference but please credit the author if reused.
+This project is available for review and evaluation as part of my job applications. The code may be used as a reference but please credit me (Vaibhav Sharma) if reused.
 
 ## 👤 About Me
 
-I'm a UX Engineer with a passion for creating beautiful, functional interfaces. This component library showcases my ability to blend design and development skills to create cohesive user experiences.
+I'm a senior Product Designer with 5+ years of experience crafting intuitive, data-driven enterprise solutions. Passionate about creating beautiful, functional interfaces and interactions. This component library showcases my ability to blend design and development skills to create cohesive user experiences.
 
 ---
 
