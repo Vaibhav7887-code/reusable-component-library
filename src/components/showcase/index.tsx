@@ -519,7 +519,7 @@ export function ComponentShowcase() {
       <div className="mb-4 flex-col space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">UI Component Library</h1>
         <p className="" style={{ color: "hsl(var(--muted-foreground))" }}>
-          A showcase of beautiful, reusable UI components with animations and interactions.
+          A showcase of reusable UI components with animations and interactions.
         </p>
       </div>
 
