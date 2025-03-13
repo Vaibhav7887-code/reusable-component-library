@@ -7,12 +7,20 @@ export default function Home() {
               style={{ backgroundColor: "hsla(var(--background), 0.95)" }}>
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full" style={{ backgroundColor: "hsl(var(--primary))" }}></div>
-            <span className="font-bold">UI Component Library</span>
+            <a 
+              href="https://www.vaibhav.design" 
+              className="flex items-center gap-2 hover:text-primary transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <div className="h-8 w-8 rounded-full" style={{ backgroundColor: "hsl(var(--primary))" }}></div>
+              <span className="font-bold">UI Component Library</span>
+            </a>
           </div>
           <nav className="flex items-center space-x-4 lg:space-x-6">
             <a 
-              href="https://github.com/yourusername/reusable-component-library" 
+              href="https://github.com/Vaibhav7887-code/reusable-component-library" 
               className="text-sm font-medium transition-colors hover:text-primary"
               target="_blank"
               rel="noopener noreferrer"
@@ -20,18 +28,22 @@ export default function Home() {
               GitHub
             </a>
             <a
-              href="#"
+              href="https://www.vaibhav.design"
               className="text-sm font-medium transition-colors hover:text-primary"
               style={{ color: "hsl(var(--muted-foreground))" }}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Portfolio
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/in/vaibhav-sharma-752611145/"
               className="text-sm font-medium transition-colors hover:text-primary"
               style={{ color: "hsl(var(--muted-foreground))" }}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Contact
+              LinkedIn
             </a>
           </nav>
         </div>
@@ -43,7 +55,7 @@ export default function Home() {
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose md:text-left"
              style={{ color: "hsl(var(--muted-foreground))" }}>
-            Built with ❤️ and modern web technologies. Designed for UX Engineer role applications.
+            Built with ❤️ and modern web technologies.
           </p>
           <div className="flex items-center gap-2">
             <button className="inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
