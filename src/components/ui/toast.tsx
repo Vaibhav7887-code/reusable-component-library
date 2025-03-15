@@ -6,15 +6,16 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between overflow-hidden rounded-md border p-4 shadow-lg transition-all",
+  "group pointer-events-auto relative flex w-full items-center justify-between overflow-hidden rounded-md border p-4 shadow-lg transition-all backdrop-filter backdrop-blur-sm",
   {
     variants: {
       variant: {
-        default: "bg-background border-border text-foreground",
-        destructive: "destructive border-destructive bg-destructive text-destructive-foreground",
-        success: "border-green-600 bg-green-500 text-white",
-        warning: "border-yellow-600 bg-yellow-500 text-black",
-        info: "border-blue-600 bg-blue-500 text-white",
+        default: "bg-white/20 border-white/20 text-gray-800 dark:text-white",
+        destructive: "bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-300",
+        success: "bg-green-500/20 border-green-500/30 text-green-700 dark:text-green-300",
+        warning: "bg-yellow-500/20 border-yellow-500/30 text-yellow-700 dark:text-yellow-300",
+        info: "bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-300",
+        frostedGlass: "bg-white/20 border-white/20 text-gray-800 dark:text-white",
       },
       animation: {
         slideRight: "",
@@ -24,7 +25,7 @@ const toastVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "frostedGlass",
       animation: "slideRight",
     },
   }
@@ -124,7 +125,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
                 setVisible(false);
                 setTimeout(() => onClose(), 300);
               }}
-              className="flex-shrink-0 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2"
+              className="flex-shrink-0 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/30"
               aria-label="Close"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

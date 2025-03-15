@@ -1,10 +1,11 @@
 import { ComponentShowcase } from "@/components/showcase";
+import { FrostedGlassDemo } from "@/components/showcase/frosted-glass-demo";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "hsl(var(--background))" }}>
-      <header className="sticky top-0 z-40 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60" 
-              style={{ backgroundColor: "hsla(var(--background), 0.95)" }}>
+    <main className="relative z-10">
+      <header className="sticky top-0 z-40 w-full border-b frosted-glass supports-[backdrop-filter]:bg-background/5">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <a 
@@ -15,10 +16,16 @@ export default function Home() {
                 <path d="M19 12H5M12 19l-7-7 7-7" />
               </svg>
               <div className="h-8 w-8 rounded-full" style={{ backgroundColor: "hsl(var(--primary))" }}></div>
-              <span className="font-bold">UI Component Library</span>
+              <span className="font-bold">Design system</span>
             </a>
           </div>
           <nav className="flex items-center space-x-4 lg:space-x-6">
+            <a 
+              href="/dashboard" 
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Dashboard
+            </a>
             <a 
               href="https://github.com/Vaibhav7887-code/reusable-component-library" 
               className="text-sm font-medium transition-colors hover:text-primary"
@@ -49,18 +56,20 @@ export default function Home() {
         </div>
       </header>
       
+      <FrostedGlassDemo />
+      
       <ComponentShowcase />
       
-      <footer className="border-t py-6 md:py-0">
+      <footer className="border-t py-6 md:py-0 frosted-glass">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose md:text-left"
              style={{ color: "hsl(var(--muted-foreground))" }}>
             Built with ❤️ and modern web technologies.
           </p>
           <div className="flex items-center gap-2">
-            <button className="inline-flex h-9 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+            <Button>
               Change Theme
-            </button>
+            </Button>
           </div>
         </div>
       </footer>

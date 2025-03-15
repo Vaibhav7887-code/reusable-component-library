@@ -24,6 +24,12 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    
+    /* Frosted glass theme colors */
+    --gradient-top: #DFDDF7;
+    --gradient-bottom: #EAE7EF;
+    --circle-top-left: #DBC7FD;
+    --circle-bottom-right: #B1C7E9;
   }
 
   .dark {
@@ -46,6 +52,12 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    
+    /* Frosted glass theme colors - dark mode */
+    --gradient-top: #2D2B45;
+    --gradient-bottom: #3A3852;
+    --circle-top-left: #4A3A7A;
+    --circle-bottom-right: #2A4A7A;
   }
 }
 
@@ -57,5 +69,89 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Frosted glass background with gradient and blurred circles */
+.frosted-glass-background {
+  position: relative;
+  background: linear-gradient(to bottom, var(--gradient-top), var(--gradient-bottom)) fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.frosted-glass-background::before,
+.frosted-glass-background::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.frosted-glass-background::before {
+  width: 50vw;
+  height: 50vw;
+  background-color: var(--circle-top-left);
+  top: -10vw;
+  left: -10vw;
+  transform: translateZ(0);
+}
+
+.frosted-glass-background::after {
+  width: 40vw;
+  height: 40vw;
+  background-color: var(--circle-bottom-right);
+  bottom: -10vw;
+  right: -10vw;
+  transform: translateZ(0);
+}
+
+/* Frosted glass card effect */
+.frosted-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.dark .frosted-glass {
+  background: rgba(30, 30, 46, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .shadow-inner-md {
+    box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+  }
+  
+  .dark .shadow-inner-md {
+    box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  .animate-slow-pulse {
+    animation: slow-pulse 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes slow-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
 }

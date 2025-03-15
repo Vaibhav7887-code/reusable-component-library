@@ -5,16 +5,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-lg border border-border shadow-sm transition-all duration-200",
+  "rounded-lg border shadow-sm transition-all duration-200",
   {
     variants: {
       variant: {
-        default: "bg-card text-card-foreground hover:shadow-md",
-        interactive: "bg-card text-card-foreground hover:shadow-lg hover:-translate-y-1 cursor-pointer",
-        outline: "bg-card text-card-foreground border-2 hover:border-primary",
+        default: "bg-white/20 backdrop-filter backdrop-blur-sm border-white/20 text-gray-800 dark:text-white hover:shadow-md",
+        interactive: "bg-white/20 backdrop-filter backdrop-blur-sm border-white/20 text-gray-800 dark:text-white hover:shadow-lg hover:-translate-y-1 cursor-pointer",
+        outline: "bg-white/10 backdrop-filter backdrop-blur-sm border-2 border-white/30 text-gray-800 dark:text-white hover:border-white/50",
         ghost: "border-none shadow-none bg-transparent",
-        elevated: "bg-card text-card-foreground shadow-md hover:shadow-xl",
-        gradient: "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20",
+        elevated: "bg-white/30 backdrop-filter backdrop-blur-sm border-white/20 text-gray-800 dark:text-white shadow-md hover:shadow-xl",
+        gradient: "bg-gradient-to-br from-blue-50/30 to-indigo-50/30 backdrop-filter backdrop-blur-sm dark:from-blue-900/20 dark:to-indigo-900/20",
+        frostedGlass: "frosted-glass hover:shadow-lg hover:-translate-y-1 border-0",
       },
       size: {
         default: "p-6",
@@ -23,7 +24,7 @@ const cardVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "frostedGlass",
       size: "default",
     },
   }

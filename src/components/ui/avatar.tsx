@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 const avatarVariants = cva(
-  "relative flex shrink-0 overflow-hidden rounded-full",
+  "relative flex shrink-0 overflow-hidden rounded-full backdrop-filter backdrop-blur-sm border border-white/20 shadow-sm",
   {
     variants: {
       size: {
@@ -18,10 +18,10 @@ const avatarVariants = cva(
       },
       ringColor: {
         none: "",
-        primary: "ring-2",
-        secondary: "ring-2",
-        accent: "ring-2",
-        gradient: "ring-2 ring-gradient-to-r from-pink-500 to-purple-500",
+        primary: "ring-2 ring-white/40",
+        secondary: "ring-2 ring-white/20",
+        accent: "ring-2 ring-white/60",
+        gradient: "ring-2 ring-gradient-to-r from-pink-500/50 to-purple-500/50",
       },
       animation: {
         none: "",
@@ -64,11 +64,11 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     const ringStyles: React.CSSProperties = {};
     
     if (ringColor === "primary") {
-      ringStyles.borderColor = "hsl(var(--primary))";
+      ringStyles.borderColor = "rgba(255, 255, 255, 0.4)";
     } else if (ringColor === "secondary") {
-      ringStyles.borderColor = "hsl(var(--secondary))";
+      ringStyles.borderColor = "rgba(255, 255, 255, 0.2)";
     } else if (ringColor === "accent") {
-      ringStyles.borderColor = "hsl(var(--accent))";
+      ringStyles.borderColor = "rgba(255, 255, 255, 0.6)";
     }
     
     return (
@@ -93,11 +93,11 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
             />
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-white/10">
             {fallback ? (
-              <span className="text-sm font-medium uppercase">{fallback}</span>
+              <span className="text-sm font-medium uppercase text-gray-800 dark:text-white">{fallback}</span>
             ) : (
-              <span className="text-muted-foreground">
+              <span className="text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
@@ -109,8 +109,8 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         
         {isAnimated && (
           <motion.div 
-            className="absolute inset-0 rounded-full bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-300"
-            whileHover={{ opacity: 0.1 }}
+            className="absolute inset-0 rounded-full bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300"
+            whileHover={{ opacity: 0.2 }}
           />
         )}
       </div>
