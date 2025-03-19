@@ -17,19 +17,21 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        success:
+          "border-transparent bg-green-500 text-white hover:bg-green-600",
         // Vehicle Status Variants
-        moving: "border-transparent bg-green-500/20 text-green-500 hover:bg-green-500/30",
-        stopped: "border-transparent bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30",
-        offline: "border-transparent bg-red-500/20 text-red-500 hover:bg-red-500/30",
-        maintenance: "border-transparent bg-orange-500/20 text-orange-500 hover:bg-orange-500/30",
-        idling: "border-transparent bg-blue-500/20 text-blue-500 hover:bg-blue-500/30",
-        warning: "border-transparent bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30",
+        moving: "border-transparent bg-green-500 text-white hover:bg-green-600",
+        stopped: "border-transparent bg-yellow-500 text-white hover:bg-yellow-600",
+        offline: "border-transparent bg-red-500 text-white hover:bg-red-600",
+        maintenance: "border-transparent bg-orange-500 text-white hover:bg-orange-600",
+        idling: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+        warning: "border-transparent bg-yellow-500 text-white hover:bg-yellow-600",
         // Vehicle Type Variants
-        bs4: "border-transparent bg-gray-500/20 text-gray-500 hover:bg-gray-500/30",
-        bs6: "border-transparent bg-purple-500/20 text-purple-500 hover:bg-purple-500/30",
-        electric: "border-transparent bg-green-500/20 text-green-500 hover:bg-green-500/30",
-        construction: "border-transparent bg-orange-500/20 text-orange-500 hover:bg-orange-500/30",
-        unsubscribed: "border-transparent bg-red-500/20 text-red-500 hover:bg-red-500/30",
+        bs4: "border-transparent bg-gray-500 text-white hover:bg-gray-600",
+        bs6: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+        electric: "border-transparent bg-green-500 text-white hover:bg-green-600",
+        construction: "border-transparent bg-orange-500 text-white hover:bg-orange-600",
+        unsubscribed: "border-transparent bg-red-500 text-white hover:bg-red-600",
       },
     },
     defaultVariants: {
