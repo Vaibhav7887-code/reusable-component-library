@@ -20,6 +20,7 @@ import { Label } from "@/components/atoms/label";
 import { Divider } from "@/components/atoms/divider";
 import { DashboardLayout } from "@/components/templates/dashboard-layout";
 import { CardLayout } from "@/components/templates/card-layout";
+import { FleetManagementShowcase } from "./fleet-management";
 
 // Tab system for categorization
 interface TabProps {
@@ -72,6 +73,7 @@ export function ComponentShowcase() {
     { id: "notifications", title: "Notifications" },
     { id: "complex", title: "Complex Components" },
     { id: "templates", title: "Templates" },
+    { id: "fleet-management", title: "Fleet Management" },
   ];
 
   // Toast container to display toasts outside of the main content area
@@ -1505,6 +1507,28 @@ export default function MyPage() {
     </DashboardLayout>
   );
 }`}</pre>
+              </div>
+            </div>
+          </div>
+        );
+            
+      case "fleet-management":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold">Fleet Management</h2>
+              <p className="text-muted-foreground">
+                A comprehensive fleet management dashboard with live tracking.
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Fleet Management Dashboard</h3>
+              <p className="text-sm text-muted-foreground">
+                This component showcases a fleet management dashboard with live tracking features.
+              </p>
+              <div className="flex justify-center">
+                <FleetManagementShowcase />
               </div>
             </div>
           </div>

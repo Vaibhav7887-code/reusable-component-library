@@ -1,8 +1,14 @@
+"use client";
+
 import { ComponentShowcase } from "@/components/showcase";
 import { FrostedGlassDemo } from "@/components/showcase/frosted-glass-demo";
 import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export default function Home() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <main className="relative z-10">
       <header className="sticky top-0 z-40 w-full border-b frosted-glass supports-[backdrop-filter]:bg-background/5">
@@ -52,6 +58,18 @@ export default function Home() {
             >
               LinkedIn
             </a>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="ml-2"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
           </nav>
         </div>
       </header>
@@ -66,11 +84,6 @@ export default function Home() {
              style={{ color: "hsl(var(--muted-foreground))" }}>
             Built with ❤️ and modern web technologies.
           </p>
-          <div className="flex items-center gap-2">
-            <Button>
-              Change Theme
-            </Button>
-          </div>
         </div>
       </footer>
     </main>
