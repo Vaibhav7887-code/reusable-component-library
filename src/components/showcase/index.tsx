@@ -473,9 +473,21 @@ export function ComponentShowcase() {
             
             <ComponentCard title="Status Badges" description="Badges for status indicators">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="success">Success</Badge>
+                <Badge variant="default">Default</Badge>
+                <Badge variant="secondary">Secondary</Badge>
+                <Badge variant="destructive">Destructive</Badge>
+                <Badge variant="outline">Outline</Badge>
+                <Badge variant="moving">Moving</Badge>
+                <Badge variant="stopped">Stopped</Badge>
+                <Badge variant="offline">Offline</Badge>
+                <Badge variant="maintenance">Maintenance</Badge>
+                <Badge variant="idling">Idling</Badge>
                 <Badge variant="warning">Warning</Badge>
-                <Badge variant="info">Info</Badge>
+                <Badge variant="bs4">BS4</Badge>
+                <Badge variant="bs6">BS6</Badge>
+                <Badge variant="electric">Electric</Badge>
+                <Badge variant="construction">Construction</Badge>
+                <Badge variant="unsubscribed">Unsubscribed</Badge>
               </div>
             </ComponentCard>
             

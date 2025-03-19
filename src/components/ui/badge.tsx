@@ -19,6 +19,12 @@ const badgeVariants = cva(
         outline: "text-foreground",
         success:
           "border-transparent bg-green-500 text-white hover:bg-green-600",
+        info:
+          "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+        frostedGlass:
+          "border-white/10 bg-white/10 backdrop-blur-md text-white hover:bg-white/20",
+        gradient:
+          "border-transparent bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600",
         // Vehicle Status Variants
         moving: "border-transparent bg-green-500 text-white hover:bg-green-600",
         stopped: "border-transparent bg-yellow-500 text-white hover:bg-yellow-600",
