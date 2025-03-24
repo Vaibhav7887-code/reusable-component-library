@@ -7,50 +7,65 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChartCard } from "@/components/molecules/chart-card";
 import { cn } from "@/lib/utils";
-import { 
-  Activity, 
-  AlertCircle, 
-  Car, 
-  Clock, 
-  Fuel, 
-  MapPin, 
-  Settings, 
-  Users,
-  Calendar,
-  Filter,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  BarChart3,
-  Route,
-  Package,
-  DollarSign,
-  Gauge,
-  Battery,
-  Thermometer,
-  Wrench,
-  Bell,
-  RefreshCw,
-  Download,
-  Upload,
-  MoreVertical,
-  Star,
-  StarOff,
-  FileText,
-  ChevronRight,
-  XCircle,
-  Share2
-} from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
 } from "@/components/ui/sheet";
+import dynamic from "next/dynamic";
+
+// Client-side only import for Lucide icons to prevent hydration issues
+const LucideIcons = {
+  Activity: dynamic(() => import("lucide-react").then(mod => mod.Activity), { ssr: false }),
+  AlertCircle: dynamic(() => import("lucide-react").then(mod => mod.AlertCircle), { ssr: false }),
+  Car: dynamic(() => import("lucide-react").then(mod => mod.Car), { ssr: false }),
+  Clock: dynamic(() => import("lucide-react").then(mod => mod.Clock), { ssr: false }),
+  Fuel: dynamic(() => import("lucide-react").then(mod => mod.Fuel), { ssr: false }),
+  MapPin: dynamic(() => import("lucide-react").then(mod => mod.MapPin), { ssr: false }),
+  Settings: dynamic(() => import("lucide-react").then(mod => mod.Settings), { ssr: false }),
+  Users: dynamic(() => import("lucide-react").then(mod => mod.Users), { ssr: false }),
+  Calendar: dynamic(() => import("lucide-react").then(mod => mod.Calendar), { ssr: false }),
+  Filter: dynamic(() => import("lucide-react").then(mod => mod.Filter), { ssr: false }),
+  Search: dynamic(() => import("lucide-react").then(mod => mod.Search), { ssr: false }),
+  ChevronDown: dynamic(() => import("lucide-react").then(mod => mod.ChevronDown), { ssr: false }),
+  ChevronUp: dynamic(() => import("lucide-react").then(mod => mod.ChevronUp), { ssr: false }),
+  AlertTriangle: dynamic(() => import("lucide-react").then(mod => mod.AlertTriangle), { ssr: false }),
+  CheckCircle2: dynamic(() => import("lucide-react").then(mod => mod.CheckCircle2), { ssr: false }),
+  Info: dynamic(() => import("lucide-react").then(mod => mod.Info), { ssr: false }),
+  BarChart3: dynamic(() => import("lucide-react").then(mod => mod.BarChart3), { ssr: false }),
+  Route: dynamic(() => import("lucide-react").then(mod => mod.Route), { ssr: false }),
+  Package: dynamic(() => import("lucide-react").then(mod => mod.Package), { ssr: false }),
+  DollarSign: dynamic(() => import("lucide-react").then(mod => mod.DollarSign), { ssr: false }),
+  Gauge: dynamic(() => import("lucide-react").then(mod => mod.Gauge), { ssr: false }),
+  Battery: dynamic(() => import("lucide-react").then(mod => mod.Battery), { ssr: false }),
+  Thermometer: dynamic(() => import("lucide-react").then(mod => mod.Thermometer), { ssr: false }),
+  Wrench: dynamic(() => import("lucide-react").then(mod => mod.Wrench), { ssr: false }),
+  Bell: dynamic(() => import("lucide-react").then(mod => mod.Bell), { ssr: false }),
+  RefreshCw: dynamic(() => import("lucide-react").then(mod => mod.RefreshCw), { ssr: false }),
+  Download: dynamic(() => import("lucide-react").then(mod => mod.Download), { ssr: false }),
+  Upload: dynamic(() => import("lucide-react").then(mod => mod.Upload), { ssr: false }),
+  MoreVertical: dynamic(() => import("lucide-react").then(mod => mod.MoreVertical), { ssr: false }),
+  Star: dynamic(() => import("lucide-react").then(mod => mod.Star), { ssr: false }),
+  StarOff: dynamic(() => import("lucide-react").then(mod => mod.StarOff), { ssr: false }),
+  FileText: dynamic(() => import("lucide-react").then(mod => mod.FileText), { ssr: false }),
+  ChevronRight: dynamic(() => import("lucide-react").then(mod => mod.ChevronRight), { ssr: false }),
+  XCircle: dynamic(() => import("lucide-react").then(mod => mod.XCircle), { ssr: false }),
+  Share2: dynamic(() => import("lucide-react").then(mod => mod.Share2), { ssr: false }),
+  Plus: dynamic(() => import("lucide-react").then(mod => mod.Plus), { ssr: false }),
+  Minus: dynamic(() => import("lucide-react").then(mod => mod.Minus), { ssr: false })
+};
+
+// Use these imports instead of direct imports
+const { 
+  Activity, AlertCircle, Car, Clock, Fuel, MapPin, Settings, Users,
+  Calendar, Filter, Search, ChevronDown, ChevronUp, AlertTriangle,
+  CheckCircle2, Info, BarChart3, Route, Package, DollarSign, Gauge,
+  Battery, Thermometer, Wrench, Bell, RefreshCw, Download, Upload,
+  MoreVertical, Star, StarOff, FileText, ChevronRight, XCircle, Share2,
+  Plus, Minus
+} = LucideIcons;
+
 import {
   Table,
   TableBody,
@@ -74,6 +89,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { VehicleTrace } from "@/components/molecules/vehicle-trace";
 
 // Mock data for fleet stats
 const fleetStats = {
@@ -114,7 +130,7 @@ const vehicles = [
   {
     id: 1001,
     name: "Truck Alpha",
-    registrationNumber: "MH01AB1234",
+    registrationNumber: "MH-01-AB-1234",
     vin: "1HGCM82633A123456",
     driver: "John Doe",
     status: "active",
@@ -134,12 +150,18 @@ const vehicles = [
     healthIndicators: [
       { type: "engine", status: "warning", message: "Engine light on" },
       { type: "tire", status: "error", message: "Low tire pressure" },
+      { type: "brake", status: "warning", message: "Brake pads wearing thin" },
+      { type: "battery", status: "error", message: "Battery voltage critical" },
+      { type: "coolant", status: "warning", message: "Coolant level low" },
+      { type: "oil", status: "info", message: "Oil change due soon" },
+      { type: "transmission", status: "warning", message: "Transmission fluid low" },
+      { type: "air filter", status: "info", message: "Air filter needs cleaning" },
     ],
   },
   {
     id: 1002,
     name: "Van Beta",
-    registrationNumber: "DL02CD5678",
+    registrationNumber: "DL-02-CD-5678",
     vin: "2HGCM82633B234567",
     driver: "Jane Smith",
     status: "active",
@@ -264,7 +286,7 @@ const vehicleDetails = {
   // ... add more vehicle details as needed
 };
 
-function FleetDashboard() {
+export function FleetDashboard() {
   const [selectedPeriod, setSelectedPeriod] = React.useState<'day' | 'week' | 'month'>('day');
   const [expandedStats, setExpandedStats] = React.useState(false);
 
@@ -272,19 +294,19 @@ function FleetDashboard() {
     <div className="space-y-6">
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
           <Download className="h-4 w-4" />
           Export Report
         </Button>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
           <Upload className="h-4 w-4" />
           Import Data
         </Button>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
           <RefreshCw className="h-4 w-4" />
           Refresh Data
         </Button>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
           <MoreVertical className="h-4 w-4" />
           More Actions
         </Button>
@@ -292,23 +314,28 @@ function FleetDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-green-500/10">
+              <DollarSign className="h-4 w-4 text-green-500" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${fleetStats.totalRevenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <ChevronUp className="h-3 w-3 text-green-500" />
               +12.5% from last period
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Vehicles</CardTitle>
-            <Car className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-blue-500/10">
+              <Car className="h-4 w-4 text-blue-500" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{fleetStats.activeVehicles}</div>
@@ -318,28 +345,37 @@ function FleetDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">On-Time Deliveries</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-purple-500/10">
+              <CheckCircle2 className="h-4 w-4 text-purple-500" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{fleetStats.onTimeDeliveries}</div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round((fleetStats.onTimeDeliveries / fleetStats.totalDeliveries) * 100)}% success rate
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Badge variant="success" className="h-4 text-[10px] font-normal">
+                {Math.round((fleetStats.onTimeDeliveries / fleetStats.totalDeliveries) * 100)}%
+              </Badge>
+              success rate
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Fuel Cost</CardTitle>
-            <Fuel className="h-4 w-4 text-muted-foreground" />
+            <div className="p-2 rounded-full bg-orange-500/10">
+              <Fuel className="h-4 w-4 text-orange-500" />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${fleetStats.fuelCost}</div>
-            <p className="text-xs text-muted-foreground">
-              {fleetStats.fuelEfficiency} mpg average
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Badge variant="frostedGlass" className="h-4 text-[10px] font-normal">
+                {fleetStats.fuelEfficiency} mpg avg
+              </Badge>
             </p>
           </CardContent>
         </Card>
@@ -347,18 +383,25 @@ function FleetDashboard() {
 
       {/* Charts and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard
-          title="Fleet Activity"
-          description="Vehicle utilization over time"
-          type="line"
-          color="hsl(var(--primary))"
-        />
+        <div className="h-[400px]">
+          <ChartCard
+            title="Fleet Activity"
+            description="Vehicle utilization over time"
+            type="line"
+            color="hsl(var(--primary))"
+            chartHeight={400}
+          />
+        </div>
         
-        <Card>
+        <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Alerts</CardTitle>
-            <Button variant="ghost" size="sm">
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-4 w-4 text-muted-foreground" />
+              Recent Alerts
+            </CardTitle>
+            <Button variant="ghost" size="sm" className="gap-1">
               View All
+              <ChevronRight className="h-3 w-3" />
             </Button>
           </CardHeader>
           <CardContent>
@@ -366,15 +409,19 @@ function FleetDashboard() {
               {alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 backdrop-blur-sm"
                 >
                   <div className="flex items-center space-x-3">
                     <div className={cn(
-                      "h-2 w-2 rounded-full",
-                      alert.type === "warning" && "bg-yellow-500",
-                      alert.type === "info" && "bg-blue-500",
-                      alert.type === "success" && "bg-green-500"
-                    )} />
+                      "p-1.5 rounded-full",
+                      alert.type === "warning" && "bg-yellow-500/20",
+                      alert.type === "info" && "bg-blue-500/20",
+                      alert.type === "success" && "bg-green-500/20"
+                    )}>
+                      {alert.type === "warning" && <AlertTriangle className="h-3 w-3 text-yellow-500" />}
+                      {alert.type === "info" && <Info className="h-3 w-3 text-blue-500" />}
+                      {alert.type === "success" && <CheckCircle2 className="h-3 w-3 text-green-500" />}
+                    </div>
                     <div>
                       <span className="text-sm">{alert.message}</span>
                       <div className="flex items-center gap-2 mt-1">
@@ -382,7 +429,7 @@ function FleetDashboard() {
                         <span className={cn(
                           "text-xs px-1.5 py-0.5 rounded-full",
                           alert.priority === "high" && "bg-red-500/20 text-red-500",
-                          alert.priority === "medium" && "bg-yellow-500/20 text-yellow-500",
+                          alert.priority === "medium" && "bg-yellow-500/20 text-yellow-600 dark:text-yellow-500",
                           alert.priority === "low" && "bg-green-500/20 text-green-500"
                         )}>
                           {alert.priority}
@@ -401,15 +448,18 @@ function FleetDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <Card>
+      <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-muted-foreground" />
+            Recent Activity
+          </CardTitle>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="sm" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
               <Filter className="h-4 w-4" />
               Filter
             </Button>
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="sm" className="gap-2 bg-background/60 backdrop-blur-sm border-white/10">
               <Calendar className="h-4 w-4" />
               Date Range
             </Button>
@@ -420,7 +470,7 @@ function FleetDashboard() {
             {recentActivity.map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/30 backdrop-blur-sm"
               >
                 <div className="flex items-center space-x-3">
                   <div className={cn(
@@ -429,25 +479,24 @@ function FleetDashboard() {
                     activity.status === "warning" && "bg-yellow-500/20",
                     activity.status === "info" && "bg-blue-500/20"
                   )}>
-                    <Activity className={cn(
-                      "h-4 w-4",
-                      activity.status === "success" && "text-green-500",
-                      activity.status === "warning" && "text-yellow-500",
-                      activity.status === "info" && "text-blue-500"
-                    )} />
+                    {activity.status === "success" && <CheckCircle2 className="h-3 w-3 text-green-500" />}
+                    {activity.status === "warning" && <AlertTriangle className="h-3 w-3 text-yellow-500" />}
+                    {activity.status === "info" && <Info className="h-3 w-3 text-blue-500" />}
                   </div>
                   <div>
                     <span className="text-sm">{activity.message}</span>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs text-muted-foreground">{activity.time}</span>
-                      <span className={cn(
-                        "text-xs px-1.5 py-0.5 rounded-full",
-                        activity.status === "success" && "bg-green-500/20 text-green-500",
-                        activity.status === "warning" && "bg-yellow-500/20 text-yellow-500",
-                        activity.status === "info" && "bg-blue-500/20 text-blue-500"
-                      )}>
+                      <Badge 
+                        variant={
+                          activity.status === "success" ? "success" : 
+                          activity.status === "warning" ? "warning" : 
+                          "info"
+                        }
+                        className="text-[10px] h-4 font-normal"
+                      >
                         {activity.status}
-                      </span>
+                      </Badge>
                     </div>
                   </div>
                 </div>
@@ -463,7 +512,7 @@ function FleetDashboard() {
   );
 }
 
-function FleetTracking() {
+export function FleetTracking() {
   const [selectedVehicle, setSelectedVehicle] = React.useState<typeof vehicles[0] | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "moving" | "idling" | "stopped" | "offline" | "maintenance">("all");
@@ -473,6 +522,42 @@ function FleetTracking() {
     distance: "miles",
     currency: "USD"
   });
+  // Add state for map zoom and position
+  const [mapZoom, setMapZoom] = React.useState(1.5); // Start zoomed in at 1.5x
+  const [mapPosition, setMapPosition] = React.useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
+  const [mapBounds, setMapBounds] = React.useState({ width: 0, height: 0 });
+  const mapRef = React.useRef<HTMLDivElement>(null);
+  const mapImageRef = React.useRef<HTMLImageElement>(null);
+  const [showFilterMenu, setShowFilterMenu] = React.useState(false);
+  const tagContainersRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
+  const tagIndicatorsRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
+
+  // Create ref callbacks to avoid type issues
+  const setTagContainerRef = React.useCallback((id: number) => (el: HTMLDivElement | null) => {
+    if (el) {
+      tagContainersRef.current.set(id, el);
+      // Check overflow after ref is set
+      setTimeout(() => checkTagsOverflow(id), 0);
+    }
+  }, []);
+  
+  const setTagIndicatorRef = React.useCallback((id: number) => (el: HTMLDivElement | null) => {
+    if (el) {
+      tagIndicatorsRef.current.set(id, el);
+    }
+  }, []);
+
+  // Calculate vehicle counts by status
+  const vehicleCounts = {
+    all: vehicles.length,
+    moving: vehicles.filter(v => v.currentState === "moving").length,
+    idling: vehicles.filter(v => v.currentState === "idling").length,
+    stopped: vehicles.filter(v => v.currentState === "stopped").length,
+    offline: vehicles.filter(v => v.currentState === "offline").length,
+    maintenance: vehicles.filter(v => v.currentState === "maintenance").length
+  };
 
   const filteredVehicles = vehicles.filter(vehicle => {
     const matchesSearch = 
@@ -483,15 +568,168 @@ function FleetTracking() {
     return matchesSearch && matchesStatus;
   });
 
+  // Update map bounds when image loads
+  React.useEffect(() => {
+    const updateMapBounds = () => {
+      if (mapImageRef.current && mapRef.current) {
+        const containerWidth = mapRef.current.clientWidth;
+        const containerHeight = mapRef.current.clientHeight;
+        const imageWidth = mapImageRef.current.naturalWidth;
+        const imageHeight = mapImageRef.current.naturalHeight;
+        
+        setMapBounds({
+          width: Math.max(imageWidth, containerWidth),
+          height: Math.max(imageHeight, containerHeight)
+        });
+      }
+    };
+    
+    const imageElement = mapImageRef.current;
+    if (imageElement) {
+      imageElement.addEventListener('load', updateMapBounds);
+      // If image is already loaded
+      if (imageElement.complete) {
+        updateMapBounds();
+      }
+    }
+    
+    return () => {
+      imageElement?.removeEventListener('load', updateMapBounds);
+    };
+  }, []);
+
+  // Handle map drag events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (mapRef.current) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && mapRef.current) {
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+
+      // Calculate boundaries
+      const containerWidth = mapRef.current.clientWidth;
+      const containerHeight = mapRef.current.clientHeight;
+      const scaledImageWidth = mapBounds.width * mapZoom;
+      const scaledImageHeight = mapBounds.height * mapZoom;
+      
+      // Maximum allowed movement in each direction
+      const maxX = Math.max(0, (scaledImageWidth - containerWidth) / 2);
+      const maxY = Math.max(0, (scaledImageHeight - containerHeight) / 2);
+      
+      // New position with boundaries applied
+      const newX = Math.min(maxX, Math.max(-maxX, mapPosition.x + dx));
+      const newY = Math.min(maxY, Math.max(-maxY, mapPosition.y + dy));
+      
+      setMapPosition({ x: newX, y: newY });
+      setDragStart({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleZoomIn = () => {
+    setMapZoom(prev => {
+      const newZoom = Math.min(prev + 0.2, 3);
+      // Reset position when zooming to avoid being out of bounds
+      updatePositionAfterZoom(newZoom);
+      return newZoom;
+    });
+  };
+
+  const handleZoomOut = () => {
+    setMapZoom(prev => {
+      const newZoom = Math.max(prev - 0.2, 0.5);
+      // Reset position when zooming to avoid being out of bounds
+      updatePositionAfterZoom(newZoom);
+      return newZoom;
+    });
+  };
+
+  const updatePositionAfterZoom = (newZoom: number) => {
+    if (mapRef.current) {
+      const containerWidth = mapRef.current.clientWidth;
+      const containerHeight = mapRef.current.clientHeight;
+      const scaledImageWidth = mapBounds.width * newZoom;
+      const scaledImageHeight = mapBounds.height * newZoom;
+      
+      // Maximum allowed movement in each direction
+      const maxX = Math.max(0, (scaledImageWidth - containerWidth) / 2);
+      const maxY = Math.max(0, (scaledImageHeight - containerHeight) / 2);
+      
+      // Apply boundaries to current position
+      setMapPosition({
+        x: Math.min(maxX, Math.max(-maxX, mapPosition.x)),
+        y: Math.min(maxY, Math.max(-maxY, mapPosition.y))
+      });
+    }
+  };
+
+  // Function to check if tags are overflowing and update indicator
+  const checkTagsOverflow = (vehicleId: number) => {
+    const container = tagContainersRef.current.get(vehicleId);
+    const indicator = tagIndicatorsRef.current.get(vehicleId);
+    
+    if (container && indicator) {
+      const hasMoreContent = container.scrollWidth > container.clientWidth;
+      const isAtStart = container.scrollLeft === 0;
+      
+      if (hasMoreContent) {
+        indicator.style.display = "flex";
+        if (isAtStart) {
+          indicator.style.opacity = "1";
+        } else {
+          indicator.style.opacity = "0";
+        }
+      } else {
+        indicator.style.display = "none";
+      }
+    }
+  };
+
+  // Check for overflow when component mounts or window resizes
+  React.useEffect(() => {
+    // Check all vehicles for tag overflow
+    for (const vehicleId of tagContainersRef.current.keys()) {
+      checkTagsOverflow(vehicleId);
+    }
+
+    // Also check on window resize
+    const handleResize = () => {
+      for (const vehicleId of tagContainersRef.current.keys()) {
+        checkTagsOverflow(vehicleId);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [filteredVehicles]); // Re-run when filtered vehicles change
+
+  // Clean up event listeners
+  React.useEffect(() => {
+    const handleMouseUpGlobal = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener('mouseup', handleMouseUpGlobal);
+    return () => {
+      window.removeEventListener('mouseup', handleMouseUpGlobal);
+    };
+  }, []);
+
   return (
-    <div className="h-[calc(100vh-20rem)] flex flex-col overflow-hidden">
+    <div className="h-[calc(100vh-8rem)] w-full flex flex-col overflow-hidden">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Live Tracking</h2>
+        <h2 className="text-2xl font-bold">Vehicle Tracking</h2>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
           <Button>
             <Activity className="w-4 h-4 mr-2" />
             Export Data
@@ -499,370 +737,848 @@ function FleetTracking() {
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 overflow-hidden">
-        {/* Map Section - 3/4 width */}
-        <div className="lg:col-span-3 bg-muted rounded-lg relative overflow-hidden">
-          <div className="absolute top-4 left-4 z-10 flex gap-2">
-            <Button variant="secondary" size="icon">
-              <MapPin className="w-4 h-4" />
-            </Button>
-            <Button variant="secondary" size="icon">
-              <Clock className="w-4 h-4" />
-            </Button>
-          </div>
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            Map will be rendered here
-          </div>
+      <Tabs defaultValue="live" className="flex-1 flex flex-col overflow-hidden w-full">
+        <div className="flex justify-start">
+          <TabsList className="inline-flex">
+            <TabsTrigger value="live">Live Tracking</TabsTrigger>
+            <TabsTrigger value="trace">Vehicle Trace</TabsTrigger>
+          </TabsList>
         </div>
-
-        {/* Vehicle List - 1/4 width */}
-        <div className="lg:col-span-1 flex flex-col gap-4 overflow-hidden">
-          <div className="flex flex-col gap-4 px-1 py-1">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
-              <Input
-                placeholder="Search vehicles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 w-full"
-              />
+        
+        <TabsContent value="live" className="flex-1 flex flex-col mt-4 overflow-hidden w-full">
+          <div className="flex-1 flex gap-4 overflow-hidden w-full">
+            {/* Map Section - 70% width */}
+            <div className="w-[70%] bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
+              {/* Inner shadow overlay */}
+              <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_30px_rgba(0,0,0,0.4)]"></div>
+              <div className="absolute top-4 left-4 z-10 flex gap-2">
+                <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-background/70 backdrop-blur-sm border-white/20">
+                  <Plus className="w-4 h-4" />
+                </Button>
+                <Button variant="secondary" size="icon" onClick={handleZoomOut} className="bg-background/70 backdrop-blur-sm border-white/20">
+                  <Minus className="w-4 h-4" />
+                </Button>
+                <Button variant="secondary" size="icon" className="bg-background/70 backdrop-blur-sm border-white/20">
+                  <MapPin className="w-4 h-4" />
+                </Button>
+              </div>
+              <div 
+                ref={mapRef}
+                className="w-full h-full relative overflow-hidden cursor-move z-[1]"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                <div 
+                  className="absolute top-0 left-0 w-full h-full transform origin-center"
+                  style={{ 
+                    transform: `scale(${mapZoom}) translate(${mapPosition.x / mapZoom}px, ${mapPosition.y / mapZoom}px)`
+                  }}
+                >
+                  <img 
+                    ref={mapImageRef}
+                    src="/Tokyo Map.png" 
+                    alt="Tokyo Map" 
+                    className="w-full h-full object-cover dark:invert dark:brightness-90 dark:hue-rotate-180"
+                  />
+                  
+                  {/* Vehicle markers */}
+                  <div className="absolute top-[20%] left-[33%] z-10">
+                    <div className="bg-green-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20 animate-pulse">
+                      <Car className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
+                      Truck Alpha
+                    </div>
+                  </div>
+                  <div className="absolute top-[60%] left-[45%] z-10">
+                    <div className="bg-blue-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
+                      <Car className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
+                      Van Beta
+                    </div>
+                  </div>
+                  <div className="absolute top-[40%] left-[60%] z-10">
+                    <div className="bg-yellow-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
+                      <Car className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
+                      Truck Gamma
+                    </div>
+                  </div>
+                  <div className="absolute top-[30%] left-[50%] z-10">
+                    <div className="bg-red-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
+                      <Car className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
+                      Van Delta
+                    </div>
+                  </div>
+                  
+                  {/* Add some route paths between vehicles */}
+                  <svg className="absolute inset-0 w-full h-full z-[5]" style={{ pointerEvents: 'none' }}>
+                    {/* Path from Truck Alpha to Van Beta */}
+                    <path 
+                      d="M 33% 20% Q 38% 40%, 45% 60%" 
+                      fill="none" 
+                      stroke="rgba(255,255,255,0.4)" 
+                      strokeWidth="2" 
+                      strokeDasharray="5,5"
+                    />
+                    
+                    {/* Path from Van Beta to Truck Gamma */}
+                    <path 
+                      d="M 45% 60% Q 55% 55%, 60% 40%" 
+                      fill="none" 
+                      stroke="rgba(255,255,255,0.4)" 
+                      strokeWidth="2" 
+                      strokeDasharray="5,5"
+                    />
+                    
+                    {/* Path from Truck Gamma to Van Delta */}
+                    <path 
+                      d="M 60% 40% Q 55% 32%, 50% 30%" 
+                      fill="none" 
+                      stroke="rgba(255,255,255,0.4)" 
+                      strokeWidth="2" 
+                      strokeDasharray="5,5"
+                    />
+                  </svg>
+                </div>
+                
+                {/* Map overlay elements */}
+                <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
+                  <div className="bg-background/60 backdrop-blur-md p-2 rounded-lg border border-white/10 shadow-lg">
+                    <div className="text-[10px] text-muted-foreground mb-1">Map Legend</div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1">
+                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                        <span className="text-[10px] text-muted-foreground">Moving</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                        <span className="text-[10px] text-muted-foreground">Idling</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
+                        <span className="text-[10px] text-muted-foreground">Stopped</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="h-2 w-2 rounded-full bg-red-500"></div>
+                        <span className="text-[10px] text-muted-foreground">Offline</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <div className="flex gap-2 w-max">
-                <Button
-                  variant={statusFilter === "all" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("all")}
-                >
-                  All
-                </Button>
-                <Button
-                  variant={statusFilter === "moving" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("moving")}
-                >
-                  Moving
-                </Button>
-                <Button
-                  variant={statusFilter === "idling" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("idling")}
-                >
-                  Idling
-                </Button>
-                <Button
-                  variant={statusFilter === "stopped" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("stopped")}
-                >
-                  Stopped
-                </Button>
-                <Button
-                  variant={statusFilter === "offline" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("offline")}
-                >
-                  Offline
-                </Button>
-                <Button
-                  variant={statusFilter === "maintenance" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setStatusFilter("maintenance")}
-                >
-                  Maintenance
-                </Button>
+
+            {/* Vehicle List - 30% width */}
+            <div className="w-[30%] flex flex-col gap-4">
+              <div className="flex flex-col gap-4 px-1 py-1">
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
+                  <Input
+                    placeholder="Search vehicles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 w-full"
+                  />
+                </div>
+                
+                {/* Filter and tabs container - completely restructured */}
+                <div className="flex items-center space-x-2">
+                  {/* Filter button */}
+                  <div className="flex-shrink-0">
+                    <DropdownMenu open={showFilterMenu} onOpenChange={setShowFilterMenu}>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-8">
+                          <Filter className="h-4 w-4 mr-1" />
+                          <span>Filter</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-56">
+                        <DropdownMenuItem>
+                          <span className="flex-1">Driver Rating</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Vehicle Type</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Fuel Type</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Vehicle Class</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Maintenance Status</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  
+                  {/* Scrollable tabs container */}
+                  <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex-1">
+                    <div className="flex gap-2 w-max pr-4">
+                      <Button
+                        variant={statusFilter === "all" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("all")}
+                        className="flex items-center gap-1"
+                      >
+                        All
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary/20 px-2 text-xs font-medium leading-none text-primary">
+                          {vehicleCounts.all}
+                        </span>
+                      </Button>
+                      <Button
+                        variant={statusFilter === "moving" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("moving")}
+                        className="flex items-center gap-1"
+                      >
+                        Moving
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-green-500/20 px-2 text-xs font-medium leading-none text-green-600">
+                          {vehicleCounts.moving}
+                        </span>
+                      </Button>
+                      <Button
+                        variant={statusFilter === "idling" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("idling")}
+                        className="flex items-center gap-1"
+                      >
+                        Idling
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-yellow-500/20 dark:bg-yellow-500/20 px-2 text-xs font-medium leading-none text-yellow-600 dark:text-yellow-600">
+                          {vehicleCounts.idling}
+                        </span>
+                      </Button>
+                      <Button
+                        variant={statusFilter === "stopped" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("stopped")}
+                        className="flex items-center gap-1"
+                      >
+                        Stopped
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-red-500/20 px-2 text-xs font-medium leading-none text-red-600">
+                          {vehicleCounts.stopped}
+                        </span>
+                      </Button>
+                      <Button
+                        variant={statusFilter === "offline" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("offline")}
+                        className="flex items-center gap-1"
+                      >
+                        Offline
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-gray-500/20 px-2 text-xs font-medium leading-none text-gray-600">
+                          {vehicleCounts.offline}
+                        </span>
+                      </Button>
+                      <Button
+                        variant={statusFilter === "maintenance" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setStatusFilter("maintenance")}
+                        className="flex items-center gap-1"
+                      >
+                        Maintenance
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-500/20 px-2 text-xs font-medium leading-none text-blue-600">
+                          {vehicleCounts.maintenance}
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="space-y-2">
+                  {filteredVehicles.map((vehicle) => (
+                    <Card
+                      key={vehicle.id}
+                      className={`cursor-pointer transition-colors ${
+                        selectedVehicle?.id === vehicle.id ? "border-primary" : ""
+                      }`}
+                      onClick={() => setSelectedVehicle(vehicle)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <h3 className="font-medium truncate">{vehicle.registrationNumber}</h3>
+                              <div className="flex items-center gap-1 ml-2">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div>
+                                        {vehicle.fuelType === "electric" ? (
+                                          <Battery 
+                                            className={cn(
+                                              "h-4 w-4",
+                                              vehicle.battery < 25 && "text-red-500",
+                                              vehicle.battery < 50 && "text-orange-500",
+                                              vehicle.battery < 75 && "text-yellow-500",
+                                              "text-green-500"
+                                            )} 
+                                          />
+                                        ) : (
+                                          <Fuel 
+                                            className={cn(
+                                              "h-4 w-4",
+                                              vehicle.fuel < 25 && "text-red-500",
+                                              vehicle.fuel < 50 && "text-orange-500",
+                                              vehicle.fuel < 75 && "text-yellow-500",
+                                              "text-green-500"
+                                            )} 
+                                          />
+                                        )}
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>{vehicle.fuelType === "electric" ? `Battery: ${vehicle.battery}%` : `Fuel: ${vehicle.fuel}L`}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                      <MoreVertical className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem>
+                                      <FileText className="h-4 w-4 mr-2" />
+                                      Generate Trip
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                      <FileText className="h-4 w-4 mr-2" />
+                                      DIC
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                      <Share2 className="h-4 w-4 mr-2" />
+                                      Share Location
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </div>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <p className="text-sm text-muted-foreground w-fit mt-1">{vehicle.vin.slice(-6)}</p>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Vehicle Identification Number (VIN)</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          <div className="flex items-center gap-4 text-sm">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-1 text-muted-foreground max-w-[100px]">
+                                    <MapPin className="h-4 w-4 flex-shrink-0" />
+                                    <span className="truncate">{vehicle.location}</span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{vehicle.location}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <span>{vehicle.eta}</span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Estimated Time of Arrival</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <div className="relative">
+                            <div 
+                              ref={setTagContainerRef(vehicle.id)}
+                              className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                              onScroll={(e) => {
+                                const target = e.target as HTMLDivElement;
+                                const hasScrolled = target.scrollLeft > 0;
+                                const hasMoreContent = target.scrollWidth > target.clientWidth;
+                                const isAtStart = target.scrollLeft === 0;
+                                
+                                // Show/hide the arrow indicator based on scroll position
+                                const indicator = tagIndicatorsRef.current.get(vehicle.id);
+                                if (indicator) {
+                                  // Only show indicator if there's content to scroll and we're at the start
+                                  if (hasMoreContent) {
+                                    indicator.style.display = "flex";
+                                    
+                                    if (isAtStart) {
+                                      indicator.style.opacity = "1";
+                                    } else {
+                                      indicator.style.opacity = "0";
+                                    }
+                                  } else {
+                                    indicator.style.display = "none";
+                                  }
+                                }
+                              }}
+                            >
+                              <div className="flex gap-2 w-max">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div>
+                                        <Badge 
+                                          variant={vehicle.currentState === "moving" ? "moving" : 
+                                                  vehicle.currentState === "stopped" ? "stopped" : 
+                                                  vehicle.currentState === "offline" ? "offline" : 
+                                                  vehicle.currentState === "maintenance" ? "maintenance" : 
+                                                  vehicle.currentState === "idling" ? "idling" : "outline"}
+                                          className="text-xs"
+                                        >
+                                          {vehicle.currentState}
+                                        </Badge>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Current Vehicle State</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <Badge variant="outline" className="text-xs">
+                                  {vehicle.vehicleClass}
+                                </Badge>
+                                {vehicle.healthIndicators?.map((indicator, index) => (
+                                  <TooltipProvider key={index}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div>
+                                          <Badge 
+                                            variant="outline" 
+                                            className={cn(
+                                              "text-xs",
+                                              indicator.status === "error" && "border-red-500 text-red-500",
+                                              indicator.status === "warning" && "border-yellow-600 text-yellow-600 dark:border-yellow-500 dark:text-yellow-500",
+                                              indicator.status === "info" && "border-blue-500 text-blue-500"
+                                            )}
+                                          >
+                                            <AlertTriangle className="h-3 w-3 mr-1" />
+                                            {indicator.type}
+                                          </Badge>
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>{indicator.message}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                ))}
+                              </div>
+                            </div>
+                            <div 
+                              ref={setTagIndicatorRef(vehicle.id)}
+                              className="absolute right-0 top-0 bottom-0 pointer-events-none flex items-center"
+                              style={{ display: "none" }}
+                            >
+                              <div className="bg-black/80 h-full flex items-center px-1 transition-opacity duration-200 rounded-l-md">
+                                <ChevronRight className="h-3 w-3 text-white" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+        </TabsContent>
 
-          <ScrollArea className="flex-1">
-            <div className="space-y-2 pr-4 max-w-[300px]">
-              {filteredVehicles.map((vehicle) => (
-                <Card
-                  key={vehicle.id}
-                  className={`cursor-pointer transition-colors ${
-                    selectedVehicle?.id === vehicle.id ? "border-primary" : ""
-                  }`}
-                  onClick={() => setSelectedVehicle(vehicle)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-medium truncate">{vehicle.registrationNumber}</h3>
-                          <div className="flex items-center gap-1 ml-2">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div>
-                                    {vehicle.fuelType === "electric" ? (
-                                      <Battery 
-                                        className={cn(
-                                          "h-4 w-4",
-                                          vehicle.battery < 25 && "text-red-500",
-                                          vehicle.battery < 50 && "text-orange-500",
-                                          vehicle.battery < 75 && "text-yellow-500",
-                                          "text-green-500"
-                                        )} 
-                                      />
-                                    ) : (
-                                      <Fuel 
-                                        className={cn(
-                                          "h-4 w-4",
-                                          vehicle.fuel < 25 && "text-red-500",
-                                          vehicle.fuel < 50 && "text-orange-500",
-                                          vehicle.fuel < 75 && "text-yellow-500",
-                                          "text-green-500"
-                                        )} 
-                                      />
-                                    )}
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>{vehicle.fuelType === "electric" ? `Battery: ${vehicle.battery}%` : `Fuel: ${vehicle.fuel}L`}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreVertical className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  Generate Trip
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  DIC
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Share2 className="h-4 w-4 mr-2" />
-                                  Share Location
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <p className="text-sm text-muted-foreground w-fit mt-1">{vehicle.vin}</p>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Vehicle Identification Number (VIN)</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                    </div>
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-center gap-4 text-sm">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="flex items-center gap-1 text-muted-foreground max-w-[100px]">
-                                <MapPin className="h-4 w-4 flex-shrink-0" />
-                                <span className="truncate">{vehicle.location}</span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{vehicle.location}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="flex items-center gap-1">
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                <span>{vehicle.eta}</span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Estimated Time of Arrival</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <div className="relative">
-                        <div 
-                          className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                          onScroll={(e) => {
-                            const target = e.target as HTMLDivElement;
-                            const hasScrolled = target.scrollLeft > 0;
-                            const hasMoreContent = target.scrollWidth > target.clientWidth;
-                            const isAtStart = target.scrollLeft === 0;
-                            
-                            // Show/hide the +X indicator based on scroll position
-                            const indicator = target.nextElementSibling as HTMLElement;
-                            if (indicator) {
-                              if (isAtStart && hasMoreContent) {
-                                indicator.style.opacity = "1";
-                              } else {
-                                indicator.style.opacity = "0";
-                              }
-                            }
-                          }}
-                        >
-                          <div className="flex gap-2 w-max">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div>
-                                    <Badge 
-                                      variant={vehicle.currentState === "moving" ? "moving" : 
-                                              vehicle.currentState === "stopped" ? "stopped" : 
-                                              vehicle.currentState === "offline" ? "offline" : 
-                                              vehicle.currentState === "maintenance" ? "maintenance" : 
-                                              vehicle.currentState === "idling" ? "idling" : "outline"}
-                                      className="text-xs"
-                                    >
-                                      {vehicle.currentState}
-                                    </Badge>
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Current Vehicle State</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <Badge variant="outline" className="text-xs">
-                              {vehicle.vehicleClass}
-                            </Badge>
-                            {vehicle.healthIndicators?.map((indicator, index) => (
-                              <TooltipProvider key={index}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <div>
-                                      <Badge 
-                                        variant="outline" 
-                                        className={cn(
-                                          "text-xs",
-                                          indicator.status === "error" && "border-red-500 text-red-500",
-                                          indicator.status === "warning" && "border-yellow-500 text-yellow-500",
-                                          indicator.status === "info" && "border-blue-500 text-blue-500"
-                                        )}
-                                      >
-                                        <AlertTriangle className="h-3 w-3 mr-1" />
-                                        {indicator.type}
-                                      </Badge>
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>{indicator.message}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none">
-                          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-white bg-black/80 rounded-full px-2 py-0.5 transition-opacity duration-200">
-                            +{vehicle.healthIndicators?.length || 0}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
-      </div>
+        <TabsContent value="trace">
+          <VehicleTrace />
+        </TabsContent>
+      </Tabs>
 
       {/* Vehicle Details Sheet */}
       <Sheet open={!!selectedVehicle} onOpenChange={() => setSelectedVehicle(null)}>
-        <SheetContent className="w-[400px] sm:w-[540px] bg-background/80 backdrop-blur-md border-white/10">
-          <SheetHeader>
-            <SheetTitle>{selectedVehicle?.registrationNumber}</SheetTitle>
-          </SheetHeader>
-          <ScrollArea className="h-[calc(100vh-8rem)]">
-            <div className="space-y-6 py-4">
-              {/* Vehicle Information */}
-              <div>
-                <h3 className="font-medium mb-2">Vehicle Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">VIN</p>
-                    <p className="font-medium">{selectedVehicle?.vin}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Vehicle Class</p>
-                    <p className="font-medium">{selectedVehicle?.vehicleClass}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Fuel Type</p>
-                    <p className="font-medium">{selectedVehicle?.fuelType === "electric" ? "Electric" : "Diesel"}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Current State</p>
-                    <p className="font-medium">{selectedVehicle?.currentState}</p>
-                  </div>
+        <SheetContent className="w-[400px] sm:w-[540px] p-0 overflow-hidden flex flex-col dark:bg-white/90 bg-black/70 dark:backdrop-blur-2xl backdrop-blur-2xl dark:border-white/10 border-white/10 shadow-2xl">
+          {/* Hero section with vehicle info */}
+          <div className="relative">
+            {/* Background image/gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b dark:from-black/40 from-black/80 to-transparent z-10"></div>
+            <div className="h-48 w-full overflow-hidden">
+              <img 
+                src="/Tokyo Map.png" 
+                alt="Vehicle location" 
+                className="w-full h-full object-cover blur-sm dark:opacity-90 opacity-60 dark:brightness-100 brightness-50"
+              />
+            </div>
+            
+            {/* Vehicle status indicator */}
+            <div className="absolute top-4 right-4 z-20">
+              <Badge 
+                variant={selectedVehicle?.currentState === "moving" ? "moving" : 
+                        selectedVehicle?.currentState === "stopped" ? "stopped" : 
+                        selectedVehicle?.currentState === "offline" ? "offline" : 
+                        selectedVehicle?.currentState === "maintenance" ? "maintenance" : 
+                        selectedVehicle?.currentState === "idling" ? "idling" : "outline"}
+                className="text-xs font-medium px-3 py-1"
+              >
+                {selectedVehicle?.currentState}
+              </Badge>
+            </div>
+            
+            {/* Close button */}
+            <div className="absolute top-4 left-4 z-20">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setSelectedVehicle(null)}
+                className="h-8 w-8 dark:bg-black/20 bg-white/20 backdrop-blur-md rounded-full dark:border-black/10 border-white/10 dark:hover:bg-black/30 hover:bg-white/30"
+              >
+                <XCircle className="h-4 w-4 dark:text-black/80 text-white/80" />
+              </Button>
+            </div>
+            
+            {/* Main vehicle info */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "p-3 rounded-full",
+                  selectedVehicle?.currentState === "moving" && "dark:bg-green-500/20 dark:text-green-600 bg-green-500/30 text-green-400",
+                  selectedVehicle?.currentState === "stopped" && "dark:bg-red-500/20 dark:text-red-600 bg-red-500/30 text-red-400",
+                  selectedVehicle?.currentState === "offline" && "dark:bg-gray-500/20 dark:text-gray-600 bg-gray-500/30 text-gray-400",
+                  selectedVehicle?.currentState === "maintenance" && "dark:bg-blue-500/20 dark:text-blue-600 bg-blue-500/30 text-blue-400",
+                  selectedVehicle?.currentState === "idling" && "dark:bg-yellow-500/20 dark:text-yellow-600 bg-yellow-500/30 text-yellow-400"
+                )}>
+                  <Car className="h-5 w-5" />
                 </div>
-              </div>
-
-              <Separator />
-
-              {/* Last Service Section */}
-              <div>
-                <h3 className="font-medium mb-2">Last Service</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Last Service Date</p>
-                    <p className="font-medium">{selectedVehicle?.lastMaintenance}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Next Service Due</p>
-                    <p className="font-medium">{selectedVehicle?.nextMaintenance}</p>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Current Location */}
-              <div>
-                <h3 className="font-medium mb-2">Current Location</h3>
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{selectedVehicle?.location}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm mt-1">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>ETA: {selectedVehicle?.eta}</span>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Performance Metrics */}
-              <div>
-                <h3 className="font-medium mb-2">Performance Metrics</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Speed</p>
-                    <p className="font-medium">{selectedVehicle?.speed} {unitPreferences.speed}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Fuel Level</p>
-                    <p className="font-medium">{selectedVehicle?.fuel}%</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Temperature</p>
-                    <p className="font-medium">{selectedVehicle?.temperature} {unitPreferences.temperature}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Battery</p>
-                    <p className="font-medium">{selectedVehicle?.battery}%</p>
-                  </div>
+                <div>
+                  <h3 className="text-xl font-semibold dark:text-black text-white">
+                    {selectedVehicle?.name}
+                  </h3>
+                  <p className="text-sm dark:text-black/60 text-white/60">
+                    {selectedVehicle?.registrationNumber}
+                  </p>
                 </div>
               </div>
             </div>
-          </ScrollArea>
+          </div>
+          
+          {/* Vehicle metrics in a grid */}
+          <div className="grid grid-cols-4 gap-px dark:bg-black/5 bg-white/5">
+            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+              <Fuel className="h-5 w-5 text-green-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
+              <span className="text-xs dark:text-black/60 text-white/60">Fuel</span>
+            </div>
+            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+              <Battery className="h-5 w-5 text-blue-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
+              <span className="text-xs dark:text-black/60 text-white/60">Battery</span>
+            </div>
+            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+              <Gauge className="h-5 w-5 text-purple-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
+              <span className="text-xs dark:text-black/60 text-white/60">Speed</span>
+            </div>
+            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+              <Thermometer className="h-5 w-5 text-red-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
+              <span className="text-xs dark:text-black/60 text-white/60">Temp</span>
+            </div>
+          </div>
+          
+          {/* Content area */}
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <Tabs defaultValue="info" className="w-full flex-1 flex flex-col">
+              <div className="px-4 pt-4">
+                <TabsList className="w-full grid grid-cols-4 dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg">
+                  <TabsTrigger value="info" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Info</TabsTrigger>
+                  <TabsTrigger value="location" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Location</TabsTrigger>
+                  <TabsTrigger value="maintenance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Service</TabsTrigger>
+                  <TabsTrigger value="issues" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    Issues
+                    {selectedVehicle?.healthIndicators?.length ? (
+                      <span className="ml-1 rounded-full text-[10px] flex items-center justify-center h-4 min-w-4 px-1 bg-red-500/20 text-red-400">
+                        {selectedVehicle.healthIndicators.length}
+                      </span>
+                    ) : null}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+              
+              <div className="flex-1 overflow-auto">
+                <TabsContent value="info" className="p-4 space-y-4 mt-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                      <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-1">Driver</div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-primary/30 flex items-center justify-center">
+                          <Users className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium dark:text-black text-white">{selectedVehicle?.driver}</div>
+                          <div className="text-xs dark:text-black/60 text-white/60">Rating: {selectedVehicle?.rating}</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                      <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-1">Vehicle Details</div>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs dark:text-black/60 text-white/60">VIN</span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-xs font-medium dark:text-black text-white">
+                                  {selectedVehicle?.vin ? `...${selectedVehicle.vin.slice(-6)}` : ""}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{selectedVehicle?.vin}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs dark:text-black/60 text-white/60">Class</span>
+                          <span className="text-xs font-medium dark:text-black text-white">{selectedVehicle?.vehicleClass}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs dark:text-black/60 text-white/60">Type</span>
+                          <span className="text-xs font-medium dark:text-black text-white">{selectedVehicle?.fuelType}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                    <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Status Metrics</div>
+                    <div className="grid grid-cols-2 gap-y-4">
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Next Service</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Calendar className="h-3 w-3 text-blue-500" /> 
+                          {selectedVehicle?.nextMaintenance}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Last Service</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Calendar className="h-3 w-3 text-green-500" /> 
+                          {selectedVehicle?.lastMaintenance}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Fuel Efficiency</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Gauge className="h-3 w-3 text-purple-500" /> 
+                          {fleetStats.fuelEfficiency} mpg
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Avg Speed</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Gauge className="h-3 w-3 text-purple-500" /> 
+                          {fleetStats.averageSpeed} mph
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="location" className="p-4 space-y-4 mt-2">
+                  <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                    <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Current Location</div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <MapPin className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm font-medium dark:text-black text-white">{selectedVehicle?.location}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 mb-4">
+                      <Clock className="h-4 w-4 text-green-500" />
+                      <span className="text-sm font-medium dark:text-black text-white">ETA: {selectedVehicle?.eta}</span>
+                    </div>
+                    
+                    <div className="h-40 dark:bg-white/20 bg-black/30 rounded-lg overflow-hidden relative">
+                      <img 
+                        src="/Tokyo Map.png" 
+                        alt="Location Preview" 
+                        className="w-full h-full object-cover dark:opacity-90 opacity-80 dark:brightness-100 brightness-50"
+                      />
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <div className="bg-primary rounded-full p-1 shadow-lg animate-pulse">
+                          <MapPin className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t dark:from-white/90 from-black/90 to-transparent h-20"></div>
+                      <div className="absolute bottom-2 left-2 text-xs dark:text-black/80 text-white/80">Live tracking</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                      <Route className="h-4 w-4 mr-2" /> Route Details
+                    </Button>
+                    <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                      <Share2 className="h-4 w-4 mr-2" /> Share Location
+                    </Button>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="maintenance" className="p-4 space-y-4 mt-2">
+                  <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                    <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Service Schedule</div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="text-sm font-medium dark:text-black text-white">Next Service</div>
+                          <div className="text-xs dark:text-black/60 text-white/60">{selectedVehicle?.nextMaintenance}</div>
+                        </div>
+                        <Button size="sm" variant="default" className="h-8 !bg-primary !text-primary-foreground">Book Service</Button>
+                      </div>
+                      
+                      <Separator className="dark:bg-black/10 bg-white/10" />
+                      
+                      <div>
+                        <div className="text-sm font-medium dark:text-black text-white">Last Service</div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs dark:text-black/60 text-white/60">{selectedVehicle?.lastMaintenance}</div>
+                          <Badge variant="outline" className="text-xs bg-green-500/20 text-green-500 border-green-500/30">Completed</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
+                    <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Maintenance History</div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium dark:text-black text-white">Regular Service</div>
+                          <div className="text-xs dark:text-black/60 text-white/60">Oil change, filters, inspection</div>
+                        </div>
+                        <div className="text-xs dark:text-black/60 text-white/60">15 days ago</div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium dark:text-black text-white">Tire Replacement</div>
+                          <div className="text-xs dark:text-black/60 text-white/60">Front tires replaced</div>
+                        </div>
+                        <div className="text-xs dark:text-black/60 text-white/60">45 days ago</div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium dark:text-black text-white">Battery Check</div>
+                          <div className="text-xs dark:text-black/60 text-white/60">Battery tested and replaced</div>
+                        </div>
+                        <div className="text-xs dark:text-black/60 text-white/60">60 days ago</div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="issues" className="p-4 mt-2">
+                  {selectedVehicle?.healthIndicators?.length ? (
+                    <ScrollArea className="h-[calc(100vh-28rem)]">
+                      <div className="space-y-3">
+                        {selectedVehicle.healthIndicators.map((indicator, idx) => (
+                          <div
+                            key={idx}
+                            className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4 border-l-2 border-l-transparent"
+                            style={{
+                              borderLeftColor: indicator.status === "error" ? 
+                                "hsl(var(--destructive))" : 
+                                indicator.status === "warning" ? 
+                                "hsl(var(--warning))" :
+                                "hsl(var(--info))"
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                {indicator.status === "error" && <AlertTriangle className="h-4 w-4 !text-destructive" />}
+                                {indicator.status === "warning" && <AlertCircle className="h-4 w-4 !text-warning" />}
+                                {indicator.status === "info" && <Info className="h-4 w-4 !text-info" />}
+                                <div className="font-medium dark:text-black text-white capitalize">{indicator.type}</div>
+                              </div>
+                              <Badge 
+                                variant={
+                                  indicator.status === "error" ? "destructive" :
+                                  indicator.status === "warning" ? "warning" :
+                                  "info"
+                                }
+                                className="text-[10px] h-5"
+                              >
+                                {indicator.status}
+                              </Badge>
+                            </div>
+                            <p className="text-sm dark:text-black/70 text-white/70 mt-2">{indicator.message}</p>
+                            <div className="mt-3 flex justify-end gap-2">
+                              <Button size="sm" variant="outline" className="h-7 px-2 dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                                Dismiss
+                              </Button>
+                              <Button size="sm" variant="default" className="h-7 px-2 !bg-primary !text-primary-foreground">
+                                Service Issue
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  ) : (
+                    <div className="h-[calc(100vh-28rem)] flex flex-col items-center justify-center py-12 text-center">
+                      <CheckCircle2 className="h-12 w-12 text-green-500 mb-4" />
+                      <h3 className="text-lg font-medium dark:text-black text-white">All Systems Operational</h3>
+                      <p className="text-sm dark:text-black/60 text-white/60 max-w-[260px] mt-1">
+                        No issues detected with this vehicle. All systems are functioning properly.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+              </div>
+            </Tabs>
+          </div>
+          
+          {/* Fixed action buttons - always visible at bottom */}
+          <div className="p-4 dark:border-t dark:border-black/10 border-t border-white/10">
+            <div className="grid grid-cols-3 gap-2">
+              <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                <FileText className="h-4 w-4 mr-2" />
+                DIC
+              </Button>
+              <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
+              <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
+                <FileText className="h-4 w-4 mr-2" />
+                Report
+              </Button>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </div>
@@ -870,17 +1586,43 @@ function FleetTracking() {
 }
 
 export function FleetManagementShowcase() {
+  const [hydrated, setHydrated] = React.useState(false);
+  
+  // This useEffect runs only on the client, setting hydrated to true after initial render
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+  
+  // If not yet hydrated, return null or a simple loading state to prevent hydration mismatch
+  if (!hydrated) {
+    return null; // Complete client-side rendering to avoid hydration mismatch
+  }
+  
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="w-full h-full px-4 py-8 space-y-6" suppressHydrationWarning>
+      <div className="flex flex-col mb-6 w-full">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-3xl font-bold tracking-tight">Fleet Management</h2>
+          <a 
+            href="/fleet-management" 
+            className="text-sm text-primary hover:underline flex items-center gap-1"
+          >
+            View Full Fleet Management →
+          </a>
+        </div>
+        <p className="text-muted-foreground max-w-3xl">
+          A comprehensive fleet management system with real-time vehicle tracking, analytics dashboard, and maintenance scheduling. Monitor vehicle status, track deliveries, and optimize routes with this powerful interface.
+        </p>
+      </div>
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList>
+        <TabsList className="w-full justify-center bg-background/60 backdrop-blur-md border border-white/10">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="tracking">Live Tracking</TabsTrigger>
         </TabsList>
-        <TabsContent value="dashboard">
+        <TabsContent value="dashboard" className="w-full">
           <FleetDashboard />
         </TabsContent>
-        <TabsContent value="tracking">
+        <TabsContent value="tracking" className="w-full">
           <FleetTracking />
         </TabsContent>
       </Tabs>

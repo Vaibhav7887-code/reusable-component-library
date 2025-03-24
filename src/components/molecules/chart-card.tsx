@@ -145,7 +145,7 @@ export function ChartCard({
     
     return (
       <div
-        className="absolute pointer-events-none frosted-glass rounded text-xs shadow-md px-3 py-2"
+        className="absolute pointer-events-none bg-background/80 backdrop-blur-md rounded text-xs shadow-md px-3 py-2"
         style={{
           left: tooltipX,
           top: tooltipY,
@@ -243,7 +243,7 @@ export function ChartCard({
   };
   
   return (
-    <Card className={cn("w-full overflow-hidden", className)}>
+    <Card className={cn("w-full overflow-hidden flex flex-col bg-background/40 backdrop-blur-md border-white/5 shadow-xl", className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div>
           <CardTitle className="text-lg font-medium">{title}</CardTitle>
@@ -251,7 +251,7 @@ export function ChartCard({
             <CardDescription>{description}</CardDescription>
           )}
         </div>
-        <div className="flex items-center p-1 bg-white/10 backdrop-blur-sm rounded-lg border border-white/10">
+        <div className="flex items-center p-1 bg-background/60 backdrop-blur-sm rounded-lg border border-white/10">
           <Button 
             variant="segmented" 
             size="sm" 
@@ -290,13 +290,12 @@ export function ChartCard({
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 flex flex-col">
         <div 
           ref={chartRef} 
-          className="relative w-full"
+          className="relative flex-1 w-full"
           style={{ 
             minWidth: "300px",
-            height: `${chartHeight}px`,
             minHeight: `${chartHeight}px`
           }}
         >

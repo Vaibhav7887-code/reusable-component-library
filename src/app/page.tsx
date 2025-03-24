@@ -3,7 +3,7 @@
 import { ComponentShowcase } from "@/components/showcase";
 import { FrostedGlassDemo } from "@/components/showcase/frosted-glass-demo";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ExternalLink } from "lucide-react";
 import { useTheme } from "next-themes";
 
 export default function Home() {
@@ -31,6 +31,15 @@ export default function Home() {
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Dashboard
+            </a>
+            <a 
+              href="/fleet-management" 
+              className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Fleet Management
+              <ExternalLink className="h-3 w-3" />
             </a>
             <a 
               href="https://github.com/Vaibhav7887-code/reusable-component-library" 
