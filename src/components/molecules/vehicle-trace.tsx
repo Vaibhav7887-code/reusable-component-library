@@ -297,15 +297,6 @@ export function VehicleTrace() {
 
   return (
     <div className="h-[calc(100vh-16rem)] w-full flex flex-col overflow-hidden">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Vehicle Trace</h2>
-        <div className="flex gap-2">
-          <Button>
-            <Activity className="w-4 h-4 mr-2" />
-            Export Data
-          </Button>
-        </div>
-      </div>
 
       <div className="flex-1 flex gap-4 overflow-hidden w-full">
         {/* Left Panel - 25% width */}
