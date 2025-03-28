@@ -309,137 +309,112 @@ export function VehicleTrace() {
 
       <div className="flex-1 flex gap-4 overflow-hidden w-full">
         {/* Left Panel - 25% width */}
-        <ScrollArea className="w-[360px] shrink-0">
+        <ScrollArea className="w-[400px] shrink-0">
           <div className="flex flex-col gap-4">
-          {/* Vehicle Selection */}
-          <Card>
-            <CardHeader className="py-2">
-              <CardTitle className="text-base">Vehicle</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Select onValueChange={setSelectedVehicle}>
-                  <SelectTrigger className="w-full bg-background/40 backdrop-blur-md border-white/10">
-                  <SelectValue placeholder="Select vehicle" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vehicles.map((vehicle) => (
-                    <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
-                      {vehicle.name} - {vehicle.registrationNumber}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
+{/* Combined Vehicle & Date Range Selection */}
+<Card>
+  <CardHeader className="py-2">
+    <CardTitle className="text-base">Trip Selection</CardTitle>
+  </CardHeader>
 
-          {/* Date Range Selection */}
-          <Card>
-            <CardHeader className="py-2">
-              <CardTitle className="text-base">Date Range</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                        "w-full justify-start text-left font-normal bg-background/40 backdrop-blur-md border-white/10",
-                      !dateRange && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dateRange?.from && dateRange?.to ? (
-                      <>
-                        {format(dateRange.from, "LLL dd, y")} -{" "}
-                        {format(dateRange.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                        <span>Pick a date range (max 15 days)</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-background/40 backdrop-blur-md border-white/10" align="start">
-                    <div className="p-3 border-b border-white/20">
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm font-medium">Select Date Range</div>
-                        <div className="text-xs text-muted-foreground">Max 15 days</div>
-                      </div>
-                    </div>
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={dateRange?.from}
-                    selected={dateRange}
-                    onSelect={(range) => {
-                      if (range?.from && range?.to) {
-                        const daysDiff = Math.ceil((range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24));
-                        if (daysDiff > 15) {
-                          const newEndDate = new Date(range.from);
-                          newEndDate.setDate(newEndDate.getDate() + 15);
-                          setDateRange({ from: range.from, to: newEndDate });
-                        } else {
-                          setDateRange(range);
-                        }
-                      } else {
-                        setDateRange(range);
-                      }
-                    }}
-                    numberOfMonths={2}
-                    disabled={(date) => {
-                      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-                      
-                      if (dateRange?.from) {
-                        const daysDiff = Math.ceil((date.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24));
-                        return isWeekend || daysDiff > 15;
-                      }
-                      
-                      if (dateRange?.to) {
-                        const daysDiff = Math.ceil((dateRange.to.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-                        return isWeekend || daysDiff > 15;
-                      }
-                      
-                      return isWeekend;
-                    }}
-                    className="rounded-md border-white/10"
-                    classNames={{
-                      months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 p-3",
-                      month: "space-y-4",
-                      caption: "flex justify-center pt-1 relative items-center",
-                      caption_label: "text-sm font-medium",
-                      nav: "space-x-1 flex items-center",
-                      nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
-                      nav_button_previous: "absolute left-1",
-                      nav_button_next: "absolute right-1",
-                      table: "w-full border-collapse space-y-1",
-                      head_row: "flex",
-                      head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                      row: "flex w-full mt-2",
-                      cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-                      day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-                      day_today: "bg-accent text-accent-foreground",
-                      day_outside: "text-muted-foreground opacity-50",
-                      day_disabled: "text-muted-foreground opacity-50",
-                      day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      day_hidden: "invisible",
-                    }}
-                  />
-                  <div className="p-3 border-t border-white/20">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="text-muted-foreground">Selected Range:</div>
-                      <div className="font-medium">
-                        {dateRange?.from && dateRange?.to ? (
-                          `${format(dateRange.from, "MMM dd")} - ${format(dateRange.to, "MMM dd")}`
-                        ) : (
-                          "No dates selected"
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </CardContent>
-          </Card>
+  <CardContent className="pt-0 space-y-4">
+    {/* Vehicle Selection */}
+    <div className="space-y-2">
+      <span className="text-sm text-muted-foreground">Vehicle</span>
+      <Select onValueChange={setSelectedVehicle}>
+        <SelectTrigger className="w-full bg-background/40 backdrop-blur-md border-white/10">
+          <SelectValue placeholder="Select vehicle" />
+        </SelectTrigger>
+        <SelectContent>
+          {vehicles.map((vehicle) => (
+            <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
+              {vehicle.name} - {vehicle.registrationNumber}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    <Separator />
+
+    {/* Date Range Selection */}
+    <div className="space-y-2">
+      <span className="text-sm text-muted-foreground">Date Range</span>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={cn(
+              "w-full justify-start text-left font-normal bg-background/40 backdrop-blur-md border-white/10",
+              !dateRange && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {dateRange?.from && dateRange?.to ? (
+              <>
+                {format(dateRange.from, "LLL dd, y")} -{" "}
+                {format(dateRange.to, "LLL dd, y")}
+              </>
+            ) : (
+              <span>Pick a date range (max 15 days)</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-auto p-0 bg-background/40 backdrop-blur-md border-white/10"
+          align="start"
+        >
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={dateRange?.from}
+            selected={dateRange}
+            onSelect={(range) => {
+              if (range?.from && range?.to) {
+                const daysDiff = Math.ceil(
+                  (range.to.getTime() - range.from.getTime()) /
+                    (1000 * 60 * 60 * 24)
+                );
+                if (daysDiff > 15) {
+                  const newEndDate = new Date(range.from);
+                  newEndDate.setDate(newEndDate.getDate() + 15);
+                  setDateRange({ from: range.from, to: newEndDate });
+                } else {
+                  setDateRange(range);
+                }
+              } else {
+                setDateRange(range);
+              }
+            }}
+            numberOfMonths={2}
+            disabled={(date) => {
+              const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+              if (dateRange?.from) {
+                const daysDiff = Math.ceil(
+                  (date.getTime() - dateRange.from.getTime()) /
+                    (1000 * 60 * 60 * 24)
+                );
+                return isWeekend || daysDiff > 15;
+              }
+
+              if (dateRange?.to) {
+                const daysDiff = Math.ceil(
+                  (dateRange.to.getTime() - date.getTime()) /
+                    (1000 * 60 * 60 * 24)
+                );
+                return isWeekend || daysDiff > 15;
+              }
+
+              return isWeekend;
+            }}
+            className="rounded-md border-white/10"
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  </CardContent>
+</Card>
 
           {/* Timeline Controls */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
@@ -567,7 +542,7 @@ export function VehicleTrace() {
               {/* Timeline Drawer */}
               <div className={cn(
                 "absolute z-20 bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t transition-all duration-300",
-                isTimelineExpanded ? "h-[200px]" : "h-[48px]"
+                isTimelineExpanded ? "h-[150px]" : "h-[48px]"
               )}>
                 <div className="flex items-center justify-between p-2 border-b">
                   <CardTitle className="text-base">Timeline</CardTitle>
@@ -613,7 +588,7 @@ export function VehicleTrace() {
         </div>
 
         {/* Right Panel - 25% width */}
-        <ScrollArea className="w-[370px] shrink-0">
+        <ScrollArea className="w-[400px] shrink-0">
           <div className="flex flex-col gap-4">
             {/* Trip Summary */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
