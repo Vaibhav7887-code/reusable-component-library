@@ -309,7 +309,7 @@ export function VehicleTrace() {
 
       <div className="flex-1 flex gap-4 overflow-hidden w-full">
         {/* Left Panel - 25% width */}
-        <ScrollArea className="w-[25%]">
+        <ScrollArea className="w-[360px] shrink-0">
           <div className="flex flex-col gap-4">
           {/* Vehicle Selection */}
           <Card>
@@ -498,7 +498,7 @@ export function VehicleTrace() {
         </ScrollArea>
 
         {/* Center Panel - 50% width */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-[300px]">
           {/* Map with Timeline Drawer */}
           <div className="flex-1 bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
             {/* Inner shadow overlay */}
@@ -613,7 +613,7 @@ export function VehicleTrace() {
         </div>
 
         {/* Right Panel - 25% width */}
-        <ScrollArea className="w-[25%]">
+        <ScrollArea className="w-[370px] shrink-0">
           <div className="flex flex-col gap-4">
             {/* Trip Summary */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
