@@ -314,8 +314,14 @@ export function VehicleTrace() {
   });
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const [showMiniMap, setShowMiniMap] = React.useState(false);
-  const [quickActionsOpen, setQuickActionsOpen] = React.useState(false);
+  const [quickActionsOpen, setQuickActionsOpen] = React.useState(true);
   const [playbackComplete, setPlaybackComplete] = React.useState(false);
+  // States for card expansion
+  const [tripSelectionOpen, setTripSelectionOpen] = React.useState(true);
+  const [timelineControlsOpen, setTimelineControlsOpen] = React.useState(true);
+  const [tripSummaryOpen, setTripSummaryOpen] = React.useState(true);
+  const [vehicleEventsOpen, setVehicleEventsOpen] = React.useState(true);
+  const [vehicleStatsOpen, setVehicleStatsOpen] = React.useState(true);
   const playbackIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Keyboard shortcuts for playback
@@ -544,9 +550,24 @@ export function VehicleTrace() {
 {/* Combined Vehicle & Date Range Selection */}
 <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
   <CardHeader className="py-1 px-3">
-    <CardTitle className="text-base">Trip Selection</CardTitle>
+    <div className="flex justify-between items-center">
+      <CardTitle className="text-base">Trip Selection</CardTitle>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="h-6 w-6"
+        onClick={() => setTripSelectionOpen(!tripSelectionOpen)}
+      >
+        {tripSelectionOpen ? (
+          <ChevronUp className="h-4 w-4" />
+        ) : (
+          <ChevronDown className="h-4 w-4" />
+        )}
+      </Button>
+    </div>
   </CardHeader>
 
+  {tripSelectionOpen && (
   <CardContent className="pt-0 p-3 space-y-3">
     {/* Vehicle Selection */}
     <div className="space-y-1">
@@ -644,13 +665,29 @@ export function VehicleTrace() {
       </Popover>
     </div>
   </CardContent>
+  )}
 </Card>
 
           {/* Timeline Controls */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
             <CardHeader className="py-1 px-3">
-              <CardTitle className="text-base">Timeline Controls</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-base">Timeline Controls</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6"
+                  onClick={() => setTimelineControlsOpen(!timelineControlsOpen)}
+                >
+                  {timelineControlsOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </CardHeader>
+            {timelineControlsOpen && (
             <CardContent className="pt-0 p-3">
               <div className="space-y-3">
                 <div className="space-y-1">
@@ -736,6 +773,50 @@ export function VehicleTrace() {
                 </div>
               </div>
             </CardContent>
+            )}
+          </Card>
+
+          {/* Quick Actions Card - Moved from right column to left */}
+          <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
+            <CardHeader className="py-1 px-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-base">Quick Actions</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6"
+                  onClick={() => setQuickActionsOpen(!quickActionsOpen)}
+                >
+                  {quickActionsOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </CardHeader>
+            {quickActionsOpen && (
+              <CardContent className="pt-0 p-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
+                    <FileText className="h-3.5 w-3.5 mr-1" />
+                    Trip Log
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
+                    <Share2 className="h-3.5 w-3.5 mr-1" />
+                    Share
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
+                    <AlertTriangle className="h-3.5 w-3.5 mr-1" />
+                    Screenshot
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
+                    <Bookmark className="h-3.5 w-3.5 mr-1" />
+                    Report
+                  </Button>
+                </div>
+              </CardContent>
+            )}
           </Card>
         </div>
         </ScrollArea>
@@ -965,7 +1046,7 @@ export function VehicleTrace() {
               {/* Timeline Drawer */}
               <div className={cn(
                 "absolute z-20 bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t transition-all duration-300",
-                isTimelineExpanded ? "h-auto" : "h-[45px]"
+                isTimelineExpanded ? "h-auto" : "h-[53px]"
               )}>
                 <div className="flex items-center justify-between p-2 border-b">
                   <CardTitle className="text-base">Timeline</CardTitle>
@@ -1045,8 +1126,23 @@ export function VehicleTrace() {
             {/* Trip Summary */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
               <CardHeader className="py-1 px-3">
-                <CardTitle className="text-base">Trip Summary</CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-base">Trip Summary</CardTitle>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-6 w-6"
+                    onClick={() => setTripSummaryOpen(!tripSummaryOpen)}
+                  >
+                    {tripSummaryOpen ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </CardHeader>
+              {tripSummaryOpen && (
               <CardContent className="pt-0 p-3">
                 <div className="space-y-3">
                   <div className="space-y-1">
@@ -1095,13 +1191,29 @@ export function VehicleTrace() {
                   </div>
                 </div>
               </CardContent>
+              )}
             </Card>
 
           {/* Vehicle Events */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
             <CardHeader className="py-1 px-3">
-              <CardTitle className="text-base">Vehicle Events</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-base">Vehicle Events</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6"
+                  onClick={() => setVehicleEventsOpen(!vehicleEventsOpen)}
+                >
+                  {vehicleEventsOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </CardHeader>
+            {vehicleEventsOpen && (
             <CardContent className="pt-0 p-3">
               <ScrollArea className="h-[160px]">
                 <Table>
@@ -1138,13 +1250,29 @@ export function VehicleTrace() {
                 </Table>
               </ScrollArea>
             </CardContent>
+            )}
           </Card>
 
           {/* Vehicle Statistics */}
           <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
               <CardHeader className="py-1 px-3">
-                <CardTitle className="text-base">Vehicle Stats</CardTitle>
-            </CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-base">Vehicle Stats</CardTitle>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-6 w-6"
+                    onClick={() => setVehicleStatsOpen(!vehicleStatsOpen)}
+                  >
+                    {vehicleStatsOpen ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </CardHeader>
+              {vehicleStatsOpen && (
               <CardContent className="pt-0 p-3">
               <ScrollArea className="h-[160px]">
                 <div className="space-y-3">
@@ -1205,49 +1333,7 @@ export function VehicleTrace() {
                 </div>
               </ScrollArea>
             </CardContent>
-          </Card>
-
-          {/* Quick Actions Card */}
-          <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
-            <CardHeader className="py-1 px-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-base">Quick Actions</CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6"
-                  onClick={() => setQuickActionsOpen(!quickActionsOpen)}
-                >
-                  {quickActionsOpen ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </CardHeader>
-            {quickActionsOpen && (
-              <CardContent className="pt-0 p-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <FileText className="h-3.5 w-3.5 mr-1" />
-                    Export Report
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <Share2 className="h-3.5 w-3.5 mr-1" />
-                    Share Link
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <AlertTriangle className="h-3.5 w-3.5 mr-1" />
-                    Flag Issues
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <Bookmark className="h-3.5 w-3.5 mr-1" />
-                    Save Route
-                  </Button>
-                </div>
-              </CardContent>
-            )}
+          )}
           </Card>
         </div>
         </ScrollArea>
