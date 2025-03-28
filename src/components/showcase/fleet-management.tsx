@@ -750,7 +750,7 @@ export function FleetTracking() {
             {/* Map Section - 70% width */}
             <div className="w-[70%] bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
               {/* Inner shadow overlay */}
-              <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_30px_rgba(0,0,0,0.4)]"></div>
+              <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]"></div>
               <div className="absolute top-4 left-4 z-10 flex gap-2">
                 <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-background/70 backdrop-blur-sm border-white/20">
                   <Plus className="w-4 h-4" />

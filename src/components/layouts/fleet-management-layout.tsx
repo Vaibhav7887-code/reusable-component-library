@@ -102,7 +102,7 @@ export function FleetManagementLayout({ children }: FleetManagementLayoutProps) 
   ];
 
   return (
-    <div className="flex flex-col min-h-screen" suppressHydrationWarning>
+    <div className="flex h-screen overflow-hidden" suppressHydrationWarning>
       {/* Left Navigation */}
       <div 
         className={cn(
@@ -168,7 +168,7 @@ export function FleetManagementLayout({ children }: FleetManagementLayoutProps) 
       </div>
 
       {/* Main Content */}
-      <div className={cn("flex-1 transition-all duration-300", isCollapsed ? "ml-16" : "ml-64")}>
+      <div className={cn("flex-1 flex flex-col transition-all duration-300 overflow-hidden", isCollapsed ? "ml-16" : "ml-64")}>
         {/* Top Navigation */}
         <header className="sticky top-0 z-20 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="h-full px-4 flex items-center justify-between">
@@ -217,7 +217,7 @@ export function FleetManagementLayout({ children }: FleetManagementLayoutProps) 
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="flex-1 overflow-auto p-6">
           {children}
         </main>
       </div>

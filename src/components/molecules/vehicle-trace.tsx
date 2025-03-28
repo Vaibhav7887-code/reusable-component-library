@@ -20,9 +20,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
-import { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -72,7 +70,9 @@ import {
   Pause,
   FastForward,
   Rewind,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Plus,
+  Minus
 } from "lucide-react";
 
 // Mock data for vehicles
@@ -133,11 +133,11 @@ const vehicleEvents = [
 // Mock route data
 const mockRouteData = {
   coordinates: [
-    [72.8777, 19.0760], // Mumbai
-    [77.1025, 28.7041], // Delhi
-    [77.5946, 12.9716], // Bangalore
-    [78.4867, 17.3850], // Hyderabad
-    [80.2707, 13.0827], // Chennai
+    { x: 33, y: 20 }, // Mumbai
+    { x: 45, y: 60 }, // Delhi
+    { x: 60, y: 40 }, // Bangalore
+    { x: 50, y: 30 }, // Hyderabad
+    { x: 55, y: 45 }, // Chennai
   ],
   timestamps: [
     "2024-03-20T10:00:00Z",
@@ -188,9 +188,13 @@ const mockTimelineData = [
 ];
 
 export function VehicleTrace() {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapImageRef = useRef<HTMLImageElement>(null);
+  const [mapZoom, setMapZoom] = useState(1.5);
+  const [mapPosition, setMapPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [mapBounds, setMapBounds] = useState({ width: 0, height: 0 });
   const [selectedVehicle, setSelectedVehicle] = React.useState<string | null>(null);
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
   const [activeTab, setActiveTab] = React.useState<"live" | "history">("live");
@@ -199,79 +203,67 @@ export function VehicleTrace() {
   const [currentTimeIndex, setCurrentTimeIndex] = React.useState(0);
   const [isTimelineExpanded, setIsTimelineExpanded] = React.useState(true);
 
-  useEffect(() => {
-    if (!mapContainer.current) return;
-
-    mapboxgl.accessToken = "YOUR_MAPBOX_TOKEN"; // Replace with actual token
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/dark-v11",
-      center: [72.8777, 19.0760],
-      zoom: 5,
-      attributionControl: false
-    });
-
-    map.current.on("load", () => {
-      // Add route line
-      map.current?.addSource("route", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: mockRouteData.coordinates,
-          },
-        },
-      });
-
-      map.current?.addLayer({
-        id: "route",
-        type: "line",
-        source: "route",
-        layout: {
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        paint: {
-          "line-color": "hsl(var(--primary))",
-          "line-width": 3,
-        },
-      });
-
-      // Add vehicle marker
-      map.current?.addSource("vehicle", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: mockRouteData.coordinates[0],
-          },
-          properties: {},
-        },
-      });
-
-      map.current?.addLayer({
-        id: "vehicle",
-        type: "circle",
-        source: "vehicle",
-        paint: {
-          "circle-radius": 8,
-          "circle-color": "hsl(var(--primary))",
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "white",
-        },
-      });
-
-      setIsMapLoaded(true);
-    });
+  // Update map bounds when image loads
+  React.useEffect(() => {
+    const updateMapBounds = () => {
+      if (mapImageRef.current && mapRef.current) {
+        const containerWidth = mapRef.current.clientWidth;
+        const containerHeight = mapRef.current.clientHeight;
+        const imageWidth = mapImageRef.current.naturalWidth;
+        const imageHeight = mapImageRef.current.naturalHeight;
+        
+        setMapBounds({
+          width: Math.max(imageWidth, containerWidth),
+          height: Math.max(imageHeight, containerHeight)
+        });
+      }
+    };
+    
+    const imageElement = mapImageRef.current;
+    if (imageElement) {
+      imageElement.addEventListener('load', updateMapBounds);
+      if (imageElement.complete) {
+        updateMapBounds();
+      }
+    }
 
     return () => {
-      map.current?.remove();
+      imageElement?.removeEventListener('load', updateMapBounds);
     };
   }, []);
+
+  // Handle map drag events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (mapRef.current) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && mapRef.current) {
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+
+      const containerWidth = mapRef.current.clientWidth;
+      const containerHeight = mapRef.current.clientHeight;
+      const scaledImageWidth = mapBounds.width * mapZoom;
+      const scaledImageHeight = mapBounds.height * mapZoom;
+      
+      const maxX = Math.max(0, (scaledImageWidth - containerWidth) / 2);
+      const maxY = Math.max(0, (scaledImageHeight - containerHeight) / 2);
+      
+      const newX = Math.min(maxX, Math.max(-maxX, mapPosition.x + dx));
+      const newY = Math.min(maxY, Math.max(-maxY, mapPosition.y + dy));
+      
+      setMapPosition({ x: newX, y: newY });
+      setDragStart({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   const startPlayback = () => {
     setIsPlaying(true);
@@ -291,27 +283,34 @@ export function VehicleTrace() {
     setIsPlaying(false);
   };
 
-  const updateVehiclePosition = (index: number) => {
-    if (!map.current || !isMapLoaded) return;
-    
-    const coordinates = mockRouteData.coordinates[index];
-    map.current.setFeatureState(
-      { source: "vehicle", id: 0 },
-      { coordinates }
-    );
-  };
+  // Clean up event listeners
+  React.useEffect(() => {
+    const handleMouseUpGlobal = () => {
+      setIsDragging(false);
+    };
 
-  useEffect(() => {
-    if (isMapLoaded) {
-      updateVehiclePosition(currentTimeIndex);
-    }
-  }, [currentTimeIndex, isMapLoaded]);
+    window.addEventListener('mouseup', handleMouseUpGlobal);
+    return () => {
+      window.removeEventListener('mouseup', handleMouseUpGlobal);
+    };
+  }, []);
 
   return (
-    <div className="h-[calc(100vh-16rem)] overflow-hidden">
-      <div className="grid grid-cols-12 gap-4 h-full">
-        {/* Left Panel - 3 columns */}
-        <div className="col-span-3 flex flex-col gap-4">
+    <div className="h-[calc(100vh-16rem)] w-full flex flex-col overflow-hidden">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Vehicle Trace</h2>
+        <div className="flex gap-2">
+          <Button>
+            <Activity className="w-4 h-4 mr-2" />
+            Export Data
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex-1 flex gap-4 overflow-hidden w-full">
+        {/* Left Panel - 25% width */}
+        <ScrollArea className="w-[25%]">
+          <div className="flex flex-col gap-4">
           {/* Vehicle Selection */}
           <Card>
             <CardHeader className="py-2">
@@ -319,7 +318,7 @@ export function VehicleTrace() {
             </CardHeader>
             <CardContent className="pt-0">
               <Select onValueChange={setSelectedVehicle}>
-                <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-background/40 backdrop-blur-md border-white/10">
                   <SelectValue placeholder="Select vehicle" />
                 </SelectTrigger>
                 <SelectContent>
@@ -344,7 +343,7 @@ export function VehicleTrace() {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                        "w-full justify-start text-left font-normal bg-background/40 backdrop-blur-md border-white/10",
                       !dateRange && "text-muted-foreground"
                     )}
                   >
@@ -355,29 +354,95 @@ export function VehicleTrace() {
                         {format(dateRange.to, "LLL dd, y")}
                       </>
                     ) : (
-                      <span>Pick a date range</span>
+                        <span>Pick a date range (max 15 days)</span>
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 bg-background/40 backdrop-blur-md border-white/10" align="start">
+                    <div className="p-3 border-b border-white/20">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium">Select Date Range</div>
+                        <div className="text-xs text-muted-foreground">Max 15 days</div>
+                      </div>
+                    </div>
                   <Calendar
                     initialFocus
                     mode="range"
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
-                    onSelect={setDateRange}
+                    onSelect={(range) => {
+                      if (range?.from && range?.to) {
+                        const daysDiff = Math.ceil((range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24));
+                        if (daysDiff > 15) {
+                          const newEndDate = new Date(range.from);
+                          newEndDate.setDate(newEndDate.getDate() + 15);
+                          setDateRange({ from: range.from, to: newEndDate });
+                        } else {
+                          setDateRange(range);
+                        }
+                      } else {
+                        setDateRange(range);
+                      }
+                    }}
                     numberOfMonths={2}
                     disabled={(date) => {
-                      return date.getDay() === 0 || date.getDay() === 6;
+                      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                      
+                      if (dateRange?.from) {
+                        const daysDiff = Math.ceil((date.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24));
+                        return isWeekend || daysDiff > 15;
+                      }
+                      
+                      if (dateRange?.to) {
+                        const daysDiff = Math.ceil((dateRange.to.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+                        return isWeekend || daysDiff > 15;
+                      }
+                      
+                      return isWeekend;
+                    }}
+                    className="rounded-md border-white/10"
+                    classNames={{
+                      months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 p-3",
+                      month: "space-y-4",
+                      caption: "flex justify-center pt-1 relative items-center",
+                      caption_label: "text-sm font-medium",
+                      nav: "space-x-1 flex items-center",
+                      nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+                      nav_button_previous: "absolute left-1",
+                      nav_button_next: "absolute right-1",
+                      table: "w-full border-collapse space-y-1",
+                      head_row: "flex",
+                      head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+                      row: "flex w-full mt-2",
+                      cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+                      day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                      day_today: "bg-accent text-accent-foreground",
+                      day_outside: "text-muted-foreground opacity-50",
+                      day_disabled: "text-muted-foreground opacity-50",
+                      day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
+                      day_hidden: "invisible",
                     }}
                   />
+                  <div className="p-3 border-t border-white/20">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="text-muted-foreground">Selected Range:</div>
+                      <div className="font-medium">
+                        {dateRange?.from && dateRange?.to ? (
+                          `${format(dateRange.from, "MMM dd")} - ${format(dateRange.to, "MMM dd")}`
+                        ) : (
+                          "No dates selected"
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </PopoverContent>
               </Popover>
             </CardContent>
           </Card>
 
           {/* Timeline Controls */}
-          <Card>
+            <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
             <CardHeader className="py-2">
               <CardTitle className="text-base">Timeline Controls</CardTitle>
             </CardHeader>
@@ -430,16 +495,78 @@ export function VehicleTrace() {
             </CardContent>
           </Card>
         </div>
+        </ScrollArea>
 
-        {/* Center Panel - 6 columns */}
-        <div className="col-span-6 flex flex-col gap-4">
+        {/* Center Panel - 50% width */}
+        <div className="flex-1 flex flex-col">
           {/* Map with Timeline Drawer */}
-          <Card className="h-[calc(300px+330px+2rem)] relative overflow-hidden">
-            <CardContent className="p-0 h-full">
-              <div ref={mapContainer} className="w-full h-full" />
+          <div className="flex-1 bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
+            {/* Inner shadow overlay */}
+            <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]"></div>
+            <div className="absolute top-4 left-4 z-10 flex gap-2">
+              <Button variant="secondary" size="icon" className="bg-background/70 backdrop-blur-sm border-white/20">
+                <Plus className="w-4 h-4" />
+              </Button>
+              <Button variant="secondary" size="icon" className="bg-background/70 backdrop-blur-sm border-white/20">
+                <Minus className="w-4 h-4" />
+              </Button>
+              <Button variant="secondary" size="icon" className="bg-background/70 backdrop-blur-sm border-white/20">
+                <MapPin className="w-4 h-4" />
+              </Button>
+            </div>
+            <div 
+              ref={mapRef}
+              className="w-full h-full relative overflow-hidden cursor-move z-[1]"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              <div 
+                className="absolute top-0 left-0 w-full h-full transform origin-center"
+                style={{ 
+                  transform: `scale(${mapZoom}) translate(${mapPosition.x / mapZoom}px, ${mapPosition.y / mapZoom}px)`
+                }}
+              >
+                <img 
+                  ref={mapImageRef}
+                  src="/Tokyo Map.png" 
+                  alt="Tokyo Map" 
+                  className="w-full h-full object-cover dark:invert dark:brightness-90 dark:hue-rotate-180"
+                />
+                
+                {/* Route Path */}
+                <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                  <path 
+                    d={`M ${mockRouteData.coordinates.map((coord, i) => 
+                      `${i === 0 ? 'M' : 'L'} ${coord.x}% ${coord.y}%`
+                    ).join(' ')}`}
+                    fill="none" 
+                    stroke="rgba(255,255,255,0.4)" 
+                    strokeWidth="2" 
+                    strokeDasharray="5,5"
+                  />
+                </svg>
+
+                {/* Vehicle Marker */}
+                <div 
+                  className="absolute z-10"
+                  style={{
+                    left: `${mockRouteData.coordinates[currentTimeIndex].x}%`,
+                    top: `${mockRouteData.coordinates[currentTimeIndex].y}%`,
+                    transform: 'translate(-50%, -50%)'
+                  }}
+                >
+                  <div className="bg-primary/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20 animate-pulse">
+                    <Car className="h-4 w-4 text-white" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
               {/* Timeline Drawer */}
               <div className={cn(
-                "absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t transition-all duration-300",
+                "absolute z-20 bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t transition-all duration-300",
                 isTimelineExpanded ? "h-[200px]" : "h-[48px]"
               )}>
                 <div className="flex items-center justify-between p-2 border-b">
@@ -482,14 +609,69 @@ export function VehicleTrace() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+          </div>
         </div>
 
-        {/* Right Panel - 3 columns */}
-        <div className="col-span-3 flex flex-col gap-4">
+        {/* Right Panel - 25% width */}
+        <ScrollArea className="w-[25%]">
+          <div className="flex flex-col gap-4">
+            {/* Trip Summary */}
+            <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
+              <CardHeader className="py-2">
+                <CardTitle className="text-base">Trip Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Mandla District, Madhya Pradesh</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">28/03/2025</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">04:04 - 06:13</span>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Distance Covered</span>
+                      <span className="text-sm">32.9 km</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Running Duration</span>
+                      <span className="text-sm">47 mins</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Fuel Consumption</span>
+                      <span className="text-sm">18.3 liters</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Average Speed</span>
+                      <span className="text-sm">29.54 km/hr</span>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Stoppage Instances</span>
+                      <span className="text-sm">1</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Idling Instances</span>
+                      <span className="text-sm">0</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
           {/* Vehicle Events */}
-          <Card className="h-[300px]">
+            <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
             <CardHeader className="py-2">
               <CardTitle className="text-base">Vehicle Events</CardTitle>
             </CardHeader>
@@ -498,9 +680,9 @@ export function VehicleTrace() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Time</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                        <TableHead className="text-xs font-medium">Event</TableHead>
+                        <TableHead className="text-xs font-medium">Time</TableHead>
+                        <TableHead className="text-right text-xs font-medium">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -509,10 +691,10 @@ export function VehicleTrace() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                            <span>{event.type}</span>
+                              <span className="text-sm">{event.type}</span>
                           </div>
                         </TableCell>
-                        <TableCell>{format(event.dateTime, "HH:mm")}</TableCell>
+                          <TableCell className="text-sm">{format(event.dateTime, "HH:mm")}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="icon">
                             <MapPin className="h-4 w-4" />
@@ -527,65 +709,65 @@ export function VehicleTrace() {
           </Card>
 
           {/* Vehicle Statistics */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Vehicle Stats</CardTitle>
+          <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
+              <CardHeader className="py-2">
+                <CardTitle className="text-base">Vehicle Stats</CardTitle>
             </CardHeader>
-            <CardContent>
+              <CardContent className="pt-0">
               <ScrollArea className="h-[200px]">
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Model</p>
-                      <p className="font-medium">{vehicleStats.model}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Model</p>
+                        <p className="text-sm">{vehicleStats.model}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Odometer</p>
-                      <p className="font-medium">{vehicleStats.odometer} km</p>
+                        <p className="text-xs text-muted-foreground font-medium">Odometer</p>
+                        <p className="text-sm">{vehicleStats.odometer} km</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Fuel Efficiency</p>
-                      <p className="font-medium">{vehicleStats.fuelEfficiency} km/l</p>
+                        <p className="text-xs text-muted-foreground font-medium">Fuel Efficiency</p>
+                        <p className="text-sm">{vehicleStats.fuelEfficiency} km/l</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Delta</p>
-                      <p className="font-medium">{vehicleStats.delta} km/l</p>
+                        <p className="text-xs text-muted-foreground font-medium">Delta</p>
+                        <p className="text-sm">{vehicleStats.delta} km/l</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Fuel Consumed</p>
-                      <p className="font-medium">{vehicleStats.fuelConsumed} L</p>
+                        <p className="text-xs text-muted-foreground font-medium">Fuel Consumed</p>
+                        <p className="text-sm">{vehicleStats.fuelConsumed} L</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Drive Mode</p>
-                      <p className="font-medium">{vehicleStats.driveMode}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Drive Mode</p>
+                        <p className="text-sm">{vehicleStats.driveMode}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Overall Fuel Economy</p>
-                      <p className="font-medium">{vehicleStats.overallFuelEconomy} km/l</p>
+                        <p className="text-xs text-muted-foreground font-medium">Overall Fuel Economy</p>
+                        <p className="text-sm">{vehicleStats.overallFuelEconomy} km/l</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Ignition Status</p>
-                      <p className="font-medium">{vehicleStats.ignitionStatus}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Ignition Status</p>
+                        <p className="text-sm">{vehicleStats.ignitionStatus}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Time Elapsed</p>
-                      <p className="font-medium">{vehicleStats.timeElapsed}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Time Elapsed</p>
+                        <p className="text-sm">{vehicleStats.timeElapsed}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Distance Elapsed</p>
-                      <p className="font-medium">{vehicleStats.distanceElapsed}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Distance Elapsed</p>
+                        <p className="text-sm">{vehicleStats.distanceElapsed}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Speed</p>
-                      <p className="font-medium">{vehicleStats.speed} km/h</p>
+                        <p className="text-xs text-muted-foreground font-medium">Speed</p>
+                        <p className="text-sm">{vehicleStats.speed} km/h</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Current Gear</p>
-                      <p className="font-medium">{vehicleStats.currentGear}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Current Gear</p>
+                        <p className="text-sm">{vehicleStats.currentGear}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Engine RPM</p>
-                      <p className="font-medium">{vehicleStats.engineRPM}</p>
+                        <p className="text-xs text-muted-foreground font-medium">Engine RPM</p>
+                        <p className="text-sm">{vehicleStats.engineRPM}</p>
                     </div>
                   </div>
                 </div>
@@ -593,6 +775,7 @@ export function VehicleTrace() {
             </CardContent>
           </Card>
         </div>
+        </ScrollArea>
       </div>
     </div>
   );
