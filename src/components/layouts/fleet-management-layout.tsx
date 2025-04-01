@@ -106,116 +106,184 @@ export function FleetManagementLayout({ children }: FleetManagementLayoutProps) 
       {/* Left Navigation */}
       <div 
         className={cn(
-          "fixed left-0 top-0 h-screen bg-background border-r transition-all duration-300 z-30",
+          "fixed left-0 top-0 h-screen bg-background border-r transition-all duration-300 z-30 flex flex-col justify-between",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
-        <div className="h-16 flex items-center justify-between px-4 border-b">
-          {!isCollapsed && <span className="font-bold text-lg">LOGO</span>}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="ml-auto"
-          >
-            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
+        <div>
+          <div className="h-16 flex items-center justify-between px-4 border-b">
+            {!isCollapsed && <span className="font-bold text-lg">LOGO</span>}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="ml-auto"
+            >
+              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
+          </div>
+          
+          <div className="py-4">
+            <TooltipProvider delayDuration={0}>
+              {navigationItems.map((item) => (
+                <Tooltip key={item.label}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center px-4 py-2 text-sm hover:bg-accent transition-colors relative",
+                        isCollapsed && "justify-center",
+                        pathname === item.href && "bg-accent"
+                      )}
+                    >
+                      {pathname === item.href && (
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full" />
+                      )}
+                      <item.icon className="h-4 w-4" />
+                      {!isCollapsed && (
+                        <>
+                          <span className="ml-3">{item.label}</span>
+                          {item.badge && (
+                            <Badge variant="secondary" className="ml-2">
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </>
+                      )}
+                    </Link>
+                  </TooltipTrigger>
+                  {isCollapsed && (
+                    <TooltipContent side="right" className="flex items-center gap-2">
+                      <span>{item.label}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-2">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              ))}
+            </TooltipProvider>
+          </div>
         </div>
         
-        <div className="py-4">
+        {/* Bottom navigation icons - moved from top header */}
+        <div className="mt-auto border-t py-4">
           <TooltipProvider delayDuration={0}>
-            {navigationItems.map((item) => (
-              <Tooltip key={item.label}>
-                <TooltipTrigger asChild>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "flex items-center px-4 py-2 text-sm hover:bg-accent transition-colors relative",
-                      isCollapsed && "justify-center",
-                      pathname === item.href && "bg-accent"
-                    )}
-                  >
-                    {pathname === item.href && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full" />
-                    )}
-                    <item.icon className="h-4 w-4" />
-                    {!isCollapsed && (
-                      <>
-                        <span className="ml-3">{item.label}</span>
-                        {item.badge && (
-                          <Badge variant="secondary" className="ml-2">
-                            {item.badge}
-                          </Badge>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className={cn(
+                    "w-full flex items-center py-2",
+                    isCollapsed ? "justify-center" : "justify-start px-4"
+                  )}
+                >
+                  <Bell className="h-4 w-4" />
+                  {!isCollapsed && <span className="ml-3">Notifications</span>}
+                </Button>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <span>Notifications</span>
+                </TooltipContent>
+              )}
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className={cn(
+                    "w-full flex items-center py-2",
+                    isCollapsed ? "justify-center" : "justify-start px-4"
+                  )}
+                >
+                  <HelpCircle className="h-4 w-4" />
+                  {!isCollapsed && <span className="ml-3">Help</span>}
+                </Button>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <span>Help</span>
+                </TooltipContent>
+              )}
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className={cn(
+                    "w-full flex items-center py-2",
+                    isCollapsed ? "justify-center" : "justify-start px-4"
+                  )}
+                >
+                  {theme === "dark" ? (
+                    <>
+                      <Sun className="h-4 w-4" />
+                      {!isCollapsed && <span className="ml-3">Light Theme</span>}
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="h-4 w-4" />
+                      {!isCollapsed && <span className="ml-3">Dark Theme</span>}
+                    </>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <span>{theme === "dark" ? "Light Theme" : "Dark Theme"}</span>
+                </TooltipContent>
+              )}
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className={cn(
+                          "w-full flex items-center py-2",
+                          isCollapsed ? "justify-center" : "justify-start px-4"
                         )}
-                      </>
-                    )}
-                  </Link>
-                </TooltipTrigger>
-                {isCollapsed && (
-                  <TooltipContent side="right" className="flex items-center gap-2">
-                    <span>{item.label}</span>
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-2">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            ))}
+                      >
+                        <User className="h-4 w-4" />
+                        {!isCollapsed && <span className="ml-3">Profile</span>}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align={isCollapsed ? "center" : "start"} side={isCollapsed ? "right" : "top"}>
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Profile</DropdownMenuItem>
+                      <DropdownMenuItem>Settings</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Logout</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <span>Profile</span>
+                </TooltipContent>
+              )}
+            </Tooltip>
           </TooltipProvider>
         </div>
       </div>
 
       {/* Main Content */}
       <div className={cn("flex-1 flex flex-col transition-all duration-300 overflow-hidden", isCollapsed ? "ml-16" : "ml-64")}>
-        {/* Top Navigation */}
-        <header className="sticky top-0 z-20 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="h-full px-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h1 className="text-lg font-semibold">Fleet Management</h1>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
-              
-              <Button variant="ghost" size="icon">
-                <HelpCircle className="h-5 w-5" />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-              </Button>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </header>
-
         {/* Page Content */}
         <main className="flex-1 overflow-auto p-6">
           {children}

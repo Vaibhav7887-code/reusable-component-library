@@ -14,6 +14,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import dynamic from "next/dynamic";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Client-side only import for Lucide icons to prevent hydration issues
 const LucideIcons = {
@@ -53,7 +58,14 @@ const LucideIcons = {
   XCircle: dynamic(() => import("lucide-react").then(mod => mod.XCircle), { ssr: false }),
   Share2: dynamic(() => import("lucide-react").then(mod => mod.Share2), { ssr: false }),
   Plus: dynamic(() => import("lucide-react").then(mod => mod.Plus), { ssr: false }),
-  Minus: dynamic(() => import("lucide-react").then(mod => mod.Minus), { ssr: false })
+  Minus: dynamic(() => import("lucide-react").then(mod => mod.Minus), { ssr: false }),
+  Circle: dynamic(() => import("lucide-react").then(mod => mod.Circle), { ssr: false }),
+  Droplet: dynamic(() => import("lucide-react").then(mod => mod.Droplet), { ssr: false }),
+  Wind: dynamic(() => import("lucide-react").then(mod => mod.Wind), { ssr: false }),
+  Layers: dynamic(() => import("lucide-react").then(mod => mod.Layers), { ssr: false }),
+  Locate: dynamic(() => import("lucide-react").then(mod => mod.Locate), { ssr: false }),
+  Target: dynamic(() => import("lucide-react").then(mod => mod.Target), { ssr: false }),
+  Maximize2: dynamic(() => import("lucide-react").then(mod => mod.Maximize2), { ssr: false }),
 };
 
 // Use these imports instead of direct imports
@@ -63,7 +75,7 @@ const {
   CheckCircle2, Info, BarChart3, Route, Package, DollarSign, Gauge,
   Battery, Thermometer, Wrench, Bell, RefreshCw, Download, Upload,
   MoreVertical, Star, StarOff, FileText, ChevronRight, XCircle, Share2,
-  Plus, Minus
+  Plus, Minus, Circle, Droplet, Wind, Layers, Locate, Target, Maximize2
 } = LucideIcons;
 
 import {
@@ -535,6 +547,36 @@ export function FleetTracking() {
   const tagIndicatorsRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
   const [activeTab, setActiveTab] = React.useState("live");
 
+  // Add document-level wheel event handler
+  React.useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+      const tagContainer = target.closest('.tag-container');
+      const statusContainer = target.closest('.status-container');
+      
+      if (tagContainer || statusContainer) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const container = tagContainer || statusContainer;
+        if (container) {
+          // Handle both horizontal and vertical scrolling independently
+          if (e.deltaX !== 0) {
+            container.scrollLeft += e.deltaX;
+          }
+          if (e.deltaY !== 0) {
+            container.scrollLeft += e.deltaY;
+          }
+        }
+      }
+    };
+
+    document.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   // Create ref callbacks to avoid type issues
   const setTagContainerRef = React.useCallback((id: number) => (el: HTMLDivElement | null) => {
     if (el) {
@@ -727,7 +769,7 @@ export function FleetTracking() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-8rem)] w-full flex flex-col overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] w-full flex flex-col overflow-hidden">
       <div className="flex justify-between items-center mb-4">
         <Tabs 
           defaultValue="live" 
@@ -764,17 +806,51 @@ export function FleetTracking() {
           <div className="flex-1 flex gap-4 overflow-hidden w-full">
             {/* Map Section - 70% width */}
             <div className="w-[70%] bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
-              {/* Inner shadow overlay */}
-              <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]"></div>
-              <div className="absolute top-4 left-4 z-10 flex gap-2">
-                <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-background/70 backdrop-blur-sm border-white/20">
-                  <Plus className="w-4 h-4" />
+              {/* Map controls - right side */}
+              <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                  onClick={handleZoomIn}
+                >
+                  <Plus className="h-4 w-4" />
                 </Button>
-                <Button variant="secondary" size="icon" onClick={handleZoomOut} className="bg-background/70 backdrop-blur-sm border-white/20">
-                  <Minus className="w-4 h-4" />
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                  onClick={handleZoomOut}
+                >
+                  <Minus className="h-4 w-4" />
                 </Button>
-                <Button variant="secondary" size="icon" className="bg-background/70 backdrop-blur-sm border-white/20">
-                  <MapPin className="w-4 h-4" />
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                >
+                  <Layers className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                >
+                  <Route className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                >
+                  <Locate className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+                >
+                  <Maximize2 className="h-4 w-4" />
                 </Button>
               </div>
               <div 
@@ -804,7 +880,7 @@ export function FleetTracking() {
                       <Car className="h-4 w-4 text-white" />
                     </div>
                     <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      Truck Alpha
+                      {vehicles[0].registrationNumber}
                     </div>
                   </div>
                   <div className="absolute top-[60%] left-[45%] z-10">
@@ -812,7 +888,7 @@ export function FleetTracking() {
                       <Car className="h-4 w-4 text-white" />
                     </div>
                     <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      Van Beta
+                      {vehicles[1].registrationNumber}
                     </div>
                   </div>
                   <div className="absolute top-[40%] left-[60%] z-10">
@@ -820,7 +896,7 @@ export function FleetTracking() {
                       <Car className="h-4 w-4 text-white" />
                     </div>
                     <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      Truck Gamma
+                      {vehicles[2].registrationNumber}
                     </div>
                   </div>
                   <div className="absolute top-[30%] left-[50%] z-10">
@@ -828,7 +904,7 @@ export function FleetTracking() {
                       <Car className="h-4 w-4 text-white" />
                     </div>
                     <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      Van Delta
+                      {vehicles[3].registrationNumber}
                     </div>
                   </div>
                   
@@ -863,29 +939,10 @@ export function FleetTracking() {
                   </svg>
                 </div>
                 
+                {/* Remove map legend */}
                 {/* Map overlay elements */}
                 <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
-                  <div className="bg-background/60 backdrop-blur-md p-2 rounded-lg border border-white/10 shadow-lg">
-                    <div className="text-[10px] text-muted-foreground mb-1">Map Legend</div>
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-1">
-                        <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                        <span className="text-[10px] text-muted-foreground">Moving</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                        <span className="text-[10px] text-muted-foreground">Idling</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-                        <span className="text-[10px] text-muted-foreground">Stopped</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                        <span className="text-[10px] text-muted-foreground">Offline</span>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -940,7 +997,7 @@ export function FleetTracking() {
                   </div>
                   
                   {/* Scrollable tabs container */}
-                  <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex-1">
+                  <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex-1 status-container">
                     <div className="flex gap-2 w-max pr-4">
                       <Button
                         variant={statusFilter === "all" ? "default" : "outline"}
@@ -1013,7 +1070,16 @@ export function FleetTracking() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                onWheel={(e) => {
+                  // If the event target is within a tag container, don't handle the wheel event here
+                  if ((e.target as HTMLElement).closest('.tag-container')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                  }
+                }}
+              >
                 <div className="space-y-2">
                   {filteredVehicles.map((vehicle) => (
                     <Card
@@ -1024,197 +1090,313 @@ export function FleetTracking() {
                       onClick={() => setSelectedVehicle(vehicle)}
                     >
                       <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
+                        {/* Header Section */}
+                        <div className="flex items-center justify-between mb-3">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <h3 className="font-medium truncate">{vehicle.registrationNumber}</h3>
-                              <div className="flex items-center gap-1 ml-2">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <div>
-                                        {vehicle.fuelType === "electric" ? (
-                                          <Battery 
-                                            className={cn(
-                                              "h-4 w-4",
-                                              vehicle.battery < 25 && "text-red-500",
-                                              vehicle.battery < 50 && "text-orange-500",
-                                              vehicle.battery < 75 && "text-yellow-500",
-                                              "text-green-500"
-                                            )} 
-                                          />
-                                        ) : (
-                                          <Fuel 
-                                            className={cn(
-                                              "h-4 w-4",
-                                              vehicle.fuel < 25 && "text-red-500",
-                                              vehicle.fuel < 50 && "text-orange-500",
-                                              vehicle.fuel < 75 && "text-yellow-500",
-                                              "text-green-500"
-                                            )} 
-                                          />
-                                        )}
-                                      </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>{vehicle.fuelType === "electric" ? `Battery: ${vehicle.battery}%` : `Fuel: ${vehicle.fuel}L`}</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
-                                      <MoreVertical className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>
-                                      <FileText className="h-4 w-4 mr-2" />
-                                      Generate Trip
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                      <FileText className="h-4 w-4 mr-2" />
-                                      DIC
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                      <Share2 className="h-4 w-4 mr-2" />
-                                      Share Location
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
+                            <div className="flex items-center gap-2">
+                              <div className={cn(
+                                "p-2 rounded-full",
+                                vehicle.currentState === "moving" && "bg-green-500/20 text-green-500",
+                                vehicle.currentState === "stopped" && "bg-red-500/20 text-red-500",
+                                vehicle.currentState === "offline" && "bg-gray-500/20 text-gray-500",
+                                vehicle.currentState === "maintenance" && "bg-blue-500/20 text-blue-500",
+                                vehicle.currentState === "idling" && "bg-yellow-500/20 text-yellow-500"
+                              )}>
+                                <Car className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium truncate">{vehicle.registrationNumber}</h3>
+                                <p className="text-sm text-muted-foreground">VIN: {vehicle.vin ? `...${vehicle.vin.slice(-6)}` : ""}</p>
                               </div>
                             </div>
+                          </div>
+                          <div className="flex items-center gap-2">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <p className="text-sm text-muted-foreground w-fit mt-1">{vehicle.vin.slice(-6)}</p>
+                                  <div>
+                                    {vehicle.fuelType === "electric" ? (
+                                      <Battery 
+                                        className={cn(
+                                          "h-4 w-4",
+                                          vehicle.battery < 25 && "text-red-500",
+                                          vehicle.battery < 50 && "text-orange-500",
+                                          vehicle.battery < 75 && "text-yellow-500",
+                                          "text-green-500"
+                                        )} 
+                                      />
+                                    ) : (
+                                      <Fuel 
+                                        className={cn(
+                                          "h-4 w-4",
+                                          vehicle.fuel < 25 && "text-red-500",
+                                          vehicle.fuel < 50 && "text-orange-500",
+                                          vehicle.fuel < 75 && "text-yellow-500",
+                                          "text-green-500"
+                                        )} 
+                                      />
+                                    )}
+                                  </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Vehicle Identification Number (VIN)</p>
+                                  <p>{vehicle.fuelType === "electric" ? `Battery: ${vehicle.battery}%` : `Fuel: ${vehicle.fuel}L`}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem>
+                                  <FileText className="h-4 w-4 mr-2" />
+                                  Generate Trip
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <FileText className="h-4 w-4 mr-2" />
+                                  DIC
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Share2 className="h-4 w-4 mr-2" />
+                                  Share Location
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </div>
-                        <div className="mt-3 space-y-2">
-                          <div className="flex items-center gap-4 text-sm">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="flex items-center gap-1 text-muted-foreground max-w-[100px]">
-                                    <MapPin className="h-4 w-4 flex-shrink-0" />
-                                    <span className="truncate">{vehicle.location}</span>
+
+                        {/* Location and ETA Section */}
+                        <div className="flex items-center gap-4 text-sm mb-3">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1 text-muted-foreground max-w-[150px]">
+                                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                                  <span className="truncate">{vehicle.location}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{vehicle.location}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="h-4 w-4 text-muted-foreground" />
+                                  <span>{vehicle.eta}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Estimated Time of Arrival</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+
+                        {/* Metrics Section */}
+                        <div className="grid grid-cols-3 gap-4 mb-3">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center p-2 rounded-lg bg-muted/30 backdrop-blur-sm">
+                                  <div className="flex items-center gap-1 mb-1">
+                                    <Gauge className="h-4 w-4 text-primary" />
+                                    <span className="text-sm font-medium">{vehicle.speed}</span>
                                   </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>{vehicle.location}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <span>{vehicle.eta}</span>
+                                  <span className="text-xs text-muted-foreground">km/h</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Current Speed</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center p-2 rounded-lg bg-muted/30 backdrop-blur-sm">
+                                  <div className="flex items-center gap-1 mb-1">
+                                    <Route className="h-4 w-4 text-primary" />
+                                    <span className="text-sm font-medium">32.9</span>
                                   </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Estimated Time of Arrival</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <div className="relative">
-                            <div 
-                              ref={setTagContainerRef(vehicle.id)}
-                              className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                              onScroll={(e) => {
-                                const target = e.target as HTMLDivElement;
-                                const hasScrolled = target.scrollLeft > 0;
-                                const hasMoreContent = target.scrollWidth > target.clientWidth;
-                                const isAtStart = target.scrollLeft === 0;
-                                
-                                // Show/hide the arrow indicator based on scroll position
-                                const indicator = tagIndicatorsRef.current.get(vehicle.id);
-                                if (indicator) {
-                                  // Only show indicator if there's content to scroll and we're at the start
-                                  if (hasMoreContent) {
-                                    indicator.style.display = "flex";
-                                    
-                                    if (isAtStart) {
-                                      indicator.style.opacity = "1";
-                                    } else {
-                                      indicator.style.opacity = "0";
-                                    }
-                                  } else {
-                                    indicator.style.display = "none";
-                                  }
+                                  <span className="text-xs text-muted-foreground">km</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Distance Since Morning</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center p-2 rounded-lg bg-muted/30 backdrop-blur-sm">
+                                  <div className="flex items-center gap-1 mb-1">
+                                    <Clock className="h-4 w-4 text-primary" />
+                                    <span className="text-sm font-medium">47</span>
+                                  </div>
+                                  <span className="text-xs text-muted-foreground">mins</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Running Time Since Last Activity</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+
+                        {/* Tags Section */}
+                        <div className="relative mb-3">
+                          <div 
+                            ref={setTagContainerRef(vehicle.id)}
+                            className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] tag-container"
+                            onScroll={(e) => {
+                              const target = e.target as HTMLDivElement;
+                              const hasScrolled = target.scrollLeft > 0;
+                              const hasMoreContent = target.scrollWidth > target.clientWidth;
+                              const isAtStart = target.scrollLeft === 0;
+                              
+                              const indicator = tagIndicatorsRef.current.get(vehicle.id);
+                              if (indicator) {
+                                if (hasMoreContent) {
+                                  indicator.style.display = "flex";
+                                  indicator.style.opacity = isAtStart ? "1" : "0";
+                                } else {
+                                  indicator.style.display = "none";
                                 }
-                              }}
-                            >
-                              <div className="flex gap-2 w-max">
-                                <TooltipProvider>
+                              }
+                            }}
+                          >
+                            <div className="flex gap-2 w-max">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div>
+                                      <Badge 
+                                        variant={vehicle.currentState === "moving" ? "moving" : 
+                                                vehicle.currentState === "stopped" ? "stopped" : 
+                                                vehicle.currentState === "offline" ? "offline" : 
+                                                vehicle.currentState === "maintenance" ? "maintenance" : 
+                                                vehicle.currentState === "idling" ? "idling" : "outline"}
+                                        className={cn(
+                                          "text-xs px-2.5 py-1.5 backdrop-blur-sm border-0 shadow-sm",
+                                          vehicle.currentState === "moving" && "bg-green-500/20 text-green-600 dark:text-green-500",
+                                          vehicle.currentState === "stopped" && "bg-red-500/20 text-red-600 dark:text-red-500",
+                                          vehicle.currentState === "offline" && "bg-gray-500/20 text-gray-600 dark:text-gray-500",
+                                          vehicle.currentState === "maintenance" && "bg-blue-500/20 text-blue-600 dark:text-blue-500",
+                                          vehicle.currentState === "idling" && "bg-yellow-500/20 text-yellow-600 dark:text-yellow-500"
+                                        )}
+                                      >
+                                        <div className="flex items-center gap-1.5">
+                                          <Car className={cn(
+                                            "h-3 w-3",
+                                            vehicle.currentState === "moving" && "text-green-600 dark:text-green-500",
+                                            vehicle.currentState === "stopped" && "text-red-600 dark:text-red-500",
+                                            vehicle.currentState === "offline" && "text-gray-600 dark:text-gray-500",
+                                            vehicle.currentState === "maintenance" && "text-blue-600 dark:text-blue-500",
+                                            vehicle.currentState === "idling" && "text-yellow-600 dark:text-yellow-500"
+                                          )} />
+                                          {vehicle.currentState}
+                                        </div>
+                                      </Badge>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Current Vehicle State</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <Badge 
+                                variant="outline" 
+                                className="text-xs px-2.5 py-1.5 bg-muted/30 backdrop-blur-sm border-0 shadow-sm"
+                              >
+                                <div className="flex items-center gap-1.5">
+                                  <Car className="h-3 w-3 text-primary" />
+                                  {vehicle.vehicleClass}
+                                </div>
+                              </Badge>
+                              {vehicle.healthIndicators?.map((indicator, index) => (
+                                <TooltipProvider key={index}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <div>
                                         <Badge 
-                                          variant={vehicle.currentState === "moving" ? "moving" : 
-                                                  vehicle.currentState === "stopped" ? "stopped" : 
-                                                  vehicle.currentState === "offline" ? "offline" : 
-                                                  vehicle.currentState === "maintenance" ? "maintenance" : 
-                                                  vehicle.currentState === "idling" ? "idling" : "outline"}
-                                          className="text-xs"
+                                          variant="outline" 
+                                          className={cn(
+                                            "text-xs px-2.5 py-1.5 bg-muted/30 backdrop-blur-sm border-0 shadow-sm",
+                                            indicator.status === "error" && "text-red-500",
+                                            indicator.status === "warning" && "text-yellow-600 dark:text-yellow-500",
+                                            indicator.status === "info" && "text-blue-500"
+                                          )}
                                         >
-                                          {vehicle.currentState}
+                                          <div className="flex items-center gap-1.5">
+                                            {indicator.type === "engine" && <Wrench className="h-3 w-3" />}
+                                            {indicator.type === "tire" && <Circle className="h-3 w-3" />}
+                                            {indicator.type === "brake" && <Settings className="h-3 w-3" />}
+                                            {indicator.type === "battery" && <Battery className="h-3 w-3" />}
+                                            {indicator.type === "coolant" && <Droplet className="h-3 w-3" />}
+                                            {indicator.type === "oil" && <Droplet className="h-3 w-3" />}
+                                            {indicator.type === "transmission" && <Settings className="h-3 w-3" />}
+                                            {indicator.type === "air filter" && <Wind className="h-3 w-3" />}
+                                            {indicator.type}
+                                          </div>
                                         </Badge>
                                       </div>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Current Vehicle State</p>
+                                      <p>{indicator.message}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
-                                <Badge variant="outline" className="text-xs">
-                                  {vehicle.vehicleClass}
-                                </Badge>
-                                {vehicle.healthIndicators?.map((indicator, index) => (
-                                  <TooltipProvider key={index}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <div>
-                                          <Badge 
-                                            variant="outline" 
-                                            className={cn(
-                                              "text-xs",
-                                              indicator.status === "error" && "border-red-500 text-red-500",
-                                              indicator.status === "warning" && "border-yellow-600 text-yellow-600 dark:border-yellow-500 dark:text-yellow-500",
-                                              indicator.status === "info" && "border-blue-500 text-blue-500"
-                                            )}
-                                          >
-                                            <AlertTriangle className="h-3 w-3 mr-1" />
-                                            {indicator.type}
-                                          </Badge>
-                                        </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>{indicator.message}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                ))}
-                              </div>
-                            </div>
-                            <div 
-                              ref={setTagIndicatorRef(vehicle.id)}
-                              className="absolute right-0 top-0 bottom-0 pointer-events-none flex items-center"
-                              style={{ display: "none" }}
-                            >
-                              <div className="bg-black/80 h-full flex items-center px-1 transition-opacity duration-200 rounded-l-md">
-                                <ChevronRight className="h-3 w-3 text-white" />
-                              </div>
+                              ))}
                             </div>
                           </div>
+                          <div 
+                            ref={setTagIndicatorRef(vehicle.id)}
+                            className="absolute right-0 top-0 bottom-0 pointer-events-none flex items-center"
+                            style={{ display: "none" }}
+                          >
+                            <div className="bg-gradient-to-l from-background/80 to-transparent h-full flex items-center px-2 transition-opacity duration-200">
+                              <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const vehiclePosition = {
+                                x: (vehicle.id % 3) * 20 + 20,
+                                y: Math.floor(vehicle.id / 3) * 20 + 20
+                              };
+                              setMapPosition(vehiclePosition);
+                              setMapZoom(2.5);
+                            }}
+                          >
+                            <MapPin className="h-3 w-3 mr-1" />
+                            Track
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveTab("trace");
+                            }}
+                          >
+                            <Route className="h-3 w-3 mr-1" />
+                            Trace
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -1298,16 +1480,19 @@ export function FleetTracking() {
           
           {/* Vehicle metrics in a grid */}
           <div className="grid grid-cols-4 gap-px dark:bg-black/5 bg-white/5">
-            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-              <Fuel className="h-5 w-5 text-green-500 mb-1" />
-              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
-              <span className="text-xs dark:text-black/60 text-white/60">Fuel</span>
-            </div>
-            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-              <Battery className="h-5 w-5 text-blue-500 mb-1" />
-              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
-              <span className="text-xs dark:text-black/60 text-white/60">Battery</span>
-            </div>
+            {selectedVehicle?.fuelType === "electric" ? (
+              <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+                <Battery className="h-5 w-5 text-blue-500 mb-1" />
+                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
+                <span className="text-xs dark:text-black/60 text-white/60">Battery</span>
+              </div>
+            ) : (
+              <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+                <Fuel className="h-5 w-5 text-green-500 mb-1" />
+                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
+                <span className="text-xs dark:text-black/60 text-white/60">Fuel</span>
+              </div>
+            )}
             <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
               <Gauge className="h-5 w-5 text-purple-500 mb-1" />
               <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
@@ -1317,6 +1502,51 @@ export function FleetTracking() {
               <Thermometer className="h-5 w-5 text-red-500 mb-1" />
               <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
               <span className="text-xs dark:text-black/60 text-white/60">Temp</span>
+            </div>
+            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="flex flex-col items-center cursor-pointer">
+                    <Plus className="h-5 w-5 text-primary mb-1" />
+                    <span className="text-lg font-medium dark:text-black text-white">Add</span>
+                    <span className="text-xs dark:text-black/60 text-white/60">Indicator</span>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="end" className="w-48 p-2">
+                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Add Indicator</p>
+                  <Separator className="my-1" />
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <BarChart3 className="h-3.5 w-3.5 mr-2 text-blue-500" />
+                    Fuel Efficiency
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <Route className="h-3.5 w-3.5 mr-2 text-green-500" />
+                    Route Progress
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <Clock className="h-3.5 w-3.5 mr-2 text-yellow-500" />
+                    Running Time
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <Wrench className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                    Next Service
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <Package className="h-3.5 w-3.5 mr-2 text-red-500" />
+                    Load Capacity
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
+                    <Wind className="h-3.5 w-3.5 mr-2 text-cyan-500" />
+                    Air Pressure
+                  </Button>
+                  <Separator className="my-1" />
+                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Remove Current</p>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2 text-red-500 hover:text-red-500 hover:bg-red-500/10">
+                    <XCircle className="h-3.5 w-3.5 mr-2" />
+                    Remove Indicator
+                  </Button>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           
@@ -1341,50 +1571,6 @@ export function FleetTracking() {
               
               <div className="flex-1 overflow-auto">
                 <TabsContent value="info" className="p-4 space-y-4 mt-2 pb-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
-                      <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-1">Driver</div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-primary/30 flex items-center justify-center">
-                          <Users className="h-4 w-4 text-primary-foreground" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium dark:text-black text-white">{selectedVehicle?.driver}</div>
-                          <div className="text-xs dark:text-black/60 text-white/60">Rating: {selectedVehicle?.rating}</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
-                      <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-1">Vehicle Details</div>
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs dark:text-black/60 text-white/60">VIN</span>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="text-xs font-medium dark:text-black text-white">
-                                  {selectedVehicle?.vin ? `...${selectedVehicle.vin.slice(-6)}` : ""}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{selectedVehicle?.vin}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs dark:text-black/60 text-white/60">Class</span>
-                          <span className="text-xs font-medium dark:text-black text-white">{selectedVehicle?.vehicleClass}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs dark:text-black/60 text-white/60">Type</span>
-                          <span className="text-xs font-medium dark:text-black text-white">{selectedVehicle?.fuelType}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
                   <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
                     <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Status Metrics</div>
                     <div className="grid grid-cols-2 gap-y-4">
@@ -1403,6 +1589,30 @@ export function FleetTracking() {
                         </div>
                       </div>
                       <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Current Speed</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Gauge className="h-3 w-3 text-purple-500" /> 
+                          <span>{selectedVehicle?.speed}</span>
+                          <span className="text-xs text-muted-foreground">km/h</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Distance Today</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Route className="h-3 w-3 text-green-500" /> 
+                          <span>32.9</span>
+                          <span className="text-xs text-muted-foreground">km</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Running Time</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Clock className="h-3 w-3 text-yellow-500" /> 
+                          <span>47</span>
+                          <span className="text-xs text-muted-foreground">mins</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
                         <div className="text-xs dark:text-black/60 text-white/60">Fuel Efficiency</div>
                         <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
                           <Gauge className="h-3 w-3 text-purple-500" /> 
@@ -1414,6 +1624,31 @@ export function FleetTracking() {
                         <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
                           <Gauge className="h-3 w-3 text-purple-500" /> 
                           {fleetStats.averageSpeed} mph
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Vehicle Class</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Car className="h-3 w-3 text-primary" /> 
+                          {selectedVehicle?.vehicleClass}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Engine Type</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          {selectedVehicle?.fuelType === "electric" ? (
+                            <Battery className="h-3 w-3 text-blue-500" />
+                          ) : (
+                            <Fuel className="h-3 w-3 text-green-500" />
+                          )} 
+                          {selectedVehicle?.fuelType === "electric" ? "Electric" : "Diesel"}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">VIN Number</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <FileText className="h-3 w-3 text-blue-500" /> 
+                          {selectedVehicle?.vin}
                         </div>
                       </div>
                     </div>

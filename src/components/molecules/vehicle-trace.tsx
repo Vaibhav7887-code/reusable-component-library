@@ -83,6 +83,8 @@ import {
   Bookmark,
   RotateCcw,
   Square,
+  Target,
+  Locate,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
@@ -526,7 +528,7 @@ export function VehicleTrace() {
 
   return (
     <div className={cn(
-      "h-[calc(100vh-12rem)] w-full flex flex-col overflow-hidden",
+      "h-[calc(100vh-8.5rem)] w-full flex flex-col overflow-hidden",
       isFullscreen && "fixed inset-0 z-50 h-screen bg-background"
     )}>
       {isFullscreen && (
@@ -825,13 +827,12 @@ export function VehicleTrace() {
         <div className="flex-1 flex flex-col min-w-[250px]">
           {/* Map with Timeline Drawer */}
           <div className="flex-1 bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
-            {/* Inner shadow overlay */}
-            <div className="absolute inset-0 pointer-events-none z-[5] rounded-lg shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]"></div>
-            <div className="absolute top-4 left-4 z-10 flex gap-2">
+            {/* Map controls - right side */}
+            <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
               <Button 
                 variant="secondary" 
                 size="icon" 
-                className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20"
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
                 onClick={() => setMapZoom(prev => Math.min(prev + 0.5, 4))}
               >
                 <Plus className="w-4 h-4" />
@@ -839,21 +840,14 @@ export function VehicleTrace() {
               <Button 
                 variant="secondary" 
                 size="icon" 
-                className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20"
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
                 onClick={() => setMapZoom(prev => Math.max(prev - 0.5, 0.5))}
               >
                 <Minus className="w-4 h-4" />
               </Button>
-              <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20">
-                <MapPin className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Map controls - right side */}
-            <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20">
+                  <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20">
                     <Layers className="w-4 h-4" />
                   </Button>
                 </PopoverTrigger>
@@ -896,6 +890,37 @@ export function VehicleTrace() {
                       </div>
                       <Separator className="my-1" />
                       <div className="flex items-center justify-between">
+                        <label htmlFor="poi" className="text-sm flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          Points of Interest
+                        </label>
+                        <Switch 
+                          id="poi" 
+                          checked={true}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <label htmlFor="fuelstation" className="text-sm flex items-center gap-2">
+                          <Fuel className="h-4 w-4" />
+                          Fuel Stations
+                        </label>
+                        <Switch 
+                          id="fuelstation" 
+                          checked={false}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <label htmlFor="servicecenters" className="text-sm flex items-center gap-2">
+                          <Wrench className="h-4 w-4" />
+                          Service Centers
+                        </label>
+                        <Switch 
+                          id="servicecenters" 
+                          checked={false}
+                        />
+                      </div>
+                      <Separator className="my-1" />
+                      <div className="flex items-center justify-between">
                         <label htmlFor="minimap" className="text-sm flex items-center gap-2">
                           <Map className="h-4 w-4" />
                           Mini Map
@@ -914,7 +939,23 @@ export function VehicleTrace() {
               <Button 
                 variant="secondary" 
                 size="icon" 
-                className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20"
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+              >
+                <Route className="w-4 h-4" />
+              </Button>
+              
+              <Button 
+                variant="secondary" 
+                size="icon" 
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
+              >
+                <Locate className="w-4 h-4" />
+              </Button>
+              
+              <Button 
+                variant="secondary" 
+                size="icon" 
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
                 onClick={() => setIsFullscreen(!isFullscreen)}
               >
                 {isFullscreen ? (
@@ -927,7 +968,7 @@ export function VehicleTrace() {
               <Button 
                 variant="secondary" 
                 size="icon" 
-                className="h-8 w-8 bg-background/70 backdrop-blur-sm border-white/20"
+                className="h-8 w-8 bg-background/70 backdrop-blur-sm border border-black/10 shadow-sm dark:border-white/20"
               >
                 <Share2 className="w-4 h-4" />
               </Button>
@@ -1068,7 +1109,16 @@ export function VehicleTrace() {
                   isTimelineExpanded ? "opacity-100" : "opacity-0"
                 )}>
                   <div className="w-full overflow-x-auto hide-scrollbar">
-                    <div className="flex gap-2 min-w-max pb-2">
+                    <div 
+                      className="flex gap-2 min-w-max pb-2"
+                      onWheel={(e) => {
+                        e.preventDefault();
+                        const container = e.currentTarget.parentElement;
+                        if (container) {
+                          container.scrollLeft += e.deltaY;
+                        }
+                      }}
+                    >
                       {mockTimelineData.map((point, index) => {
                         // Store ref creation as a separate function
                         const setTimelineItemRef = (el: HTMLDivElement | null) => {
