@@ -35,6 +35,8 @@ const LucideIcons = {
   Search: dynamic(() => import("lucide-react").then(mod => mod.Search), { ssr: false }),
   ChevronDown: dynamic(() => import("lucide-react").then(mod => mod.ChevronDown), { ssr: false }),
   ChevronUp: dynamic(() => import("lucide-react").then(mod => mod.ChevronUp), { ssr: false }),
+  ChevronLeft: dynamic(() => import("lucide-react").then(mod => mod.ChevronLeft), { ssr: false }),
+  ChevronRight: dynamic(() => import("lucide-react").then(mod => mod.ChevronRight), { ssr: false }),
   AlertTriangle: dynamic(() => import("lucide-react").then(mod => mod.AlertTriangle), { ssr: false }),
   CheckCircle2: dynamic(() => import("lucide-react").then(mod => mod.CheckCircle2), { ssr: false }),
   Info: dynamic(() => import("lucide-react").then(mod => mod.Info), { ssr: false }),
@@ -54,7 +56,6 @@ const LucideIcons = {
   Star: dynamic(() => import("lucide-react").then(mod => mod.Star), { ssr: false }),
   StarOff: dynamic(() => import("lucide-react").then(mod => mod.StarOff), { ssr: false }),
   FileText: dynamic(() => import("lucide-react").then(mod => mod.FileText), { ssr: false }),
-  ChevronRight: dynamic(() => import("lucide-react").then(mod => mod.ChevronRight), { ssr: false }),
   XCircle: dynamic(() => import("lucide-react").then(mod => mod.XCircle), { ssr: false }),
   Share2: dynamic(() => import("lucide-react").then(mod => mod.Share2), { ssr: false }),
   Plus: dynamic(() => import("lucide-react").then(mod => mod.Plus), { ssr: false }),
@@ -66,16 +67,23 @@ const LucideIcons = {
   Locate: dynamic(() => import("lucide-react").then(mod => mod.Locate), { ssr: false }),
   Target: dynamic(() => import("lucide-react").then(mod => mod.Target), { ssr: false }),
   Maximize2: dynamic(() => import("lucide-react").then(mod => mod.Maximize2), { ssr: false }),
+  AlertOctagon: dynamic(() => import("lucide-react").then(mod => mod.AlertOctagon), { ssr: false }),
+  Octagon: dynamic(() => import("lucide-react").then(mod => mod.Octagon), { ssr: false }),
+  ParkingCircle: dynamic(() => import("lucide-react").then(mod => mod.ParkingCircle), { ssr: false }),
+  ThermometerSun: dynamic(() => import("lucide-react").then(mod => mod.ThermometerSun), { ssr: false }),
+  Wifi: dynamic(() => import("lucide-react").then(mod => mod.Wifi), { ssr: false }),
+  Camera: dynamic(() => import("lucide-react").then(mod => mod.Camera), { ssr: false }),
+  Satellite: dynamic(() => import("lucide-react").then(mod => mod.Satellite), { ssr: false })
 };
 
 // Use these imports instead of direct imports
 const { 
   Activity, AlertCircle, Car, Clock, Fuel, MapPin, Settings, Users,
-  Calendar, Filter, Search, ChevronDown, ChevronUp, AlertTriangle,
-  CheckCircle2, Info, BarChart3, Route, Package, DollarSign, Gauge,
+  Calendar, Filter, Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
+  AlertTriangle, CheckCircle2, Info, BarChart3, Route, Package, DollarSign, Gauge,
   Battery, Thermometer, Wrench, Bell, RefreshCw, Download, Upload,
-  MoreVertical, Star, StarOff, FileText, ChevronRight, XCircle, Share2,
-  Plus, Minus, Circle, Droplet, Wind, Layers, Locate, Target, Maximize2
+  MoreVertical, Star, StarOff, FileText, XCircle, Share2, Plus, Minus, Circle, Droplet, Wind, Layers, Locate, Target, Maximize2,
+  AlertOctagon, Octagon, ParkingCircle, ThermometerSun, Wifi, Camera, Satellite
 } = LucideIcons;
 
 import {
@@ -141,7 +149,6 @@ const recentActivity = [
 const vehicles = [
   {
     id: 1001,
-    name: "Truck Alpha",
     registrationNumber: "MH-01-AB-1234",
     vin: "1HGCM82633A123456",
     driver: "John Doe",
@@ -159,6 +166,11 @@ const vehicles = [
     vehicleClass: "BS6",
     currentState: "moving",
     fuelType: "electric",
+    // Add map position for consistent tracking
+    mapPosition: {
+      top: 20,
+      left: 33
+    },
     healthIndicators: [
       { type: "engine", status: "warning", message: "Engine light on" },
       { type: "tire", status: "error", message: "Low tire pressure" },
@@ -169,10 +181,30 @@ const vehicles = [
       { type: "transmission", status: "warning", message: "Transmission fluid low" },
       { type: "air filter", status: "info", message: "Air filter needs cleaning" },
     ],
+    vehicleParams: {
+      primaryFuel: {
+        value: 143.2,
+        maxValue: 365,
+        percentage: 27,
+      },
+      defLevel: {
+        value: 77,
+        quality: "33.5% (Good)",
+      },
+      engineLoad: "Light",
+      engineTemp: 83,
+      odometer: 54221,
+      engineRunHour: "1869 Hrs 18 Mins",
+      speed: 30,
+      tripAFuelEfficiency: 3.2,
+      tripBFuelEfficiency: 3.0,
+      distanceToService: 65779,
+      timeToService: 130,
+      serviceDueStatus: "Not Due",
+    }
   },
   {
     id: 1002,
-    name: "Van Beta",
     registrationNumber: "DL-02-CD-5678",
     vin: "2HGCM82633B234567",
     driver: "Jane Smith",
@@ -190,13 +222,38 @@ const vehicles = [
     vehicleClass: "BS6",
     currentState: "idling",
     fuelType: "diesel",
+    // Add map position for consistent tracking
+    mapPosition: {
+      top: 60,
+      left: 45
+    },
     healthIndicators: [
       { type: "battery", status: "warning", message: "Battery voltage low" },
     ],
+    vehicleParams: {
+      primaryFuel: {
+        value: 225.5,
+        maxValue: 365,
+        percentage: 62,
+      },
+      defLevel: {
+        value: 85,
+        quality: "41.2% (Good)",
+      },
+      engineLoad: "Medium",
+      engineTemp: 78,
+      odometer: 48765,
+      engineRunHour: "1543 Hrs 45 Mins",
+      speed: 55,
+      tripAFuelEfficiency: 3.5,
+      tripBFuelEfficiency: 3.3,
+      distanceToService: 71235,
+      timeToService: 145,
+      serviceDueStatus: "Not Due",
+    }
   },
   {
     id: 1003,
-    name: "Truck Gamma",
     registrationNumber: "UP-03-EF-9012",
     vin: "3HGCM82633C345678",
     driver: "Mike Johnson",
@@ -214,11 +271,36 @@ const vehicles = [
     vehicleClass: "BS4",
     currentState: "stopped",
     fuelType: "diesel",
+    // Add map position for consistent tracking
+    mapPosition: {
+      top: 40,
+      left: 60
+    },
     healthIndicators: [],
+    vehicleParams: {
+      primaryFuel: {
+        value: 98.6,
+        maxValue: 365,
+        percentage: 27,
+      },
+      defLevel: {
+        value: 45,
+        quality: "28.5% (Warning)",
+      },
+      engineLoad: "Heavy",
+      engineTemp: 92,
+      odometer: 62341,
+      engineRunHour: "2134 Hrs 22 Mins",
+      speed: 0,
+      tripAFuelEfficiency: 2.8,
+      tripBFuelEfficiency: 2.9,
+      distanceToService: 57659,
+      timeToService: 95,
+      serviceDueStatus: "Due Soon",
+    }
   },
   {
     id: 1004,
-    name: "Van Delta",
     registrationNumber: "GJ-04-GH-3456",
     vin: "4HGCM82633D456789",
     driver: "Sarah Wilson",
@@ -236,30 +318,34 @@ const vehicles = [
     vehicleClass: "BS6",
     currentState: "moving",
     fuelType: "electric",
+    // Add map position for consistent tracking
+    mapPosition: {
+      top: 30,
+      left: 50
+    },
     healthIndicators: [],
-  },
-  {
-    id: 1005,
-    name: "Truck Epsilon",
-    registrationNumber: "RJ-05-IJ-7890",
-    vin: "5HGCM82633E567890",
-    driver: "Tom Brown",
-    status: "inactive",
-    speed: 0,
-    location: "Chennai, Tamil Nadu",
-    eta: "N/A",
-    fuel: 90,
-    temperature: 68,
-    battery: 85,
-    rating: 4.6,
-    lastMaintenance: "4 days ago",
-    nextMaintenance: "26 days",
-    type: "fuel",
-    vehicleClass: "BS4",
-    currentState: "offline",
-    fuelType: "diesel",
-    healthIndicators: [],
-  },
+    vehicleParams: {
+      primaryFuel: {
+        value: 285.7,
+        maxValue: 365,
+        percentage: 78,
+      },
+      defLevel: {
+        value: 92,
+        quality: "45.8% (Good)",
+      },
+      engineLoad: "Light",
+      engineTemp: 75,
+      odometer: 35678,
+      engineRunHour: "987 Hrs 30 Mins",
+      speed: 60,
+      tripAFuelEfficiency: 3.8,
+      tripBFuelEfficiency: 3.7,
+      distanceToService: 84322,
+      timeToService: 180,
+      serviceDueStatus: "Not Due",
+    }
+  }
 ];
 
 // Add new mock data for vehicle details
@@ -297,6 +383,299 @@ const vehicleDetails = {
   },
   // ... add more vehicle details as needed
 };
+
+// Add new interface for vehicle info card
+interface VehicleInfoCardProps {
+  vehicle: typeof vehicles[0];
+  onClose: () => void;
+  expanded?: boolean;
+  position?: { top: number; left: number };
+  mapRef: React.RefObject<HTMLDivElement>;
+}
+
+// Define health indicators with proper typing
+const healthIndicators: Array<{
+  name: string;
+  icon: keyof typeof LucideIcons;
+  status: "active" | "warning" | "error" | "disabled";
+}> = [
+  // Green (Normal/Good)
+  { name: "GPS Signal Quality", icon: "Satellite", status: "active" },
+  
+  // Yellow/Orange (Warning/Caution)
+  { name: "Air Filter Clogging", icon: "Wind", status: "warning" },
+  { name: "Check Engine Lamp", icon: "AlertTriangle", status: "warning" },
+  { name: "SCR System Fault", icon: "Settings", status: "warning" },
+  { name: "Malfunction Indication Lamp", icon: "AlertOctagon", status: "warning" },
+  
+  // Red (Critical/Action Required)
+  { name: "DPF Regeneration Request", icon: "Thermometer", status: "error" },
+  { name: "Engine Red Stop Lamp", icon: "AlertOctagon", status: "error" },
+  { name: "Low Fuel Indication", icon: "Fuel", status: "error" },
+  
+  // Gray (Inactive/No Issue Detected)
+  { name: "Water In Fuel Indicator", icon: "Droplet", status: "disabled" },
+  { name: "Engine Temperature", icon: "Thermometer", status: "disabled" },
+  { name: "High Engine Coolant Temperature", icon: "ThermometerSun", status: "disabled" },
+  { name: "Parking Brake", icon: "ParkingCircle", status: "disabled" },
+  { name: "Low Air Pressure", icon: "Wind", status: "disabled" },
+  { name: "DMS Buzzer Error", icon: "Bell", status: "disabled" },
+  { name: "DMS Camera Error", icon: "Camera", status: "disabled" }
+];
+
+// Add new component for vehicle info card
+function VehicleInfoCard({ vehicle, onClose, expanded = false, position, mapRef }: VehicleInfoCardProps) {
+  const [isExpanded, setIsExpanded] = React.useState(expanded);
+  const [view, setView] = React.useState<"parameters" | "health">("parameters");
+  const cardRef = React.useRef<HTMLDivElement>(null);
+
+  // Function to calculate card position
+  const calculatePosition = React.useCallback(() => {
+    if (!position || !mapRef.current || !cardRef.current) return {};
+
+    const mapRect = mapRef.current.getBoundingClientRect();
+    const cardRect = cardRef.current.getBoundingClientRect();
+    
+    // Convert percentage to pixels
+    let left = (position.left / 100) * mapRect.width;
+    let top = (position.top / 100) * mapRect.height;
+
+    // Initial position (above the marker)
+    let transformOrigin = 'center bottom';
+    let finalTop = top - 20; // 20px above the marker
+    let finalLeft = left;
+
+    // Check if card would overflow right edge
+    if (left + cardRect.width > mapRect.width) {
+      finalLeft = left - cardRect.width;
+      transformOrigin = 'right bottom';
+    }
+    // Check if card would overflow left edge
+    else if (left - cardRect.width/2 < 0) {
+      finalLeft = 0;
+      transformOrigin = 'left bottom';
+    }
+    else {
+      finalLeft = left - cardRect.width/2;
+    }
+
+    // Check if card would overflow top edge
+    if (top - cardRect.height - 20 < 0) {
+      // Position below the marker instead
+      finalTop = top + 40;
+      transformOrigin = transformOrigin.replace('bottom', 'top');
+    }
+
+    return {
+      position: 'absolute' as const,
+      left: `${finalLeft}px`,
+      top: `${finalTop}px`,
+      transformOrigin,
+    };
+  }, [position, isExpanded]);
+
+  // Update position when expanded state changes
+  React.useEffect(() => {
+    if (cardRef.current) {
+      const newStyle = calculatePosition();
+      Object.assign(cardRef.current.style, newStyle);
+    }
+  }, [isExpanded, calculatePosition]);
+
+  return (
+    <Card 
+      ref={cardRef}
+      className="w-[400px] bg-background/80 backdrop-blur-2xl border-white/20 shadow-xl z-50 absolute"
+    >
+      <CardHeader className="flex flex-row items-center justify-between py-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Car className="h-4 w-4" />
+          {vehicle.registrationNumber}
+        </CardTitle>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-7 w-7"
+          onClick={onClose}
+        >
+          <XCircle className="h-4 w-4" />
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          {view === "parameters" ? (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="text-xs gap-1.5"
+              onClick={() => setView("health")}
+            >
+              <Activity className="h-4 w-4" />
+              Vehicle Health
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="text-xs gap-1.5"
+              onClick={() => setView("parameters")}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Vehicle Parameters
+            </Button>
+          )}
+        </div>
+
+        {view === "parameters" ? (
+          <>
+            {/* Primary Fuel Level */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-sm">
+                <span>Primary Fuel Level</span>
+                <span>{vehicle.vehicleParams.primaryFuel.value}/{vehicle.vehicleParams.primaryFuel.maxValue}L</span>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-primary transition-all"
+                        style={{ width: `${vehicle.vehicleParams.primaryFuel.percentage}%` }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{vehicle.vehicleParams.primaryFuel.percentage}%</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            {/* DEF Level */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-sm">
+                <span>DEF Level</span>
+                <span>{vehicle.vehicleParams.defLevel.value}%</span>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-blue-500 transition-all"
+                        style={{ width: `${vehicle.vehicleParams.defLevel.value}%` }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{vehicle.vehicleParams.defLevel.value}%</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            {/* Basic Stats Grid */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="p-2 rounded-lg bg-muted/40 backdrop-blur-xl">
+                <div className="text-xs text-muted-foreground">Engine Load</div>
+                <div className="text-sm font-medium">{vehicle.vehicleParams.engineLoad}</div>
+              </div>
+              <div className="p-2 rounded-lg bg-muted/40 backdrop-blur-xl">
+                <div className="text-xs text-muted-foreground">Engine Temp</div>
+                <div className="text-sm font-medium">{vehicle.vehicleParams.engineTemp}°C</div>
+              </div>
+              <div className="p-2 rounded-lg bg-muted/40 backdrop-blur-xl">
+                <div className="text-xs text-muted-foreground">DEF Quality</div>
+                <div className="text-sm font-medium">{vehicle.vehicleParams.defLevel.quality}</div>
+              </div>
+            </div>
+
+            {/* Expanded Content */}
+            {isExpanded && (
+              <>
+                <Separator />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Odometer</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.odometer.toLocaleString()} Km</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Engine Run Hour</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.engineRunHour}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Speed</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.speed} Km/Hr</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Trip A - FE</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.tripAFuelEfficiency} Km/L</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Trip B - FE</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.tripBFuelEfficiency} Km/L</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Distance to Service</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.distanceToService.toLocaleString()} Km</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Time to Service</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.timeToService} Days</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-muted-foreground">Service Due Status</div>
+                    <div className="text-sm font-medium">{vehicle.vehicleParams.serviceDueStatus}</div>
+                  </div>
+                </div>
+              </>
+            )}
+            <div className="flex justify-center pt-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs gap-1.5"
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? "Show Less" : "Show More"}
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {healthIndicators.map((indicator, index) => {
+              const IconComponent = LucideIcons[indicator.icon];
+              return (
+                <div 
+                  key={index}
+                  className={cn(
+                    "p-2 rounded-lg backdrop-blur-xl flex items-center gap-2",
+                    indicator.status === "active" && "bg-green-500/20 text-green-600 dark:text-green-500",
+                    indicator.status === "warning" && "bg-yellow-500/20 text-yellow-600 dark:text-yellow-500",
+                    indicator.status === "error" && "bg-red-500/20 text-red-600 dark:text-red-500",
+                    indicator.status === "disabled" && "bg-muted/20 text-muted-foreground"
+                  )}
+                >
+                  <IconComponent className="h-4 w-4" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs truncate">{indicator.name}</div>
+                    <div className="text-[10px] opacity-80 capitalize">{indicator.status}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export function FleetDashboard() {
   const [selectedPeriod, setSelectedPeriod] = React.useState<'day' | 'week' | 'month'>('day');
@@ -546,6 +925,8 @@ export function FleetTracking() {
   const tagContainersRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
   const tagIndicatorsRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
   const [activeTab, setActiveTab] = React.useState("live");
+  // Add state for vehicle info card
+  const [selectedVehicleForInfo, setSelectedVehicleForInfo] = React.useState<typeof vehicles[0] | null>(null);
 
   // Add document-level wheel event handler
   React.useEffect(() => {
@@ -592,24 +973,26 @@ export function FleetTracking() {
     }
   }, []);
 
-  // Calculate vehicle counts by status
-  const vehicleCounts = {
+  // Remove the duplicate vehicleCounts declaration and keep only this one
+  const vehicleCounts = React.useMemo(() => ({
     all: vehicles.length,
     moving: vehicles.filter(v => v.currentState === "moving").length,
     idling: vehicles.filter(v => v.currentState === "idling").length,
     stopped: vehicles.filter(v => v.currentState === "stopped").length,
     offline: vehicles.filter(v => v.currentState === "offline").length,
     maintenance: vehicles.filter(v => v.currentState === "maintenance").length
-  };
+  }), [vehicles]);
 
-  const filteredVehicles = vehicles.filter(vehicle => {
-    const matchesSearch = 
-      vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (vehicle.registrationNumber?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      (vehicle.vin?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || vehicle.currentState === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  // Update the filteredVehicles calculation to handle both map and cards
+  const filteredVehicles = React.useMemo(() => {
+    return vehicles.filter(vehicle => {
+      const matchesSearch = 
+        (vehicle.registrationNumber?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (vehicle.vin?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || vehicle.currentState === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [vehicles, searchQuery, statusFilter]);
 
   // Update map bounds when image loads
   React.useEffect(() => {
@@ -862,9 +1245,10 @@ export function FleetTracking() {
                 onMouseLeave={handleMouseUp}
               >
                 <div 
-                  className="absolute top-0 left-0 w-full h-full transform origin-center"
+                  className="absolute top-0 left-0 w-full h-full transform"
                   style={{ 
-                    transform: `scale(${mapZoom}) translate(${mapPosition.x / mapZoom}px, ${mapPosition.y / mapZoom}px)`
+                    transform: `scale(${mapZoom}) translate(${mapPosition.x / mapZoom}px, ${mapPosition.y / mapZoom}px)`,
+                    transformOrigin: '50% 50%'
                   }}
                 >
                   <img 
@@ -875,38 +1259,33 @@ export function FleetTracking() {
                   />
                   
                   {/* Vehicle markers */}
-                  <div className="absolute top-[20%] left-[33%] z-10">
-                    <div className="bg-green-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20 animate-pulse">
-                      <Car className="h-4 w-4 text-white" />
+                  {filteredVehicles.map((vehicle) => (
+                    <div 
+                      key={vehicle.id}
+                      className="absolute z-10 transition-all duration-300"
+                      style={{
+                        top: `${vehicle.mapPosition.top}%`,
+                        left: `${vehicle.mapPosition.left}%`,
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                      onClick={() => setSelectedVehicleForInfo(vehicle)}
+                    >
+                      <div className={cn(
+                        "backdrop-blur-xl rounded-full p-2 shadow-lg ring-2 ring-white/20 transition-all duration-300 flex items-center justify-center",
+                        vehicle.currentState === "moving" && "bg-green-500/70",
+                        vehicle.currentState === "stopped" && "bg-red-500/70",
+                        vehicle.currentState === "offline" && "bg-gray-500/70",
+                        vehicle.currentState === "maintenance" && "bg-blue-500/70",
+                        vehicle.currentState === "idling" && "bg-yellow-500/70",
+                        vehicle.id === selectedVehicleForInfo?.id && "animate-pulse"
+                      )}>
+                        <Car className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-black/70 backdrop-blur-xl rounded-full px-2 py-0.5 text-[10px] text-white shadow-lg whitespace-nowrap">
+                        {vehicle.registrationNumber}
+                      </div>
                     </div>
-                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      {vehicles[0].registrationNumber}
-                    </div>
-                  </div>
-                  <div className="absolute top-[60%] left-[45%] z-10">
-                    <div className="bg-blue-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
-                      <Car className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      {vehicles[1].registrationNumber}
-                    </div>
-                  </div>
-                  <div className="absolute top-[40%] left-[60%] z-10">
-                    <div className="bg-yellow-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
-                      <Car className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      {vehicles[2].registrationNumber}
-                    </div>
-                  </div>
-                  <div className="absolute top-[30%] left-[50%] z-10">
-                    <div className="bg-red-500/80 backdrop-blur-sm rounded-full p-1 shadow-lg ring-2 ring-white/20">
-                      <Car className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="mt-1 bg-black/60 backdrop-blur-md rounded px-2 py-0.5 text-[10px] text-white shadow-lg">
-                      {vehicles[3].registrationNumber}
-                    </div>
-                  </div>
+                  ))}
                   
                   {/* Add some route paths between vehicles */}
                   <svg className="absolute inset-0 w-full h-full z-[5]" style={{ pointerEvents: 'none' }}>
@@ -939,10 +1318,100 @@ export function FleetTracking() {
                   </svg>
                 </div>
                 
-                {/* Remove map legend */}
-                {/* Map overlay elements */}
-                <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
-                  
+                {/* Status filter tabs - moved to bottom center */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <Tabs 
+                    value={statusFilter} 
+                    onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}
+                    className="w-full"
+                  >
+                    <TabsList className="glass-effect glass-effect-hover glass-effect-active p-1 rounded-full">
+                      <TabsTrigger 
+                        value="all" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-primary/20",
+                          statusFilter === "all" && "bg-primary/30 text-primary-foreground"
+                        )}
+                      >
+                        <Activity className="h-4 w-4" />
+                        All
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary/20 px-2 text-xs font-medium leading-none text-primary">
+                          {vehicleCounts.all}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="moving" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-green-500/20",
+                          statusFilter === "moving" && "bg-green-500/30 text-green-600 dark:text-green-500"
+                        )}
+                      >
+                        <Car className="h-4 w-4" />
+                        Moving
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-green-500/20 px-2 text-xs font-medium leading-none text-green-600">
+                          {vehicleCounts.moving}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="idling" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-yellow-500/20",
+                          statusFilter === "idling" && "bg-yellow-500/30 text-yellow-600 dark:text-yellow-500"
+                        )}
+                      >
+                        <Clock className="h-4 w-4" />
+                        Idling
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-yellow-500/20 px-2 text-xs font-medium leading-none text-yellow-600">
+                          {vehicleCounts.idling}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="stopped" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-red-500/20",
+                          statusFilter === "stopped" && "bg-red-500/30 text-red-600 dark:text-red-500"
+                        )}
+                      >
+                        <ParkingCircle className="h-4 w-4" />
+                        Stopped
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-red-500/20 px-2 text-xs font-medium leading-none text-red-600">
+                          {vehicleCounts.stopped}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="offline" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-gray-500/20",
+                          statusFilter === "offline" && "bg-gray-500/30 text-gray-600 dark:text-gray-500"
+                        )}
+                      >
+                        <Wifi className="h-4 w-4" />
+                        Offline
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-gray-500/20 px-2 text-xs font-medium leading-none text-gray-600">
+                          {vehicleCounts.offline}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="maintenance" 
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full transition-all duration-200",
+                          "hover:bg-blue-500/20",
+                          statusFilter === "maintenance" && "bg-blue-500/30 text-blue-600 dark:text-blue-500"
+                        )}
+                      >
+                        <Wrench className="h-4 w-4" />
+                        Maintenance
+                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-500/20 px-2 text-xs font-medium leading-none text-blue-600">
+                          {vehicleCounts.maintenance}
+                        </span>
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </div>
               </div>
             </div>
@@ -950,136 +1419,50 @@ export function FleetTracking() {
             {/* Vehicle List - 30% width */}
             <div className="w-[30%] flex flex-col gap-4">
               <div className="flex flex-col gap-4 px-1 py-1">
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
-                  <Input
-                    placeholder="Search vehicles..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 w-full"
-                  />
-                </div>
-                
-                {/* Filter and tabs container - completely restructured */}
-                <div className="flex items-center space-x-2">
-                  {/* Filter button */}
-                  <div className="flex-shrink-0">
-                    <DropdownMenu open={showFilterMenu} onOpenChange={setShowFilterMenu}>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-8">
-                          <Filter className="h-4 w-4 mr-1" />
-                          <span>Filter</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-56">
-                        <DropdownMenuItem>
-                          <span className="flex-1">Driver Rating</span>
-                          <ChevronRight className="h-4 w-4" />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span className="flex-1">Vehicle Type</span>
-                          <ChevronRight className="h-4 w-4" />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span className="flex-1">Fuel Type</span>
-                          <ChevronRight className="h-4 w-4" />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span className="flex-1">Vehicle Class</span>
-                          <ChevronRight className="h-4 w-4" />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <span className="flex-1">Maintenance Status</span>
-                          <ChevronRight className="h-4 w-4" />
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
+                    <Input
+                      placeholder="Search vehicles..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-8 w-full"
+                    />
                   </div>
-                  
-                  {/* Scrollable tabs container */}
-                  <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex-1 status-container">
-                    <div className="flex gap-2 w-max pr-4">
-                      <Button
-                        variant={statusFilter === "all" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("all")}
-                        className="flex items-center gap-1"
-                      >
-                        All
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary/20 px-2 text-xs font-medium leading-none text-primary">
-                          {vehicleCounts.all}
-                        </span>
+                  <DropdownMenu open={showFilterMenu} onOpenChange={setShowFilterMenu}>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="h-8">
+                        <Filter className="h-4 w-4 mr-1" />
+                        <span>Filter</span>
                       </Button>
-                      <Button
-                        variant={statusFilter === "moving" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("moving")}
-                        className="flex items-center gap-1"
-                      >
-                        Moving
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-green-500/20 px-2 text-xs font-medium leading-none text-green-600">
-                          {vehicleCounts.moving}
-                        </span>
-                      </Button>
-                      <Button
-                        variant={statusFilter === "idling" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("idling")}
-                        className="flex items-center gap-1"
-                      >
-                        Idling
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-yellow-500/20 dark:bg-yellow-500/20 px-2 text-xs font-medium leading-none text-yellow-600 dark:text-yellow-600">
-                          {vehicleCounts.idling}
-                        </span>
-                      </Button>
-                      <Button
-                        variant={statusFilter === "stopped" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("stopped")}
-                        className="flex items-center gap-1"
-                      >
-                        Stopped
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-red-500/20 px-2 text-xs font-medium leading-none text-red-600">
-                          {vehicleCounts.stopped}
-                        </span>
-                      </Button>
-                      <Button
-                        variant={statusFilter === "offline" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("offline")}
-                        className="flex items-center gap-1"
-                      >
-                        Offline
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-gray-500/20 px-2 text-xs font-medium leading-none text-gray-600">
-                          {vehicleCounts.offline}
-                        </span>
-                      </Button>
-                      <Button
-                        variant={statusFilter === "maintenance" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setStatusFilter("maintenance")}
-                        className="flex items-center gap-1"
-                      >
-                        Maintenance
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-500/20 px-2 text-xs font-medium leading-none text-blue-600">
-                          {vehicleCounts.maintenance}
-                        </span>
-                      </Button>
-                    </div>
-                  </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuItem>
+                        <span className="flex-1">Driver Rating</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span className="flex-1">Vehicle Type</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span className="flex-1">Fuel Type</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span className="flex-1">Vehicle Class</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <span className="flex-1">Maintenance Status</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
-
-              <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-                onWheel={(e) => {
-                  // If the event target is within a tag container, don't handle the wheel event here
-                  if ((e.target as HTMLElement).closest('.tag-container')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return;
-                  }
-                }}
-              >
+              
+              <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 <div className="space-y-2">
                   {filteredVehicles.map((vehicle) => (
                     <Card
@@ -1374,12 +1757,24 @@ export function FleetTracking() {
                             className="flex-1 h-8 text-xs"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const vehiclePosition = {
-                                x: (vehicle.id % 3) * 20 + 20,
-                                y: Math.floor(vehicle.id / 3) * 20 + 20
-                              };
-                              setMapPosition(vehiclePosition);
-                              setMapZoom(2.5);
+                              if (mapRef.current) {
+                                // First set the zoom level for better visibility
+                                const newZoom = 2;
+                                setMapZoom(newZoom);
+                                
+                                // Get container dimensions
+                                const containerWidth = mapRef.current.clientWidth;
+                                const containerHeight = mapRef.current.clientHeight;
+                                
+                                // Calculate the position to center the vehicle
+                                // We need to invert the position because we're moving the map under a fixed viewport
+                                const newX = -(vehicle.mapPosition.left / 100 * containerWidth) + containerWidth / 2;
+                                const newY = -(vehicle.mapPosition.top / 100 * containerHeight) + containerHeight / 2;
+                                
+                                // Apply the new position
+                                setMapPosition({ x: newX, y: newY });
+                                setSelectedVehicleForInfo(vehicle);
+                              }
                             }}
                           >
                             <MapPin className="h-3 w-3 mr-1" />
@@ -1468,10 +1863,10 @@ export function FleetTracking() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold dark:text-black text-white">
-                    {selectedVehicle?.name}
+                    {selectedVehicle?.registrationNumber}
                   </h3>
                   <p className="text-sm dark:text-black/60 text-white/60">
-                    {selectedVehicle?.registrationNumber}
+                    VIN: {selectedVehicle?.vin}
                   </p>
                 </div>
               </div>
@@ -1829,6 +2224,15 @@ export function FleetTracking() {
           </div>
         </SheetContent>
       </Sheet>
+      {/* Vehicle Info Card */}
+      {selectedVehicleForInfo && (
+        <VehicleInfoCard 
+          vehicle={selectedVehicleForInfo} 
+          onClose={() => setSelectedVehicleForInfo(null)}
+          position={selectedVehicleForInfo.mapPosition}
+          mapRef={mapRef}
+        />
+      )}
     </div>
   );
 }

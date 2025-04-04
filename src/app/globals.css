@@ -114,18 +114,73 @@
 
 /* Frosted glass card effect */
 .frosted-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   color: rgba(0, 0, 0, 0.8);
 }
 
 .dark .frosted-glass {
-  background: rgba(30, 30, 46, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(30, 30, 46, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* Enhanced glass effects */
+.glass-effect {
+  @apply bg-background/60 backdrop-blur-3xl border-white/20 shadow-xl;
+}
+
+.glass-effect-strong {
+  @apply bg-background/40 backdrop-blur-4xl border-white/20 shadow-xl;
+}
+
+.glass-effect-light {
+  @apply bg-background/80 backdrop-blur-2xl border-white/20 shadow-xl;
+}
+
+/* Glass effect variations */
+.glass-primary {
+  @apply bg-primary/10 backdrop-blur-3xl border-primary/20 shadow-xl;
+}
+
+.glass-secondary {
+  @apply bg-secondary/10 backdrop-blur-3xl border-secondary/20 shadow-xl;
+}
+
+.glass-accent {
+  @apply bg-accent/10 backdrop-blur-3xl border-accent/20 shadow-xl;
+}
+
+/* Glass effect states */
+.glass-effect:hover {
+  @apply bg-background/70 backdrop-blur-4xl border-white/30;
+}
+
+.glass-effect:active {
+  @apply bg-background/80 backdrop-blur-2xl border-white/40;
+}
+
+/* Glass effect animations */
+.glass-effect-animate {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Glass container effects */
+.glass-container {
+  @apply relative overflow-hidden;
+}
+
+.glass-container::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 dark:from-black/5 dark:to-black/10 backdrop-blur-3xl pointer-events-none;
 }
 
 /* Custom utility classes */
