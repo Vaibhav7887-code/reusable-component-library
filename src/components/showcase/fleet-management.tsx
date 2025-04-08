@@ -19,6 +19,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from "@/components/ui/select";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Bookmark } from "lucide-react";
 
 // Client-side only import for Lucide icons to prevent hydration issues
 const LucideIcons = {
@@ -492,14 +495,14 @@ function VehicleInfoCard({ vehicle, onClose, expanded = false, position, mapRef 
           <Car className="h-4 w-4" />
           {vehicle.registrationNumber}
         </CardTitle>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-7 w-7"
-          onClick={onClose}
-        >
-          <XCircle className="h-4 w-4" />
-        </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-7 w-7"
+            onClick={onClose}
+          >
+            <XCircle className="h-4 w-4" />
+          </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
@@ -913,9 +916,40 @@ export function FleetTracking() {
     distance: "miles",
     currency: "USD"
   });
+  // Add these new states for indicators
+  const [activeIndicators, setActiveIndicators] = React.useState<Array<{
+    id: string;
+    name: string;
+    icon: keyof typeof LucideIcons;
+    value: string;
+    color: string;
+  }>>([]);
+  const [availableIndicators] = React.useState<Array<{
+    id: string;
+    name: string;
+    icon: keyof typeof LucideIcons;
+    color: string;
+  }>>([
+    { id: "fuel-efficiency", name: "Fuel Efficiency", icon: "BarChart3", color: "blue" },
+    { id: "route-progress", name: "Route Progress", icon: "Route", color: "green" },
+    { id: "running-time", name: "Running Time", icon: "Clock", color: "yellow" },
+    { id: "next-service", name: "Next Service", icon: "Wrench", color: "purple" },
+    { id: "load-capacity", name: "Load Capacity", icon: "Package", color: "red" },
+    { id: "air-pressure", name: "Air Pressure", icon: "Wind", color: "cyan" },
+    { id: "engine-temp", name: "Engine Temp", icon: "Thermometer", color: "orange" },
+    { id: "oil-life", name: "Oil Life", icon: "Droplet", color: "green" },
+    { id: "battery-health", name: "Battery Health", icon: "Battery", color: "blue" },
+    { id: "tire-wear", name: "Tire Wear", icon: "Circle", color: "purple" }
+  ]);
   // Add state for map zoom and position
   const [mapZoom, setMapZoom] = React.useState(1.5); // Start zoomed in at 1.5x
   const [mapPosition, setMapPosition] = React.useState({ x: 0, y: 0 });
+  // Add state for default indicators along with custom ones
+  const [defaultIndicatorsVisible, setDefaultIndicatorsVisible] = React.useState({
+    battery: true,
+    speed: true,
+    temperature: true
+  });
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 });
   const [mapBounds, setMapBounds] = React.useState({ width: 0, height: 0 });
@@ -986,12 +1020,12 @@ export function FleetTracking() {
   // Update the filteredVehicles calculation to handle both map and cards
   const filteredVehicles = React.useMemo(() => {
     return vehicles.filter(vehicle => {
-      const matchesSearch = 
-        (vehicle.registrationNumber?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-        (vehicle.vin?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-      const matchesStatus = statusFilter === "all" || vehicle.currentState === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
+    const matchesSearch = 
+      (vehicle.registrationNumber?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+      (vehicle.vin?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || vehicle.currentState === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
   }, [vehicles, searchQuery, statusFilter]);
 
   // Update map bounds when image loads
@@ -1164,7 +1198,69 @@ export function FleetTracking() {
             <TabsTrigger value="trace">Vehicle Trace</TabsTrigger>
           </TabsList>
         </Tabs>
-        <div className="flex gap-2">
+        
+        <div className="flex gap-2 items-center justify-end">
+          {/* Trip Selection and Quick Actions - Only visible when trace tab is active */}
+          {activeTab === "trace" && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">Vehicle:</span>
+                <Select>
+                  <SelectTrigger className="w-[150px] bg-background/40 backdrop-blur-md border-white/10 text-sm h-9">
+                    <SelectValue placeholder="Select vehicle" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vehicles.map((vehicle) => (
+                      <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
+                        {vehicle.registrationNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">Date:</span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="justify-start text-left text-sm h-9 font-normal w-[150px] bg-background/40 backdrop-blur-md border-white/10 text-muted-foreground"
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      <span>Pick a date range</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 bg-background/40 backdrop-blur-md border-white/10" align="start">
+                    <CalendarComponent
+                      initialFocus
+                      mode="range"
+                      numberOfMonths={1}
+                      className="rounded-md border-white/10"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <Button variant="outline" className="bg-background/60 backdrop-blur-sm border-white/10 gap-2">
+                <FileText className="h-4 w-4" />
+                Trip Log
+              </Button>
+              <Button variant="outline" className="bg-background/60 backdrop-blur-sm border-white/10 gap-2">
+                <Share2 className="h-4 w-4" />
+                Share
+              </Button>
+              <Button variant="outline" className="bg-background/60 backdrop-blur-sm border-white/10 gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                Screenshot
+              </Button>
+              <Button variant="outline" className="bg-background/60 backdrop-blur-sm border-white/10 gap-2">
+                <Bookmark className="h-4 w-4" />
+                Report
+              </Button>
+            </div>
+          )}
+          
           <Button>
             <Activity className="w-4 h-4 mr-2" />
             Export Data
@@ -1279,12 +1375,12 @@ export function FleetTracking() {
                         vehicle.currentState === "idling" && "bg-yellow-500/70",
                         vehicle.id === selectedVehicleForInfo?.id && "animate-pulse"
                       )}>
-                        <Car className="h-4 w-4 text-white" />
-                      </div>
+                      <Car className="h-4 w-4 text-white" />
+                    </div>
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-black/70 backdrop-blur-xl rounded-full px-2 py-0.5 text-[10px] text-white shadow-lg whitespace-nowrap">
                         {vehicle.registrationNumber}
-                      </div>
                     </div>
+                  </div>
                   ))}
                   
                   {/* Add some route paths between vehicles */}
@@ -1335,10 +1431,10 @@ export function FleetTracking() {
                         )}
                       >
                         <Activity className="h-4 w-4" />
-                        All
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary/20 px-2 text-xs font-medium leading-none text-primary">
-                          {vehicleCounts.all}
-                        </span>
+                    All
+                    <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary/20 px-2 text-xs font-medium leading-none text-primary">
+                      {vehicleCounts.all}
+                    </span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="moving" 
@@ -1349,10 +1445,10 @@ export function FleetTracking() {
                         )}
                       >
                         <Car className="h-4 w-4" />
-                        Moving
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-green-500/20 px-2 text-xs font-medium leading-none text-green-600">
-                          {vehicleCounts.moving}
-                        </span>
+                    Moving
+                    <span className="inline-flex h-5 items-center justify-center rounded-full bg-green-500/20 px-2 text-xs font-medium leading-none text-green-600">
+                      {vehicleCounts.moving}
+                    </span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="idling" 
@@ -1363,10 +1459,10 @@ export function FleetTracking() {
                         )}
                       >
                         <Clock className="h-4 w-4" />
-                        Idling
+                    Idling
                         <span className="inline-flex h-5 items-center justify-center rounded-full bg-yellow-500/20 px-2 text-xs font-medium leading-none text-yellow-600">
-                          {vehicleCounts.idling}
-                        </span>
+                      {vehicleCounts.idling}
+                    </span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="stopped" 
@@ -1377,10 +1473,10 @@ export function FleetTracking() {
                         )}
                       >
                         <ParkingCircle className="h-4 w-4" />
-                        Stopped
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-red-500/20 px-2 text-xs font-medium leading-none text-red-600">
-                          {vehicleCounts.stopped}
-                        </span>
+                    Stopped
+                    <span className="inline-flex h-5 items-center justify-center rounded-full bg-red-500/20 px-2 text-xs font-medium leading-none text-red-600">
+                      {vehicleCounts.stopped}
+                    </span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="offline" 
@@ -1391,10 +1487,10 @@ export function FleetTracking() {
                         )}
                       >
                         <Wifi className="h-4 w-4" />
-                        Offline
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-gray-500/20 px-2 text-xs font-medium leading-none text-gray-600">
-                          {vehicleCounts.offline}
-                        </span>
+                    Offline
+                    <span className="inline-flex h-5 items-center justify-center rounded-full bg-gray-500/20 px-2 text-xs font-medium leading-none text-gray-600">
+                      {vehicleCounts.offline}
+                    </span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="maintenance" 
@@ -1405,10 +1501,10 @@ export function FleetTracking() {
                         )}
                       >
                         <Wrench className="h-4 w-4" />
-                        Maintenance
-                        <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-500/20 px-2 text-xs font-medium leading-none text-blue-600">
-                          {vehicleCounts.maintenance}
-                        </span>
+                    Maintenance
+                    <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-500/20 px-2 text-xs font-medium leading-none text-blue-600">
+                      {vehicleCounts.maintenance}
+                    </span>
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
@@ -1421,47 +1517,47 @@ export function FleetTracking() {
               <div className="flex flex-col gap-4 px-1 py-1">
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
-                    <Input
-                      placeholder="Search vehicles..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-8 w-full"
-                    />
-                  </div>
-                  <DropdownMenu open={showFilterMenu} onOpenChange={setShowFilterMenu}>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8">
-                        <Filter className="h-4 w-4 mr-1" />
-                        <span>Filter</span>
-                      </Button>
-                    </DropdownMenuTrigger>
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground z-10" />
+                  <Input
+                    placeholder="Search vehicles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 w-full"
+                  />
+                </div>
+                    <DropdownMenu open={showFilterMenu} onOpenChange={setShowFilterMenu}>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-8">
+                          <Filter className="h-4 w-4 mr-1" />
+                          <span>Filter</span>
+                        </Button>
+                      </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuItem>
-                        <span className="flex-1">Driver Rating</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span className="flex-1">Vehicle Type</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span className="flex-1">Fuel Type</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span className="flex-1">Vehicle Class</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <span className="flex-1">Maintenance Status</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Driver Rating</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Vehicle Type</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Fuel Type</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Vehicle Class</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span className="flex-1">Maintenance Status</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
               </div>
-              
+
               <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 <div className="space-y-2">
                   {filteredVehicles.map((vehicle) => (
@@ -1873,75 +1969,244 @@ export function FleetTracking() {
             </div>
           </div>
           
-          {/* Vehicle metrics in a grid */}
-          <div className="grid grid-cols-4 gap-px dark:bg-black/5 bg-white/5">
-            {selectedVehicle?.fuelType === "electric" ? (
-              <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-                <Battery className="h-5 w-5 text-blue-500 mb-1" />
-                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
-                <span className="text-xs dark:text-black/60 text-white/60">Battery</span>
-              </div>
-            ) : (
-              <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-                <Fuel className="h-5 w-5 text-green-500 mb-1" />
-                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
-                <span className="text-xs dark:text-black/60 text-white/60">Fuel</span>
-              </div>
-            )}
-            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-              <Gauge className="h-5 w-5 text-purple-500 mb-1" />
-              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
-              <span className="text-xs dark:text-black/60 text-white/60">Speed</span>
-            </div>
-            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-              <Thermometer className="h-5 w-5 text-red-500 mb-1" />
-              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
-              <span className="text-xs dark:text-black/60 text-white/60">Temp</span>
-            </div>
-            <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <div className="flex flex-col items-center cursor-pointer">
-                    <Plus className="h-5 w-5 text-primary mb-1" />
-                    <span className="text-lg font-medium dark:text-black text-white">Add</span>
-                    <span className="text-xs dark:text-black/60 text-white/60">Indicator</span>
+          {/* Vehicle metrics in a grid - with scrolling */}
+          <div className="flex flex-col overflow-hidden bg-transparent">
+            {/* Scrollable container for indicators */}
+            <div className="max-h-60 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 dark:[&::-webkit-scrollbar-thumb]:bg-black/20">
+              <div className="grid grid-cols-4 gap-0 bg-transparent">
+                {/* Default metrics - now with remove buttons */}
+                {selectedVehicle?.fuelType === "electric" && defaultIndicatorsVisible.battery ? (
+                  <div className="relative p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center group m-[0.5px]">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500/20 hover:bg-red-500/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, battery: false }))}
+                    >
+                      <XCircle className="h-3 w-3 text-red-500" />
+                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex flex-col items-center">
+                            <Battery className="h-5 w-5 text-blue-500 mb-1" />
+                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
+                            <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Battery</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="center" className="z-50">
+                          <p>Battery</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-                </PopoverTrigger>
-                <PopoverContent side="bottom" align="end" className="w-48 p-2">
-                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Add Indicator</p>
-                  <Separator className="my-1" />
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <BarChart3 className="h-3.5 w-3.5 mr-2 text-blue-500" />
-                    Fuel Efficiency
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <Route className="h-3.5 w-3.5 mr-2 text-green-500" />
-                    Route Progress
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <Clock className="h-3.5 w-3.5 mr-2 text-yellow-500" />
-                    Running Time
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <Wrench className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                    Next Service
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <Package className="h-3.5 w-3.5 mr-2 text-red-500" />
-                    Load Capacity
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2">
-                    <Wind className="h-3.5 w-3.5 mr-2 text-cyan-500" />
-                    Air Pressure
-                  </Button>
-                  <Separator className="my-1" />
-                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Remove Current</p>
-                  <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8 px-2 text-red-500 hover:text-red-500 hover:bg-red-500/10">
-                    <XCircle className="h-3.5 w-3.5 mr-2" />
-                    Remove Indicator
-                  </Button>
-                </PopoverContent>
-              </Popover>
+                ) : selectedVehicle?.fuelType !== "electric" && defaultIndicatorsVisible.battery ? (
+                  <div className="relative p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center group m-[0.5px]">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500/20 hover:bg-red-500/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, battery: false }))}
+                    >
+                      <XCircle className="h-3 w-3 text-red-500" />
+                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex flex-col items-center">
+                            <Fuel className="h-5 w-5 text-green-500 mb-1" />
+                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
+                            <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Fuel</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="center" className="z-50">
+                          <p>Fuel</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                ) : null}
+                
+                {defaultIndicatorsVisible.speed && (
+                  <div className="relative p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center group m-[0.5px]">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500/20 hover:bg-red-500/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, speed: false }))}
+                    >
+                      <XCircle className="h-3 w-3 text-red-500" />
+                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex flex-col items-center">
+                            <Gauge className="h-5 w-5 text-purple-500 mb-1" />
+                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
+                            <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Speed</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="center" className="z-50">
+                          <p>Speed</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
+                
+                {defaultIndicatorsVisible.temperature && (
+                  <div className="relative p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center group m-[0.5px]">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500/20 hover:bg-red-500/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, temperature: false }))}
+                    >
+                      <XCircle className="h-3 w-3 text-red-500" />
+                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex flex-col items-center">
+                            <Thermometer className="h-5 w-5 text-red-500 mb-1" />
+                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
+                            <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Temp</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" align="center" className="z-50">
+                          <p>Temperature</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
+    
+                {/* Dynamic indicators - render active ones */}
+                {activeIndicators.map((indicator) => {
+                  const IconComponent = LucideIcons[indicator.icon];
+                  return (
+                    <div key={indicator.id} className="relative p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center group m-[0.5px]">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-red-500/20 hover:bg-red-500/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => setActiveIndicators(prev => prev.filter(i => i.id !== indicator.id))}
+                      >
+                        <XCircle className="h-3 w-3 text-red-500" />
+                      </Button>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex flex-col items-center">
+                              {IconComponent && <IconComponent className={`h-5 w-5 text-${indicator.color}-500 mb-1`} />}
+                              <span className="text-lg font-medium dark:text-black text-white">{indicator.value}</span>
+                              <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">{indicator.name}</span>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" align="center" className="z-50">
+                            <p>{indicator.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  );
+                })}
+    
+                {/* Add indicator cell - no limit on number of indicators now */}
+                <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center m-[0.5px]">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div className="flex flex-col items-center cursor-pointer">
+                        <Plus className="h-5 w-5 text-primary mb-1" />
+                        <span className="text-lg font-medium dark:text-black text-white">Add</span>
+                        <span className="text-xs dark:text-black/60 text-white/60">Indicator</span>
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent side="bottom" align="end" className="w-48 p-2 max-h-64 overflow-y-auto">
+                      <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Add Indicator</p>
+                      {/* Add default indicators to dropdown if they're not visible */}
+                      {!defaultIndicatorsVisible.battery && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start text-xs h-8 px-2"
+                          onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, battery: true }))}
+                        >
+                          {selectedVehicle?.fuelType === "electric" ? (
+                            <Battery className="h-3.5 w-3.5 mr-2 text-blue-500" />
+                          ) : (
+                            <Fuel className="h-3.5 w-3.5 mr-2 text-green-500" />
+                          )}
+                          {selectedVehicle?.fuelType === "electric" ? "Battery" : "Fuel"}
+                        </Button>
+                      )}
+                      {!defaultIndicatorsVisible.speed && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start text-xs h-8 px-2"
+                          onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, speed: true }))}
+                        >
+                          <Gauge className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                          Speed
+                        </Button>
+                      )}
+                      {!defaultIndicatorsVisible.temperature && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-start text-xs h-8 px-2"
+                          onClick={() => setDefaultIndicatorsVisible(prev => ({ ...prev, temperature: true }))}
+                        >
+                          <Thermometer className="h-3.5 w-3.5 mr-2 text-red-500" />
+                          Temperature
+                        </Button>
+                      )}
+                      
+                      {/* List custom indicators that aren't already added */}
+                      {availableIndicators
+                        .filter(indicator => !activeIndicators.some(active => active.id === indicator.id))
+                        .map(indicator => {
+                          const IconComponent = LucideIcons[indicator.icon];
+                          return (
+                            <Button 
+                              key={indicator.id}
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full justify-start text-xs h-8 px-2"
+                              onClick={() => {
+                                // Add indicator with a random value
+                                const newValue = `${Math.floor(Math.random() * 100)}${
+                                  indicator.name.includes('Time') ? 'm' : 
+                                  indicator.name.includes('Temp') ? '°' : 
+                                  indicator.name.includes('Capacity') ? 'kg' : 
+                                  '%'
+                                }`;
+  
+                                setActiveIndicators(prev => [
+                                  ...prev, 
+                                  { 
+                                    ...indicator, 
+                                    value: newValue
+                                  }
+                                ]);
+                              }}
+                            >
+                              {IconComponent && <IconComponent className={`h-3.5 w-3.5 mr-2 text-${indicator.color}-500`} />}
+                              {indicator.name}
+                            </Button>
+                          );
+                      })}
+                      {availableIndicators.length === activeIndicators.length && 
+                        defaultIndicatorsVisible.battery && 
+                        defaultIndicatorsVisible.speed && 
+                        defaultIndicatorsVisible.temperature && (
+                        <p className="text-xs text-center py-2 text-muted-foreground">All indicators added</p>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -1949,9 +2214,8 @@ export function FleetTracking() {
           <div className="flex-1 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full dark:[&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:bg-white/20">
             <Tabs defaultValue="info" className="w-full flex-1 flex flex-col">
               <div className="px-4 pt-4 sticky top-0 z-10 dark:bg-white/90 bg-black/70 dark:backdrop-blur-xl backdrop-blur-xl border-b dark:border-black/10 border-white/10">
-                <TabsList className="w-full grid grid-cols-4 dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg">
+                <TabsList className="w-full grid grid-cols-3 dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg">
                   <TabsTrigger value="info" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Info</TabsTrigger>
-                  <TabsTrigger value="location" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Location</TabsTrigger>
                   <TabsTrigger value="maintenance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Service</TabsTrigger>
                   <TabsTrigger value="issues" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                     Issues
@@ -1992,44 +2256,7 @@ export function FleetTracking() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Distance Today</div>
-                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <Route className="h-3 w-3 text-green-500" /> 
-                          <span>32.9</span>
-                          <span className="text-xs text-muted-foreground">km</span>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Running Time</div>
-                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <Clock className="h-3 w-3 text-yellow-500" /> 
-                          <span>47</span>
-                          <span className="text-xs text-muted-foreground">mins</span>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Fuel Efficiency</div>
-                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <Gauge className="h-3 w-3 text-purple-500" /> 
-                          {fleetStats.fuelEfficiency} mpg
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Avg Speed</div>
-                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <Gauge className="h-3 w-3 text-purple-500" /> 
-                          {fleetStats.averageSpeed} mph
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Vehicle Class</div>
-                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <Car className="h-3 w-3 text-primary" /> 
-                          {selectedVehicle?.vehicleClass}
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">Engine Type</div>
+                        <div className="text-xs dark:text-black/60 text-white/60">Fuel Type</div>
                         <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
                           {selectedVehicle?.fuelType === "electric" ? (
                             <Battery className="h-3 w-3 text-blue-500" />
@@ -2040,52 +2267,36 @@ export function FleetTracking() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs dark:text-black/60 text-white/60">VIN Number</div>
+                        <div className="text-xs dark:text-black/60 text-white/60">Time to Service</div>
                         <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
-                          <FileText className="h-3 w-3 text-blue-500" /> 
-                          {selectedVehicle?.vin}
+                          <Clock className="h-3 w-3 text-orange-500" /> 
+                          15 days
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Service Due Status</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3 text-yellow-500" /> 
+                          <Badge className="bg-yellow-500/20 text-yellow-600 border-0 px-1.5 py-0 h-5">Due Soon</Badge>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Distance to Service</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Route className="h-3 w-3 text-purple-500" /> 
+                          <span>500</span>
+                          <span className="text-xs text-muted-foreground">km</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-xs dark:text-black/60 text-white/60">Engine Hours to Service</div>
+                        <div className="text-sm font-medium dark:text-black text-white flex items-center gap-1">
+                          <Settings className="h-3 w-3 text-blue-500" /> 
+                          <span>45</span>
+                          <span className="text-xs text-muted-foreground">hours</span>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="location" className="p-4 space-y-4 mt-2 pb-6">
-                  <div className="dark:bg-white/40 bg-black/40 backdrop-blur-md rounded-lg p-4">
-                    <div className="text-xs uppercase dark:text-black/50 text-white/50 mb-2">Current Location</div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <MapPin className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm font-medium dark:text-black text-white">{selectedVehicle?.location}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 mb-4">
-                      <Clock className="h-4 w-4 text-green-500" />
-                      <span className="text-sm font-medium dark:text-black text-white">ETA: {selectedVehicle?.eta}</span>
-                    </div>
-                    
-                    <div className="h-40 dark:bg-white/20 bg-black/30 rounded-lg overflow-hidden relative">
-                      <img 
-                        src="/Tokyo Map.png" 
-                        alt="Location Preview" 
-                        className="w-full h-full object-cover dark:opacity-90 opacity-80 dark:brightness-100 brightness-50"
-                      />
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <div className="bg-primary rounded-full p-1 shadow-lg animate-pulse">
-                          <MapPin className="h-4 w-4 text-primary-foreground" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t dark:from-white/90 from-black/90 to-transparent h-20"></div>
-                      <div className="absolute bottom-2 left-2 text-xs dark:text-black/80 text-white/80">Live tracking</div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
-                      <Route className="h-4 w-4 mr-2" /> Route Details
-                    </Button>
-                    <Button variant="outline" className="dark:bg-white/40 bg-black/40 backdrop-blur-md dark:border-black/10 border-white/10 dark:text-black text-white dark:hover:bg-white/60 hover:bg-black/60">
-                      <Share2 className="h-4 w-4 mr-2" /> Share Location
-                    </Button>
                   </div>
                 </TabsContent>
                 

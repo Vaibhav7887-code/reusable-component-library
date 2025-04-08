@@ -545,286 +545,11 @@ export function VehicleTrace() {
         </div>
       )}
 
-      <div className="flex-1 flex gap-2 overflow-hidden w-full">
-        {/* Left Panel - Auto width */}
-        <ScrollArea className="w-auto min-w-[260px] shrink-0">
-          <div className="flex flex-col gap-2 p-1">
-{/* Combined Vehicle & Date Range Selection */}
-<Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
-  <CardHeader className="py-1 px-3">
-    <div className="flex justify-between items-center">
-      <CardTitle className="text-base">Trip Selection</CardTitle>
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="h-6 w-6"
-        onClick={() => setTripSelectionOpen(!tripSelectionOpen)}
-      >
-        {tripSelectionOpen ? (
-          <ChevronUp className="h-4 w-4" />
-        ) : (
-          <ChevronDown className="h-4 w-4" />
-        )}
-      </Button>
-    </div>
-  </CardHeader>
-
-  {tripSelectionOpen && (
-  <CardContent className="pt-0 p-3 space-y-3">
-    {/* Vehicle Selection */}
-    <div className="space-y-1">
-      <span className="text-sm text-muted-foreground">Vehicle</span>
-      <Select onValueChange={setSelectedVehicle}>
-        <SelectTrigger className="w-full bg-background/40 backdrop-blur-md border-white/10 text-sm h-8">
-          <SelectValue placeholder="Select vehicle" />
-        </SelectTrigger>
-        <SelectContent>
-          {vehicles.map((vehicle) => (
-            <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
-              {vehicle.name} - {vehicle.registrationNumber}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-
-    <Separator />
-
-    {/* Date Range Selection */}
-    <div className="space-y-1">
-      <span className="text-sm text-muted-foreground">Date Range</span>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "w-full justify-start text-left text-sm h-8 font-normal bg-background/40 backdrop-blur-md border-white/10",
-              !dateRange && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {dateRange?.from && dateRange?.to ? (
-              <>
-                {format(dateRange.from, "LLL dd, y")} -{" "}
-                {format(dateRange.to, "LLL dd, y")}
-              </>
-            ) : (
-              <span>Pick a date range</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0 bg-background/40 backdrop-blur-md border-white/10"
-          align="start"
-        >
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={dateRange?.from}
-            selected={dateRange}
-            onSelect={(range) => {
-              if (range?.from && range?.to) {
-                const daysDiff = Math.ceil(
-                  (range.to.getTime() - range.from.getTime()) /
-                    (1000 * 60 * 60 * 24)
-                );
-                if (daysDiff > 15) {
-                  const newEndDate = new Date(range.from);
-                  newEndDate.setDate(newEndDate.getDate() + 15);
-                  setDateRange({ from: range.from, to: newEndDate });
-                } else {
-                  setDateRange(range);
-                }
-              } else {
-                setDateRange(range);
-              }
-            }}
-            numberOfMonths={1}
-            disabled={(date) => {
-              const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-
-              if (dateRange?.from) {
-                const daysDiff = Math.ceil(
-                  (date.getTime() - dateRange.from.getTime()) /
-                    (1000 * 60 * 60 * 24)
-                );
-                return isWeekend || daysDiff > 15;
-              }
-
-              if (dateRange?.to) {
-                const daysDiff = Math.ceil(
-                  (dateRange.to.getTime() - date.getTime()) /
-                    (1000 * 60 * 60 * 24)
-                );
-                return isWeekend || daysDiff > 15;
-              }
-
-              return isWeekend;
-            }}
-            className="rounded-md border-white/10"
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  </CardContent>
-  )}
-</Card>
-
-          {/* Timeline Controls */}
-            <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
-            <CardHeader className="py-1 px-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-base">Timeline Controls</CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6"
-                  onClick={() => setTimelineControlsOpen(!timelineControlsOpen)}
-                >
-                  {timelineControlsOpen ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </CardHeader>
-            {timelineControlsOpen && (
-            <CardContent className="pt-0 p-3">
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Play Speed</span>
-                    <Select
-                      value={playbackSpeed.toString()}
-                      onValueChange={(value) => setPlaybackSpeed(Number(value))}
-                    >
-                      <SelectTrigger className="w-[80px] h-8 text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0.5">0.5x</SelectItem>
-                        <SelectItem value="1">1x</SelectItem>
-                        <SelectItem value="2">2x</SelectItem>
-                        <SelectItem value="4">4x</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Play/Pause</span>
-                    <div className="flex items-center gap-1">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setCurrentTimeIndex(Math.max(0, currentTimeIndex - 1))}
-                      >
-                        <Rewind className="h-4 w-4" />
-                      </Button>
-                      
-                      {/* Single button that changes based on state */}
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => {
-                          if (playbackComplete) {
-                            restartPlayback();
-                          } else if (isPlaying) {
-                            stopPlayback();
-                          } else {
-                            startPlayback();
-                          }
-                        }}
-                      >
-                        {playbackComplete ? (
-                          <RefreshCw className="h-4 w-4" />
-                        ) : isPlaying ? (
-                          <Square className="h-4 w-4" />
-                      ) : (
-                        <Play className="h-4 w-4" />
-                      )}
-                    </Button>
-                      
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setCurrentTimeIndex(Math.min(mockTimelineData.length - 1, currentTimeIndex + 1))}
-                      >
-                        <FastForward className="h-4 w-4" />
-                      </Button>
-                  </div>
-                </div>
-                  <div className="text-xs text-muted-foreground mt-1 italic">
-                    Keyboard: Space (play/stop/replay), ← → (step)
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Timeline Position</span>
-                    <span className="text-sm text-muted-foreground">{mockTimelineData[currentTimeIndex].time}</span>
-                  </div>
-                  <Slider
-                    value={[currentTimeIndex]}
-                    onValueChange={([value]) => setCurrentTimeIndex(value)}
-                    max={mockTimelineData.length - 1}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </CardContent>
-            )}
-          </Card>
-
-          {/* Quick Actions Card - Moved from right column to left */}
-          <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl max-w-[260px]">
-            <CardHeader className="py-1 px-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-base">Quick Actions</CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6"
-                  onClick={() => setQuickActionsOpen(!quickActionsOpen)}
-                >
-                  {quickActionsOpen ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </CardHeader>
-            {quickActionsOpen && (
-              <CardContent className="pt-0 p-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <FileText className="h-3.5 w-3.5 mr-1" />
-                    Trip Log
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <Share2 className="h-3.5 w-3.5 mr-1" />
-                    Share
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <AlertTriangle className="h-3.5 w-3.5 mr-1" />
-                    Screenshot
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs justify-start">
-                    <Bookmark className="h-3.5 w-3.5 mr-1" />
-                    Report
-                  </Button>
-                </div>
-              </CardContent>
-            )}
-          </Card>
-        </div>
-        </ScrollArea>
-
-        {/* Center Panel - 50% width */}
-        <div className="flex-1 flex flex-col min-w-[250px]">
+      <div className="flex-1 flex gap-4 overflow-hidden w-full">
+        {/* Left Panel removed - moved content to top */}
+        
+        {/* Center Panel - Map - Set to 70% width to match tracking view */}
+        <div className="w-[70%] flex flex-col min-w-[250px]">
           {/* Map with Timeline Drawer */}
           <div className="flex-1 bg-muted/30 backdrop-blur-md rounded-lg relative overflow-hidden border border-white/10 shadow-xl">
             {/* Map controls - right side */}
@@ -973,6 +698,8 @@ export function VehicleTrace() {
                 <Share2 className="w-4 h-4" />
               </Button>
             </div>
+
+            {/* Map content */}
             <div 
               ref={mapRef}
               className="w-full h-full relative overflow-hidden cursor-move z-[1]"
@@ -1086,11 +813,82 @@ export function VehicleTrace() {
 
               {/* Timeline Drawer */}
               <div className={cn(
-                "absolute z-20 bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t transition-all duration-300",
+              "absolute z-20 bottom-0 left-0 right-0 glass-effect glass-effect-hover glass-effect-active border-t border-white/10 transition-all duration-300",
                 isTimelineExpanded ? "h-auto" : "h-[53px]"
               )}>
-                <div className="flex items-center justify-between p-2 border-b">
-                  <CardTitle className="text-base">Timeline</CardTitle>
+              <div className="flex items-center justify-between p-2 border-b border-white/10">
+                <div className="flex items-center gap-4 flex-1 mr-8">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 bg-background/40 backdrop-blur-sm border-white/10"
+                      onClick={() => setCurrentTimeIndex(Math.max(0, currentTimeIndex - 1))}
+                    >
+                      <Rewind className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 bg-background/40 backdrop-blur-sm border-white/10"
+                      onClick={() => {
+                        if (playbackComplete) {
+                          restartPlayback();
+                        } else if (isPlaying) {
+                          stopPlayback();
+                        } else {
+                          startPlayback();
+                        }
+                      }}
+                    >
+                      {playbackComplete ? (
+                        <RefreshCw className="h-4 w-4" />
+                      ) : isPlaying ? (
+                        <Square className="h-4 w-4" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 bg-background/40 backdrop-blur-sm border-white/10"
+                      onClick={() => setCurrentTimeIndex(Math.min(mockTimelineData.length - 1, currentTimeIndex + 1))}
+                    >
+                      <FastForward className="h-4 w-4" />
+                    </Button>
+
+                    <Select
+                      value={playbackSpeed.toString()}
+                      onValueChange={(value) => setPlaybackSpeed(Number(value))}
+                    >
+                      <SelectTrigger className="w-[80px] h-8 text-sm bg-background/40 backdrop-blur-sm border-white/10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0.5">0.5x</SelectItem>
+                        <SelectItem value="1">1x</SelectItem>
+                        <SelectItem value="2">2x</SelectItem>
+                        <SelectItem value="4">4x</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-sm text-muted-foreground min-w-[40px]">{mockTimelineData[currentTimeIndex].time}</span>
+                    <Slider
+                      value={[currentTimeIndex]}
+                      onValueChange={([value]) => setCurrentTimeIndex(value)}
+                      max={mockTimelineData.length - 1}
+                      step={1}
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-xs text-muted-foreground">Space (play/stop/replay), ← → (step)</div>
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -1104,9 +902,11 @@ export function VehicleTrace() {
                     )}
                   </Button>
                 </div>
+              </div>
+
                 <div className={cn(
                   "p-2 transition-opacity duration-300 overflow-hidden",
-                  isTimelineExpanded ? "opacity-100" : "opacity-0"
+                isTimelineExpanded ? "opacity-100" : "opacity-0 h-0"
                 )}>
                   <div className="w-full overflow-x-auto hide-scrollbar">
                     <div 
@@ -1120,7 +920,6 @@ export function VehicleTrace() {
                       }}
                     >
                       {mockTimelineData.map((point, index) => {
-                        // Store ref creation as a separate function
                         const setTimelineItemRef = (el: HTMLDivElement | null) => {
                           if (timelineItemsRef.current) {
                             timelineItemsRef.current[index] = el;
@@ -1133,7 +932,8 @@ export function VehicleTrace() {
                             ref={setTimelineItemRef}
                         className={cn(
                               "flex flex-col gap-1 p-2 rounded-lg transition-colors cursor-pointer min-w-[120px] shrink-0 relative group",
-                              currentTimeIndex === index ? "bg-accent border border-accent-foreground/20" : "hover:bg-accent/50"
+                            "bg-background/40 backdrop-blur-sm border border-white/10",
+                            currentTimeIndex === index && "bg-accent/40 border-accent-foreground/20"
                         )}
                         onClick={() => setCurrentTimeIndex(index)}
                       >
@@ -1154,7 +954,7 @@ export function VehicleTrace() {
                               {point.fuel}%
                       </div>
                             {/* Add tooltip on hover */}
-                            <div className="hidden group-hover:block absolute bottom-full left-0 bg-background/90 backdrop-blur-sm p-2 rounded-md shadow-md z-10 w-48 text-xs">
+                          <div className="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 bg-background/90 backdrop-blur-sm p-2 rounded-md shadow-sm z-10 w-48 text-xs mb-2">
                               <div className="font-medium">{point.time} - {point.event}</div>
                               <div className="mt-1">Speed: {point.speed} km/h</div>
                               <div>Fuel: {point.fuel}%</div>
@@ -1170,8 +970,8 @@ export function VehicleTrace() {
           </div>
         </div>
 
-        {/* Right Panel - 25% width */}
-        <ScrollArea className="w-1/4 min-w-[300px] shrink-0">
+        {/* Right Panel - Updated to 30% width to match tracking view */}
+        <ScrollArea className="w-[30%] min-w-[280px] shrink-0">
           <div className="flex flex-col gap-2 p-1">
             {/* Trip Summary */}
             <Card className="bg-background/40 backdrop-blur-md border-white/5 shadow-xl">
