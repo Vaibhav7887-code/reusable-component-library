@@ -22,6 +22,7 @@ import {
 import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from "@/components/ui/select";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Bookmark } from "lucide-react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 // Client-side only import for Lucide icons to prevent hydration issues
 const LucideIcons = {
@@ -158,6 +159,7 @@ const vehicles = [
     status: "active",
     speed: 65,
     location: "Mumbai, Maharashtra",
+    fullLocation: "Unnamed Road, Andheri East, Mumbai, Maharashtra. 120 m from St. Mary's Church, Pin-400069 (India)",
     eta: "2h 30m",
     fuel: 85,
     temperature: 72,
@@ -214,6 +216,7 @@ const vehicles = [
     status: "active",
     speed: 55,
     location: "Delhi, Delhi",
+    fullLocation: "Block D, Connaught Place, New Delhi, Delhi. 45 m from Central Park, Pin-110001 (India)",
     eta: "1h 45m",
     fuel: 65,
     temperature: 68,
@@ -263,6 +266,7 @@ const vehicles = [
     status: "maintenance",
     speed: 0,
     location: "Bengaluru, Karnataka",
+    fullLocation: "Unnamed Road, Koramangala, Bengaluru, Karnataka. 80 m from Forum Mall, Pin-560034 (India)",
     eta: "N/A",
     fuel: 45,
     temperature: 75,
@@ -310,6 +314,7 @@ const vehicles = [
     status: "active",
     speed: 60,
     location: "Hyderabad, Telangana",
+    fullLocation: "Road No. 36, Jubilee Hills, Hyderabad, Telangana. 150 m from Film City, Pin-500033 (India)",
     eta: "3h 15m",
     fuel: 75,
     temperature: 70,
@@ -1349,8 +1354,8 @@ export function FleetTracking() {
                 >
                   <img 
                     ref={mapImageRef}
-                    src="/Tokyo Map.png" 
-                    alt="Tokyo Map" 
+                    src="/Delhi Map.png" 
+                    alt="Delhi Map" 
                     className="w-full h-full object-cover dark:invert dark:brightness-90 dark:hue-rotate-180"
                   />
                   
@@ -1377,9 +1382,20 @@ export function FleetTracking() {
                       )}>
                       <Car className="h-4 w-4 text-white" />
                     </div>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-black/70 backdrop-blur-xl rounded-full px-2 py-0.5 text-[10px] text-white shadow-lg whitespace-nowrap">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-black/70 backdrop-blur-xl rounded-full px-2 py-0.5 text-[10px] text-white shadow-lg whitespace-nowrap">
                         {vehicle.registrationNumber}
                     </div>
+                          </TooltipTrigger>
+                          <TooltipPrimitive.Portal>
+                            <TooltipContent side="right" align="center" className="max-w-[240px]">
+                              <p className="text-xs">{vehicle.fullLocation}</p>
+                            </TooltipContent>
+                          </TooltipPrimitive.Portal>
+                        </Tooltip>
+                      </TooltipProvider>
                   </div>
                   ))}
                   
@@ -1656,9 +1672,11 @@ export function FleetTracking() {
                                   <span className="truncate">{vehicle.location}</span>
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{vehicle.location}</p>
-                              </TooltipContent>
+                              <TooltipPrimitive.Portal>
+                                <TooltipContent className="max-w-[240px]">
+                                  <p>{vehicle.fullLocation}</p>
+                                </TooltipContent>
+                              </TooltipPrimitive.Portal>
                             </Tooltip>
                           </TooltipProvider>
                           <TooltipProvider>
@@ -1912,7 +1930,7 @@ export function FleetTracking() {
             <div className="absolute inset-0 bg-gradient-to-b dark:from-black/40 from-black/80 to-transparent z-10"></div>
             <div className="h-48 w-full overflow-hidden">
               <img 
-                src="/Tokyo Map.png" 
+                src="/Delhi Map.png" 
                 alt="Vehicle location" 
                 className="w-full h-full object-cover blur-sm dark:opacity-90 opacity-60 dark:brightness-100 brightness-50"
               />
@@ -1969,6 +1987,17 @@ export function FleetTracking() {
             </div>
           </div>
           
+          {/* Location information */}
+          <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md border-b border-white/10 dark:border-black/10">
+            <div className="flex items-start gap-2">
+              <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-medium dark:text-black text-white">Location</h4>
+                <p className="text-xs dark:text-black/70 text-white/70 mt-1">{selectedVehicle?.fullLocation}</p>
+              </div>
+            </div>
+          </div>
+          
           {/* Vehicle metrics in a grid - with scrolling */}
           <div className="flex flex-col overflow-hidden bg-transparent">
             {/* Scrollable container for indicators */}
@@ -1989,10 +2018,10 @@ export function FleetTracking() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex flex-col items-center">
-                            <Battery className="h-5 w-5 text-blue-500 mb-1" />
-                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
+                <Battery className="h-5 w-5 text-blue-500 mb-1" />
+                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.battery}%</span>
                             <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Battery</span>
-                          </div>
+              </div>
                         </TooltipTrigger>
                         <TooltipContent side="right" align="center" className="z-50">
                           <p>Battery</p>
@@ -2014,10 +2043,10 @@ export function FleetTracking() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex flex-col items-center">
-                            <Fuel className="h-5 w-5 text-green-500 mb-1" />
-                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
+                <Fuel className="h-5 w-5 text-green-500 mb-1" />
+                <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.fuel}%</span>
                             <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Fuel</span>
-                          </div>
+              </div>
                         </TooltipTrigger>
                         <TooltipContent side="right" align="center" className="z-50">
                           <p>Fuel</p>
@@ -2041,10 +2070,10 @@ export function FleetTracking() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex flex-col items-center">
-                            <Gauge className="h-5 w-5 text-purple-500 mb-1" />
-                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
+              <Gauge className="h-5 w-5 text-purple-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.speed}</span>
                             <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Speed</span>
-                          </div>
+            </div>
                         </TooltipTrigger>
                         <TooltipContent side="right" align="center" className="z-50">
                           <p>Speed</p>
@@ -2068,10 +2097,10 @@ export function FleetTracking() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex flex-col items-center">
-                            <Thermometer className="h-5 w-5 text-red-500 mb-1" />
-                            <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
+              <Thermometer className="h-5 w-5 text-red-500 mb-1" />
+              <span className="text-lg font-medium dark:text-black text-white">{selectedVehicle?.temperature}°</span>
                             <span className="text-xs dark:text-black/60 text-white/60 max-w-[60px] truncate">Temp</span>
-                          </div>
+            </div>
                         </TooltipTrigger>
                         <TooltipContent side="right" align="center" className="z-50">
                           <p>Temperature</p>
@@ -2114,16 +2143,16 @@ export function FleetTracking() {
     
                 {/* Add indicator cell - no limit on number of indicators now */}
                 <div className="p-4 dark:bg-white/40 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center m-[0.5px]">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <div className="flex flex-col items-center cursor-pointer">
-                        <Plus className="h-5 w-5 text-primary mb-1" />
-                        <span className="text-lg font-medium dark:text-black text-white">Add</span>
-                        <span className="text-xs dark:text-black/60 text-white/60">Indicator</span>
-                      </div>
-                    </PopoverTrigger>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="flex flex-col items-center cursor-pointer">
+                    <Plus className="h-5 w-5 text-primary mb-1" />
+                    <span className="text-lg font-medium dark:text-black text-white">Add</span>
+                    <span className="text-xs dark:text-black/60 text-white/60">Indicator</span>
+                  </div>
+                </PopoverTrigger>
                     <PopoverContent side="bottom" align="end" className="w-48 p-2 max-h-64 overflow-y-auto">
-                      <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Add Indicator</p>
+                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground">Add Indicator</p>
                       {/* Add default indicators to dropdown if they're not visible */}
                       {!defaultIndicatorsVisible.battery && (
                         <Button 
@@ -2138,7 +2167,7 @@ export function FleetTracking() {
                             <Fuel className="h-3.5 w-3.5 mr-2 text-green-500" />
                           )}
                           {selectedVehicle?.fuelType === "electric" ? "Battery" : "Fuel"}
-                        </Button>
+                  </Button>
                       )}
                       {!defaultIndicatorsVisible.speed && (
                         <Button 
@@ -2149,7 +2178,7 @@ export function FleetTracking() {
                         >
                           <Gauge className="h-3.5 w-3.5 mr-2 text-purple-500" />
                           Speed
-                        </Button>
+                  </Button>
                       )}
                       {!defaultIndicatorsVisible.temperature && (
                         <Button 
@@ -2160,7 +2189,7 @@ export function FleetTracking() {
                         >
                           <Thermometer className="h-3.5 w-3.5 mr-2 text-red-500" />
                           Temperature
-                        </Button>
+                  </Button>
                       )}
                       
                       {/* List custom indicators that aren't already added */}
@@ -2194,7 +2223,7 @@ export function FleetTracking() {
                             >
                               {IconComponent && <IconComponent className={`h-3.5 w-3.5 mr-2 text-${indicator.color}-500`} />}
                               {indicator.name}
-                            </Button>
+                  </Button>
                           );
                       })}
                       {availableIndicators.length === activeIndicators.length && 
@@ -2203,8 +2232,8 @@ export function FleetTracking() {
                         defaultIndicatorsVisible.temperature && (
                         <p className="text-xs text-center py-2 text-muted-foreground">All indicators added</p>
                       )}
-                    </PopoverContent>
-                  </Popover>
+                </PopoverContent>
+              </Popover>
                 </div>
               </div>
             </div>

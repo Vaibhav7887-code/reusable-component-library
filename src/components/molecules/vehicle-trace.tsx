@@ -716,8 +716,8 @@ export function VehicleTrace() {
               >
                 <img 
                   ref={mapImageRef}
-                  src="/Tokyo Map.png" 
-                  alt="Tokyo Map" 
+                  src="/Delhi Map.png" 
+                  alt="Delhi Map" 
                   className={cn(
                     "w-full h-full object-cover",
                     mapLayers.satellite ? "opacity-100" : "dark:invert dark:brightness-90 dark:hue-rotate-180"
@@ -762,7 +762,7 @@ export function VehicleTrace() {
               <div className="absolute bottom-[170px] right-4 w-48 h-48 bg-background/80 backdrop-blur-sm rounded-lg shadow-xl border border-white/10 overflow-hidden">
                 <div className="relative w-full h-full">
                   <img 
-                    src="/Tokyo Map.png" 
+                    src="/Delhi Map.png" 
                     alt="Mini Map" 
                     className="w-full h-full object-cover opacity-80 dark:invert dark:brightness-90 dark:hue-rotate-180"
                   />
