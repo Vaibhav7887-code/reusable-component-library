@@ -21,6 +21,7 @@ import { Divider } from "@/components/atoms/divider";
 import { DashboardLayout } from "@/components/templates/dashboard-layout";
 import { CardLayout } from "@/components/templates/card-layout";
 import { FleetManagementShowcase } from "./fleet-management";
+import { FleetMaintenance } from "@/components/organisms/fleet-maintenance";
 
 // Tab system for categorization
 interface TabProps {
@@ -1173,6 +1174,14 @@ export function ComponentShowcase() {
                     <Button className="w-full">Create Account</Button>
                   </CardFooter>
                 </Card>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Fleet Maintenance AI</h3>
+              <p className="text-sm text-muted-foreground">AI-powered predictive maintenance system with real-time diagnostics</p>
+              <div className="border border-white/20 rounded-lg p-4 bg-background/40 backdrop-blur-md">
+                <FleetMaintenance />
               </div>
             </div>
             
