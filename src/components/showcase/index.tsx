@@ -22,6 +22,7 @@ import { DashboardLayout } from "@/components/templates/dashboard-layout";
 import { CardLayout } from "@/components/templates/card-layout";
 import { FleetManagementShowcase } from "./fleet-management";
 import { FleetMaintenance } from "@/components/organisms/fleet-maintenance";
+import { FleetScheduler } from "@/components/organisms/fleet-scheduler";
 
 // Tab system for categorization
 interface TabProps {
@@ -1182,6 +1183,14 @@ export function ComponentShowcase() {
               <p className="text-sm text-muted-foreground">AI-powered predictive maintenance system with real-time diagnostics</p>
               <div className="border border-white/20 rounded-lg p-4 bg-background/40 backdrop-blur-md">
                 <FleetMaintenance />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Fleet Scheduler AI</h3>
+              <p className="text-sm text-muted-foreground">Intelligent fleet maintenance scheduling with conversational AI interface</p>
+              <div className="border border-white/20 rounded-lg p-4 bg-background/40 backdrop-blur-md">
+                <FleetScheduler />
               </div>
             </div>
             
