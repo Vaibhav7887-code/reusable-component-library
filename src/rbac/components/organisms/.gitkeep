@@ -1,0 +1,12 @@
+# RBAC Organisms
+
+Complex interfaces for the RBAC system:
+- user-table.tsx
+- user-edit-drawer.tsx
+- role-manager.tsx
+- bulk-edit-modal.tsx
+- audit-log.tsx
+- permission-preview.tsx
+- access-rollback-center.tsx
+- access-drift-analyzer.tsx
+- demo-showcase-panel.tsx 

@@ -1,0 +1,40 @@
+/* RBAC Module Styles */
+
+/* Import RBAC-specific styles */
+@import './rbac.css';
+@import './animations.css';
+@import './themes.css';
+
+/* RBAC Layout Utilities */
+.rbac-container {
+  @apply max-w-7xl mx-auto p-6;
+}
+
+.rbac-grid {
+  @apply grid grid-cols-1 lg:grid-cols-4 gap-6;
+}
+
+.rbac-main-content {
+  @apply lg:col-span-3;
+}
+
+.rbac-sidebar {
+  @apply lg:col-span-1;
+}
+
+/* RBAC-specific component utilities */
+.permission-toggle {
+  @apply transition-all duration-200;
+}
+
+.role-badge {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.drift-indicator {
+  @apply w-3 h-3 rounded-full;
+}
+
+.audit-timeline {
+  @apply border-l-2 border-gray-200 pl-4;
+} 

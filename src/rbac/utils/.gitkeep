@@ -1,0 +1,9 @@
+# RBAC Utils
+
+Helper functions and utilities:
+- permission-utils.ts - Permission logic helpers
+- role-templates.ts - Predefined role templates
+- audit-helpers.ts - Audit trail utilities
+- drift-detection.ts - Access drift algorithms
+- mock-data.ts - Hardcoded demo data
+- demo-scenarios.ts - Pre-configured workflows 

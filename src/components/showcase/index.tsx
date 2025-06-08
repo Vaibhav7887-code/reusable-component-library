@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton, SkeletonCard, SkeletonAvatar, SkeletonTable, SkeletonChart } from "@/components/ui/skeleton";
 import { Toast } from "@/components/ui/toast";
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { StatsCard } from "@/components/molecules/stats-card";
 import { ChartCard } from "@/components/molecules/chart-card";
 import { Calendar } from "@/components/molecules/calendar";
@@ -23,6 +24,13 @@ import { CardLayout } from "@/components/templates/card-layout";
 import { FleetManagementShowcase } from "./fleet-management";
 import { FleetMaintenance } from "@/components/organisms/fleet-maintenance";
 import { FleetScheduler } from "@/components/organisms/fleet-scheduler";
+
+// RBAC Components
+import { UserCard } from "@/rbac/components/molecules/user-card";
+import { PermissionToggle } from "@/rbac/components/atoms/permission-toggle";
+import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
+import { StatusDot } from "@/rbac/components/atoms/status-dot";
+import { mockUsers, mockRoles } from "@/rbac/utils/mock-data";
 
 // Tab system for categorization
 interface TabProps {
@@ -74,6 +82,7 @@ export function ComponentShowcase() {
     { id: "loaders", title: "Loaders" },
     { id: "notifications", title: "Notifications" },
     { id: "complex", title: "Complex Components" },
+    { id: "rbac-demo", title: "RBAC System" },
     { id: "templates", title: "Templates" },
     { id: "fleet-management", title: "Fleet Management" },
   ];
@@ -1537,6 +1546,162 @@ export default function MyPage() {
     </DashboardLayout>
   );
 }`}</pre>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "rbac-demo":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold">🔐 RBAC System</h2>
+              <p className="text-muted-foreground">
+                Enterprise-grade Role & Permissions Manager for FleetEdge with 500+ users across EV, Fuel, and Tipper modules.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <ComponentCard title="RBAC Atoms" description="Basic building blocks for permission management">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Role Indicators</h4>
+                    <div className="space-y-2">
+                      <RoleIndicator role={mockRoles[0]} showUserCount />
+                      <RoleIndicator role={mockRoles[1]} showUserCount />
+                      <RoleIndicator role={mockRoles[2]} showUserCount />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Status Indicators</h4>
+                    <div className="flex gap-4">
+                      <StatusDot status="active" showLabel />
+                      <StatusDot status="inactive" showLabel />
+                      <StatusDot status="suspended" showLabel />
+                    </div>
+                  </div>
+                </div>
+              </ComponentCard>
+
+              <ComponentCard title="Permission Toggles" description="Enhanced switches with risk indicators">
+                <div className="space-y-3">
+                  <PermissionToggle
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    label="View Vehicles"
+                    description="Access to vehicle list and basic info"
+                    risk="low"
+                  />
+                  <PermissionToggle
+                    checked={false}
+                    onCheckedChange={() => {}}
+                    label="Delete Vehicles" 
+                    description="Permanently remove vehicles from system"
+                    risk="critical"
+                  />
+                  <PermissionToggle
+                    checked={true}
+                    onCheckedChange={() => {}}
+                    label="Export Analytics"
+                    description="Download fleet data and reports"
+                    risk="medium"
+                  />
+                </div>
+              </ComponentCard>
+
+              <ComponentCard title="User Cards" description="Comprehensive user information display">
+                <div className="space-y-4">
+                  <UserCard 
+                    user={mockUsers[0]} 
+                    variant="compact"
+                    onEdit={() => {}}
+                  />
+                  <UserCard 
+                    user={mockUsers[1]} 
+                    variant="compact"
+                    onEdit={() => {}}
+                  />
+                </div>
+              </ComponentCard>
+
+              <ComponentCard title="User Card - Detailed" description="Full user information with actions">
+                <UserCard 
+                  user={mockUsers[0]} 
+                  variant="detailed"
+                  onEdit={() => {}}
+                  onViewPermissions={() => {}}
+                  onDelete={() => {}}
+                />
+              </ComponentCard>
+
+              <ComponentCard title="Mock Data Statistics" description="Realistic enterprise data for demos">
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span>Total Users</span>
+                    <span className="font-medium">{mockUsers.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Active Roles</span>
+                    <span className="font-medium">{mockRoles.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Fleet Managers</span>
+                    <span className="font-medium">{mockRoles.find(r => r.id === 'fleet_manager')?.userCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Drivers</span>
+                    <span className="font-medium">{mockRoles.find(r => r.id === 'driver')?.userCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Mechanics</span>
+                    <span className="font-medium">{mockRoles.find(r => r.id === 'mechanic')?.userCount}</span>
+                  </div>
+                </div>
+              </ComponentCard>
+
+              <ComponentCard title="Interactive Demos" description="Explore RBAC features with guided scenarios">
+                <div className="space-y-3 text-sm">
+                  <div>✨ 6 interactive demo scenarios</div>
+                  <div>🎯 Guided step-by-step tours</div>
+                  <div>📚 Multiple difficulty levels</div>
+                  <div>🔧 Real-world use cases</div>
+                  <div className="pt-2">
+                    <Link href="/rbac/users">
+                      <Button size="sm" variant="outline" className="gap-2">
+                        Try Interactive Demos
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </ComponentCard>
+            </div>
+
+            <div className="mt-8 p-6 border border-blue-200 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">🚀 Complete RBAC System</h3>
+              <p className="text-blue-800 mb-4">
+                Enterprise-grade role-based access control with user management, bulk operations, onboarding wizard, and interactive demo scenarios.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div className="text-sm text-blue-700">
+                  🔐 Advanced User Management<br/>
+                  👥 Role-based Permission System<br/>
+                  ⚡ Bulk Operations & Workflows
+                </div>
+                <div className="text-sm text-blue-700">
+                  🎯 User Onboarding Wizard<br/>
+                  📖 Interactive Demo Scenarios<br/>
+                  🎨 Modern Enterprise UX
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Link href="/rbac/users">
+                  <Button size="sm" className="gap-2">
+                    Explore RBAC System
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Button variant="outline" size="sm">View Components</Button>
               </div>
             </div>
           </div>

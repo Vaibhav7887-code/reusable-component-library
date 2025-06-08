@@ -1,0 +1,8 @@
+# RBAC Data
+
+Mock data and demo scenarios:
+- users.json - Sample user dataset
+- roles.json - Predefined role definitions
+- permissions.json - Permission catalog
+- scenarios.json - Demo workflow configurations
+- audit-log.json - Sample audit trail data 

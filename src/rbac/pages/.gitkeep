@@ -1,0 +1,8 @@
+# RBAC Pages
+
+Main application pages:
+- dashboard.tsx - Main RBAC overview
+- users.tsx - User management interface  
+- roles.tsx - Role management interface
+- audit.tsx - Audit log and compliance
+- demo.tsx - Interactive demo scenarios 

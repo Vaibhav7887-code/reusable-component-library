@@ -1,0 +1,14 @@
+# RBAC Molecules
+
+Composite components for the RBAC system:
+- user-card.tsx
+- permission-group.tsx
+- role-selector.tsx
+- bulk-action-bar.tsx
+- user-search.tsx
+- permission-matrix.tsx
+- audit-entry.tsx
+- role-preview.tsx
+- access-drift-card.tsx
+- break-glass-panel.tsx
+- demo-tour-guide.tsx 

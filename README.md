@@ -5,11 +5,12 @@ A showcase of beautiful, reusable UI components with animations and interactions
 ## 🎯 Project Overview
 
 This project demonstrates my ability to:
-- Create modern, responsive UI components
-- Implement animation and interaction patterns
-- Build reusable components with consistent APIs
-- Structure code in a maintainable way
-- Balance aesthetics and functionality in UX design
+- Create modern, responsive UI components with frosted glass design language
+- Implement complex animation and interaction patterns using Framer Motion
+- Build reusable components with consistent APIs following atomic design principles
+- Structure enterprise-grade applications (RBAC system) in a maintainable way
+- Balance aesthetics and functionality in UX design with accessibility support
+- Develop comprehensive design systems that scale across multiple use cases
 
 ## ✨ Component Library Features
 
@@ -57,14 +58,24 @@ The library includes the following component categories:
 - Status variants
 - Interactive dismissal
 
+### RBAC System (Role & Permissions Manager)
+- Enterprise-grade access management system
+- User management with role-based permissions
+- Permission matrix with granular control
+- Audit trails and compliance reporting
+- Bulk operations and emergency access
+- Access drift detection and analysis
+
 ## 🛠️ Technical Stack
 
 - **Framework**: Next.js with App Router
-- **Styling**: Tailwind CSS
-- **Type Safety**: TypeScript
-- **Animation**: Framer Motion
-- **Components**: Class Variance Authority for variant management
-- **Design System**: Custom CSS variables for theming
+- **Styling**: Tailwind CSS with custom frosted glass utilities
+- **Type Safety**: TypeScript throughout
+- **Animation**: Framer Motion for complex interactions
+- **Components**: Radix UI primitives with Class Variance Authority for variant management
+- **Design System**: Atomic design principles with custom CSS variables for theming
+- **Icons**: Lucide React for consistent iconography
+- **State Management**: React hooks pattern with custom hooks for complex state
 
 ## 🚀 Getting Started
 
@@ -84,12 +95,24 @@ npm run dev
 
 Visit `http://localhost:3000` to see the component library in action.
 
+### Featured Demonstrations
+
+- **Component Showcase**: Interactive gallery of all UI components with live examples
+- **Fleet Management**: Complex dashboard with real-time data visualization and maintenance AI
+- **RBAC System**: Enterprise role and permissions manager with audit capabilities
+- **Frosted Glass Theme**: Modern translucent design language throughout the system
+
 ## 📝 Code Organization
 
-- `/src/components/ui`: Individual UI components
+- `/src/components/ui`: Individual UI components (atomic design system)
 - `/src/components/showcase`: Component demonstration system
-- `/src/lib`: Utility functions
-- `/src/app`: Next.js app structure
+- `/src/components/atoms`: Basic building blocks (icons, labels, dividers)
+- `/src/components/molecules`: Composite components (stats cards, charts, calendars)
+- `/src/components/organisms`: Complex interfaces (dashboards, fleet management)
+- `/src/components/templates`: Page layouts and structures
+- `/src/rbac`: Complete RBAC module with enterprise access management
+- `/src/lib`: Utility functions and helpers
+- `/src/app`: Next.js app structure and routing
 
 ## 📄 License
 

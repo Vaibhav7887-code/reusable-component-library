@@ -19,7 +19,7 @@ export function FrostedGlassDemo() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Card 1 */}
+          {/* RBAC System Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -27,37 +27,48 @@ export function FrostedGlassDemo() {
           >
             <Card variant="frostedGlass" className="h-full">
               <CardHeader>
-                <CardTitle>Analytics Dashboard</CardTitle>
-                <CardDescription>Track your performance metrics</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  🔐 RBAC System
+                </CardTitle>
+                <CardDescription>Enterprise role & permissions manager</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="h-2 bg-white/20 rounded-full w-full"></div>
-                  <div className="h-2 bg-white/20 rounded-full w-3/4"></div>
-                  <div className="h-2 bg-white/20 rounded-full w-1/2"></div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Components Built</span>
+                    <span className="text-sm font-medium">12+ atoms & molecules</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Design Patterns</span>
+                    <span className="text-sm font-medium">Permission Matrix</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Mock Users</span>
+                    <span className="text-sm font-medium">500+ with roles</span>
+                  </div>
                   <div className="flex justify-between mt-6">
                     <div className="text-center">
-                      <div className="text-2xl font-bold">89%</div>
-                      <div className="text-xs text-muted-foreground">Engagement</div>
+                      <div className="text-2xl font-bold">4</div>
+                      <div className="text-xs text-muted-foreground">Modules</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold">2.4k</div>
-                      <div className="text-xs text-muted-foreground">Visitors</div>
+                      <div className="text-2xl font-bold">8</div>
+                      <div className="text-xs text-muted-foreground">Roles</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold">32</div>
-                      <div className="text-xs text-muted-foreground">Conversions</div>
+                      <div className="text-2xl font-bold">24</div>
+                      <div className="text-xs text-muted-foreground">Permissions</div>
                     </div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full">View Details</Button>
+                <Button className="w-full">View RBAC Demo</Button>
               </CardFooter>
             </Card>
           </motion.div>
           
-          {/* Card 2 */}
+          {/* Fleet Management Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -65,42 +76,53 @@ export function FrostedGlassDemo() {
           >
             <Card variant="frostedGlass" className="h-full">
               <CardHeader>
-                <CardTitle>User Profile</CardTitle>
-                <CardDescription>Manage your account settings</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  🚚 Fleet Management
+                </CardTitle>
+                <CardDescription>AI-powered maintenance & scheduling</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl">
-                    👤
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Components Built</span>
+                    <span className="text-sm font-medium">20+ organisms</span>
                   </div>
-                  <div>
-                    <div className="font-medium">Alex Johnson</div>
-                    <div className="text-sm text-muted-foreground">Premium Member</div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Design Patterns</span>
+                    <span className="text-sm font-medium">Progress Rings & Cards</span>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm">Email</span>
-                    <span className="text-sm text-muted-foreground">alex@example.com</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">AI Features</span>
+                    <span className="text-sm font-medium">Predictive Maintenance</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Location</span>
-                    <span className="text-sm text-muted-foreground">San Francisco, CA</span>
+                  <div className="flex justify-between mt-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">150</div>
+                      <div className="text-xs text-muted-foreground">Vehicles</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">12</div>
+                      <div className="text-xs text-muted-foreground">Alerts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">95%</div>
+                      <div className="text-xs text-muted-foreground">Uptime</div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Member Since</span>
-                    <span className="text-sm text-muted-foreground">March 2023</span>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="flex gap-2">
-                <Button variant="outline" className="flex-1">Log Out</Button>
-                <Button className="flex-1">Edit Profile</Button>
+              <CardFooter>
+                <Button 
+                  className="w-full"
+                  onClick={() => window.open('/fleet-management', '_blank')}
+                >
+                  View Fleet Demo
+                </Button>
               </CardFooter>
             </Card>
           </motion.div>
           
-          {/* Card 3 */}
+          {/* Design System Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,39 +130,44 @@ export function FrostedGlassDemo() {
           >
             <Card variant="frostedGlass" className="h-full">
               <CardHeader>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>Recent updates and alerts</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  🎨 Design System
+                </CardTitle>
+                <CardDescription>Atomic design with frosted glass theme</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors">
-                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs">
-                        {i === 1 ? '📊' : i === 2 ? '🔔' : '✉️'}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Atoms</span>
+                    <span className="text-sm font-medium">15+ base components</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Molecules</span>
+                    <span className="text-sm font-medium">10+ composite UI</span>
                       </div>
-                      <div>
-                        <div className="text-sm font-medium">
-                          {i === 1 
-                            ? 'Analytics report ready' 
-                            : i === 2 
-                              ? 'New feature available' 
-                              : 'Message from support'}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Organisms</span>
+                    <span className="text-sm font-medium">5+ complex interfaces</span>
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {i === 1 
-                            ? '2 hours ago' 
-                            : i === 2 
-                              ? 'Yesterday' 
-                              : '3 days ago'}
+                  <div className="flex justify-between mt-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">Glass</div>
+                      <div className="text-xs text-muted-foreground">Theme</div>
                         </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">Motion</div>
+                      <div className="text-xs text-muted-foreground">Animations</div>
                       </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">A11y</div>
+                      <div className="text-xs text-muted-foreground">Accessible</div>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </CardContent>
               <CardFooter>
                 <Button variant="outline" className="w-full">
-                  View All Notifications
+                  Explore Components
                 </Button>
               </CardFooter>
             </Card>

@@ -1,0 +1,9 @@
+# RBAC Hooks
+
+Custom React hooks:
+- useUsers.ts - User data management
+- useRoles.ts - Role operations
+- usePermissions.ts - Permission logic
+- useBulkActions.ts - Bulk operations
+- useDemo.ts - Demo scenario management
+- useAudit.ts - Audit trail tracking 

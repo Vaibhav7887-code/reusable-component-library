@@ -1,0 +1,6 @@
+# RBAC Styles
+ 
+RBAC-specific styling:
+- rbac.css - Module-specific styles
+- animations.css - Transition and loading animations
+- themes.css - RBAC color themes and variants 

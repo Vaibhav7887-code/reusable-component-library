@@ -1,0 +1,9 @@
+# RBAC Types
+
+TypeScript type definitions:
+- user.types.ts - User and profile types
+- role.types.ts - Role and template types
+- permission.types.ts - Permission definitions
+- audit.types.ts - Audit trail types
+- demo.types.ts - Demo scenario types
+- mock-data.types.ts - Mock data structures 

@@ -1,0 +1,7 @@
+# RBAC Atoms
+ 
+Basic building blocks for the RBAC system:
+- permission-toggle.tsx
+- role-indicator.tsx  
+- risk-badge.tsx
+- status-dot.tsx 
