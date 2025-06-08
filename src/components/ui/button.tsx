@@ -15,6 +15,8 @@ const buttonVariants = cva(
         
         destructive: "bg-red-500/20 backdrop-filter backdrop-blur-sm border border-red-500/30 text-red-700 dark:text-red-300 shadow-sm hover:bg-red-500/30 hover:border-red-500/40 active:bg-red-500/50 active:scale-[0.96] active:shadow-inner-md active:border-red-500/50",
         
+        success: "bg-green-500/20 backdrop-filter backdrop-blur-sm border border-green-500/30 text-green-700 dark:text-green-300 shadow-sm hover:bg-green-500/30 hover:border-green-500/40 active:bg-green-500/50 active:scale-[0.96] active:shadow-inner-md active:border-green-500/50",
+        
         outline: "bg-transparent backdrop-filter backdrop-blur-sm border-2 border-white/30 text-gray-800 dark:text-white hover:bg-white/10 hover:border-white/50 active:bg-white/30 active:scale-[0.96] active:shadow-inner-md active:border-white/60",
         
         secondary: "bg-indigo-500/30 backdrop-filter backdrop-blur-sm border border-indigo-500/40 text-indigo-900 dark:text-indigo-100 shadow-sm hover:bg-indigo-500/40 hover:border-indigo-500/50 active:bg-indigo-500/60 active:scale-[0.96] active:shadow-inner-md active:border-indigo-500/60",

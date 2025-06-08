@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import type { User, Role, BulkOperation, BulkOperationResult } from "@/rbac/types";
 
+type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+
 interface BulkOperationsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -85,7 +87,7 @@ export function BulkOperationsModal({
           icon: Shield,
           color: 'blue',
           requiresRole: true,
-          riskLevel: 'medium' as const
+          riskLevel: 'medium' as RiskLevel
         };
       case 'remove_role':
         return {
@@ -94,7 +96,7 @@ export function BulkOperationsModal({
           icon: Shield,
           color: 'orange',
           requiresRole: true,
-          riskLevel: 'high' as const
+          riskLevel: 'high' as RiskLevel
         };
       case 'grant_permission':
         return {
@@ -103,7 +105,7 @@ export function BulkOperationsModal({
           icon: CheckCircle,
           color: 'green',
           requiresRole: false,
-          riskLevel: 'medium' as const
+          riskLevel: 'medium' as RiskLevel
         };
       case 'revoke_permission':
         return {
@@ -112,7 +114,7 @@ export function BulkOperationsModal({
           icon: XCircle,
           color: 'orange',
           requiresRole: false,
-          riskLevel: 'high' as const
+          riskLevel: 'high' as RiskLevel
         };
       case 'activate':
         return {
@@ -121,7 +123,7 @@ export function BulkOperationsModal({
           icon: CheckCircle,
           color: 'green',
           requiresRole: false,
-          riskLevel: 'low' as const
+          riskLevel: 'low' as RiskLevel
         };
       case 'deactivate':
         return {
@@ -130,7 +132,7 @@ export function BulkOperationsModal({
           icon: XCircle,
           color: 'orange',
           requiresRole: false,
-          riskLevel: 'high' as const
+          riskLevel: 'high' as RiskLevel
         };
     }
   };

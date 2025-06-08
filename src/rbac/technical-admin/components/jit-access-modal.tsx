@@ -67,11 +67,11 @@ export function JitAccessModal({ event, onOpenChange, onDecision }: JitAccessMod
             </div>
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => handleDecision('Denied')}>
+        <DialogFooter className="grid grid-cols-2 gap-2">
+          <Button variant="destructive" onClick={() => handleDecision('Denied')}>
             Deny
           </Button>
-          <Button variant="success" onClick={() => handleDecision('Approved')}>
+          <Button variant="secondary" onClick={() => handleDecision('Approved')}>
             Approve Temporary Access
           </Button>
         </DialogFooter>

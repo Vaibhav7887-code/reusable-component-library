@@ -32,9 +32,9 @@ const toastVariants = cva(
 );
 
 export interface ToastProps
-  extends Omit<HTMLMotionProps<"div">, "animate" | "initial" | "transition" | "variants">,
+  extends Omit<HTMLMotionProps<"div">, "animate" | "initial" | "transition" | "variants" | "title">,
     VariantProps<typeof toastVariants> {
-  title?: string;
+  title?: React.ReactNode;
   description?: string;
   action?: React.ReactNode;
   onClose?: () => void;
