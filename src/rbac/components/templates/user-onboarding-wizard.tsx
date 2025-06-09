@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
 import { PermissionToggle } from "@/rbac/components/atoms/permission-toggle";
@@ -449,11 +449,13 @@ function ReviewConfirmStep({ data, availableRoles }: StepProps) {
             <CardTitle className="text-lg">Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center gap-4">
-              <Avatar fallback={(data.name || 'U').slice(0, 2)} size="lg" />
-              <div>
-                <h4 className="font-medium">{data.name}</h4>
-                <p className="text-sm text-muted-foreground">{data.email}</p>
+            <div className="flex flex-col items-center text-center">
+              <Avatar className="h-20 w-20 mb-4">
+                <AvatarFallback className="text-2xl">{(data.name || 'U').slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <h3 className="text-xl font-semibold">{data.name}</h3>
+              <p className="text-muted-foreground">{data.email}</p>
+              <div className="mt-2">
                 <p className="text-sm text-muted-foreground">{data.department} • {data.employeeId}</p>
               </div>
             </div>

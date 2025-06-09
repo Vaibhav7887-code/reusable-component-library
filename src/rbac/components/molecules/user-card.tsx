@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
@@ -49,7 +49,10 @@ export function UserCard({
     return (
       <Card variant="frostedGlass" className={cn("p-4", className)}>
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10" fallback={user.avatar || user.name.split(' ').map((n: string) => n[0]).join('')} />
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={user.avatar} alt={user.name} />
+            <AvatarFallback>{user.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+          </Avatar>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className="font-medium truncate">{user.name}</p>
@@ -72,9 +75,11 @@ export function UserCard({
       <CardHeader className="pb-3">
         <div className="flex items-start gap-3">
           <Avatar 
-            className="h-12 w-12" 
-                          fallback={user.avatar || user.name.split(' ').map((n: string) => n[0]).join('')}
-          />
+            className="h-12 w-12"
+          >
+            <AvatarImage src={user.avatar} alt={user.name} />
+            <AvatarFallback>{user.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+          </Avatar>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <CardTitle className="text-lg truncate">{user.name}</CardTitle>

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
@@ -337,10 +337,10 @@ export function UserTable({
                   />
                 </TableCell>
                 <TableCell>
-                  <Avatar 
-                    className="h-8 w-8" 
-                    fallback={user.avatar || user.name.split(' ').map((n: string) => n[0]).join('')}
-                  />
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback>{user.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
                 </TableCell>
                 <TableCell>
                   <div>

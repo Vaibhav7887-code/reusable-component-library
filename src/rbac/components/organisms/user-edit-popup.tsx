@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
 import { StatusDot } from "@/rbac/components/atoms/status-dot";
@@ -260,10 +260,10 @@ export function UserEditPopup({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border/40 bg-background/80 backdrop-blur-sm">
           <div className="flex items-center gap-4">
-            <Avatar 
-              className="h-12 w-12" 
-              fallback={editedUser.avatar || editedUser.name.split(' ').map((n: string) => n[0]).join('')} 
-            />
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={editedUser.avatar} alt={editedUser.name} />
+              <AvatarFallback>{editedUser.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+            </Avatar>
             <div>
               <h2 id="edit-user-title" className="text-2xl font-semibold text-foreground">
                 Edit User

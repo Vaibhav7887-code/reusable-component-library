@@ -39,9 +39,11 @@ The core design philosophy is to transform the permissions system from a frustra
     *   *Why not a static text log?* → A static log is passive. An interactive trace is a tool.
     *   *What makes it interactive?* → Clicking a line item in the trace (e.g., `[✗] Policy 'geofence-v1' denied access`) should instantly highlight the corresponding policy in the **Policy Context** panel. This direct, visual link is the fastest way to facilitate understanding.
 
-### 1.4. Panel 3: Policy Context
+### 1.4. Panel 3: Policy Context & The Simulation Layer
 
-*   **WHAT:** A read-only code editor view showing the raw policy document (e.g., JSON/YAML) that applies to the simulated resource.
+*   **WHAT:** A read-only code editor view showing the raw policy document (e.g., JSON/YAML) that applies to the simulated resource. This view is powered by our **Internal Simulation Layer**.
+*   **WHY the Simulation Layer?**
+    *   *Why not just "mock data"?* → "Mock data" implies static, throwaway data. The **Simulation Layer** is an architectural pattern. It's a reusable framework that can fetch live data from a real resource (e.g., `vehicle:vin-123`) for a high-fidelity simulation, but also allows developers to override specific attributes (`"What if this vehicle's status was 'Available' instead?"`). This same layer can be used for automated testing, generating staging data, and powering future "what-if" analysis tools. It's a designed system, not just a temporary fake.
 *   **WHY a read-only view?**
     *   *Why not make it editable here?* → The Sandbox is for *debugging*, not *editing*. Allowing edits here would conflate two different workflows and could lead to accidental changes. The "source of truth" is the policy editor or the Git repo. This view is for diagnostics.
 *   **WHY show the raw code?**

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
@@ -194,7 +194,10 @@ export function UserEditDrawer({
       <SheetContent className={cn("w-[600px] sm:w-[700px] max-w-[90vw] overflow-hidden", className)}>
         <SheetHeader className="pb-4">
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10" fallback={editedUser.avatar || editedUser.name.split(' ').map((n: string) => n[0]).join('')} />
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={editedUser.avatar} alt={editedUser.name} />
+              <AvatarFallback>{editedUser.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+            </Avatar>
             <div>
               <SheetTitle className="text-xl">Edit User</SheetTitle>
               <SheetDescription>

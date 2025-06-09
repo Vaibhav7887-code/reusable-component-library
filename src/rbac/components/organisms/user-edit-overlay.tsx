@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RoleIndicator } from "@/rbac/components/atoms/role-indicator";
@@ -195,7 +195,10 @@ export function UserEditOverlay({
         {/* Header - Fixed spacing */}
         <SheetHeader className="pb-4 border-b border-border/40">
           <div className="flex items-start gap-3">
-            <Avatar className="h-10 w-10 mt-1" fallback={editedUser.avatar || editedUser.name.split(' ').map((n: string) => n[0]).join('')} />
+            <Avatar className="h-10 w-10 mt-1">
+              <AvatarImage src={editedUser.avatar} alt={editedUser.name} />
+              <AvatarFallback>{editedUser.name.split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
+            </Avatar>
             <div className="flex-1 min-w-0">
               <SheetTitle className="text-xl font-semibold text-foreground leading-tight">Edit User</SheetTitle>
               <SheetDescription className="text-sm text-muted-foreground mt-1 leading-relaxed">

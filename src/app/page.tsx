@@ -33,6 +33,12 @@ export default function Home() {
               Dashboard
             </a>
             <a 
+              href="/api-portal/marketplace" 
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              API Portal
+            </a>
+            <a 
               href="/fleet-management" 
               className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
               target="_blank"

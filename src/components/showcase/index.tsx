@@ -6,7 +6,7 @@ import { ComponentCard } from "./component-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Skeleton, SkeletonCard, SkeletonAvatar, SkeletonTable, SkeletonChart } from "@/components/ui/skeleton";
 import { Toast } from "@/components/ui/toast";
@@ -523,37 +523,68 @@ export function ComponentShowcase() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <ComponentCard title="Default Avatar" description="Standard avatar components">
               <div className="flex flex-wrap gap-4">
-                <Avatar 
-                  src="https://github.com/shadcn.png" 
-                  alt="User" 
-                  isAnimated={true} 
-                />
-                <Avatar 
-                  fallback="JD" 
-                  isAnimated={true} 
-                />
-                <Avatar 
-                  alt="User" 
-                  isAnimated={true} 
-                />
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
               </div>
             </ComponentCard>
             
             <ComponentCard title="Avatar Sizes" description="Different size variants">
               <div className="flex items-center gap-4">
-                <Avatar src="https://github.com/shadcn.png" alt="User" size="sm" />
-                <Avatar src="https://github.com/shadcn.png" alt="User" />
-                <Avatar src="https://github.com/shadcn.png" alt="User" size="lg" />
-                <Avatar src="https://github.com/shadcn.png" alt="User" size="xl" />
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
               </div>
             </ComponentCard>
             
             <ComponentCard title="Avatar with Rings" description="Avatars with colored rings">
               <div className="flex flex-wrap gap-4">
-                <Avatar src="https://github.com/shadcn.png" alt="User" ringColor="primary" />
-                <Avatar src="https://github.com/shadcn.png" alt="User" ringColor="secondary" />
-                <Avatar src="https://github.com/shadcn.png" alt="User" ringColor="accent" />
-                <Avatar fallback="VIP" ringColor="gradient" />
+                <Avatar className="ring-2 ring-primary">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="ring-2 ring-secondary">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="ring-2 ring-accent">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="ring-2 ring-offset-2 ring-offset-background ring-blue-500">
+                  <AvatarFallback>VIP</AvatarFallback>
+                </Avatar>
+              </div>
+            </ComponentCard>
+
+            <ComponentCard title="Sized Avatars" description="Avatars in different sizes">
+              <div className="flex flex-wrap items-center gap-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
               </div>
             </ComponentCard>
           </div>
@@ -1246,7 +1277,9 @@ export function ComponentShowcase() {
                 </ComponentCard>
                 
                 <ComponentCard title="Avatar" description="User representation">
-                  <Avatar fallback="JD" />
+                  <Avatar>
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
                 </ComponentCard>
                 
                 <ComponentCard title="Skeleton" description="Loading state">
@@ -1307,7 +1340,9 @@ export function ComponentShowcase() {
                 
                 <ComponentCard title="User Badge" description="Avatar with name">
                   <div className="flex items-center gap-2">
-                    <Avatar fallback="JD" size="sm" />
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
                     <span className="text-sm font-medium">John Doe</span>
                   </div>
                 </ComponentCard>
