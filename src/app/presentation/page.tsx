@@ -418,7 +418,7 @@ const HeroSection = () => (
 
         {/* Main Headline */}
         <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6">
-          Scaling Identity & Access for a{' '}
+          Scaling Access & DevEx for a{' '}
           <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Connected Fleet Ecosystem
           </span>
