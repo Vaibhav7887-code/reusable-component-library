@@ -35,7 +35,7 @@
 *"Let me start with the big picture. This was a designer-led business transformation. I positioned APIs as moving from internal plumbing to revenue-generating products, and identity as a competitive moat rather than a cost center."*
 
 ### Fleet-as-a-Service Vision
-*"We transformed from a closed SaaS application to what I call 'the central nervous system for fleet operations.' This required rethinking identity not as user management, but as ecosystem orchestration."*
+*"We transformed from a closed SaaS application to what I call 'the central nervous system for fleet operations.' This required rethinking fleetedge as an ecosystem orchestration."*
 
 ### Investment & Strategic Value
 **[HIGHLIGHT THE BUSINESS CASE]**

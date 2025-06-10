@@ -139,7 +139,7 @@ const ExecutiveSummary = () => (
             <CardHeader>
               <CardTitle className="flex items-center text-blue-300 mb-4">
                 <Shield className="w-6 h-6 mr-3" />
-                Identity as Strategic Enabler
+                User roles as Strategic Enabler
               </CardTitle>
             </CardHeader>
             <CardContent className="text-slate-100">
@@ -151,7 +151,7 @@ const ExecutiveSummary = () => (
                   </div>
                   <div>
                     <div className="text-sm font-medium text-slate-200">Platform Stickiness</div>
-                    <div className="text-xs text-slate-300">IAM as competitive moat</div>
+                    <div className="text-xs text-slate-300">Developer experience as competitive moat</div>
                   </div>
                 </div>
                 
@@ -228,7 +228,7 @@ const ExecutiveSummary = () => (
           <Card className="bg-slate-800/50 border-slate-600 backdrop-blur-sm">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold text-white mb-2">Key Business Outcomes</CardTitle>
-              <p className="text-slate-300">Measurable impact from identity-driven platform transformation</p>
+              <p className="text-slate-300">Measurable impact from role-driven platform transformation</p>
             </CardHeader>
             <CardContent className="p-8">
               <div className="grid lg:grid-cols-2 gap-8">
@@ -1134,7 +1134,7 @@ const RBACFrictionMap = () => (
               </div>
               <div>
                 <h5 className="font-medium text-gray-700 mb-1">User's Internal Monologue:</h5>
-                <p className="text-sm italic text-gray-600">"I need to grant mechanic access NOW, but our IAM system requires a 20-step approval process. The truck is stuck on I-95 with cargo worth $50k."</p>
+                <p className="text-sm italic text-gray-600">"I need to grant mechanic access NOW, but our access management system requires a 10-step approval process. The truck is stuck on I-95 with cargo worth $50k."</p>
               </div>
               <div>
                 <h5 className="font-medium text-gray-700 mb-1">Business Impact:</h5>
@@ -1899,7 +1899,7 @@ const RBACResults = () => (
             </div>
             <div>
               <blockquote className="text-lg font-medium text-green-900 mb-2">
-                "This is the first IAM system that actually helps me debug instead of just blocking me."
+                "This is the first Access Management system that actually helps me debug."
               </blockquote>
               <cite className="text-green-700">— Platform Engineer</cite>
             </div>
