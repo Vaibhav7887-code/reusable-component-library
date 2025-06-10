@@ -3202,7 +3202,7 @@ const APIPortalResults = () => (
         </CardHeader>
         <CardContent>
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-600 mb-1">$127K</div>
+            <div className="text-3xl font-bold text-amber-600 mb-1">3.2X</div>
             <p className="text-sm text-amber-800">Monthly recurring API revenue</p>
           </div>
         </CardContent>
