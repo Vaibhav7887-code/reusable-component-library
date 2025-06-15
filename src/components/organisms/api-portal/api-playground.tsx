@@ -352,8 +352,8 @@ const Playground = () => {
             </div>
 
             {/* Center Panel (Request) */}
-            <div className="flex flex-col relative">
-                <div className="flex-1 overflow-y-auto pb-20">
+            <div className="flex flex-col">
+                <div className="flex-1 overflow-y-auto">
                     <h3 className="font-semibold mb-4">Request</h3>
                     <div className="space-y-4">
                         {selectedEndpoint.parameters.map(param => (
@@ -370,7 +370,7 @@ const Playground = () => {
                 </div>
                 
                 {/* Sticky Send Button */}
-                <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-4">
+                <div className="mt-4 pt-4 border-t bg-background">
                     <Button onClick={handleSendRequest} className="w-full" isLoading={isLoading}>
                         <Icon name="play" className="w-4 h-4 mr-2" />
                         Send Request
