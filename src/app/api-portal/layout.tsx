@@ -174,10 +174,10 @@ export default function ApiPortalLayout({
       <div className="flex">
         {/* Sidebar */}
         <aside className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 transform border-r bg-background transition-transform duration-200 ease-in-out lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-64 transform border-r bg-background transition-transform duration-200 ease-in-out lg:fixed lg:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}>
-          <div className="flex h-full flex-col">
+          <div className="flex h-full flex-col pt-16">
             {/* Organization Info */}
             <div className="p-6 border-b">
               <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export default function ApiPortalLayout({
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 lg:ml-64">
           <div className="container py-6">
             {children}
           </div>

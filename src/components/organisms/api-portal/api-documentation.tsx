@@ -14,7 +14,10 @@ import { cn } from "@/lib/utils";
 import { mockApiProducts } from '@/lib/api-portal-data';
 import { ApiProduct, ApiEndpoint, ApiResponse, CodeExample } from '@/types/api-portal';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import Link from "next/link";
 
 interface ApiDocumentationProps {
   apiId?: string;
@@ -516,6 +519,73 @@ print(response.json())`;
                     Ready-to-use code examples in multiple programming languages
                   </p>
                 </div>
+
+                {/* Live Playground Integration */}
+                <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-blue-900">
+                      <Icon name="play-circle" className="w-5 h-5" />
+                      Live API Playground
+                    </CardTitle>
+                    <CardDescription className="text-blue-700">
+                      Test APIs directly from documentation with fleet-contextualized data
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <Select defaultValue="FE-459-TKR">
+                          <SelectTrigger className="w-48">
+                            <SelectValue placeholder="Select a VIN" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="FE-459-TKR">FE-459-TKR (Honda Accord)</SelectItem>
+                            <SelectItem value="GH-892-PLM">GH-892-PLM (Ford F-150)</SelectItem>
+                            <SelectItem value="JK-334-QWE">JK-334-QWE (Tesla Model S)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button 
+                          onClick={() => {
+                            toast.success('API call executed!', {
+                              description: 'Real fleet data returned successfully'
+                            });
+                          }}
+                        >
+                          <Icon name="play" className="w-4 h-4 mr-2" />
+                          Execute API Call
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <Link href="/api-portal/playground">
+                            <Icon name="external-link" className="w-4 h-4 mr-2" />
+                            Full Playground
+                          </Link>
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm font-medium mb-2 block">Request</Label>
+                          <div className="p-4 bg-gray-900 rounded-lg text-green-400 font-mono text-sm">
+                            <div>GET /vehicles/FE-459-TKR</div>
+                            <div className="text-gray-500 mt-1">Authorization: Bearer your_api_key</div>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium mb-2 block">Live Response</Label>
+                          <div className="p-4 bg-gray-900 rounded-lg text-gray-300 font-mono text-sm">
+                            <div className="text-green-400">200 OK (245ms)</div>
+                            <div className="mt-2 text-xs">
+                              {`{
+  "vin": "FE-459-TKR",
+  "location": { "lat": 40.7128, "lng": -74.0060 },
+  "fuel": { "level": 82, "efficiency": 28.5 }
+}`}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {selectedApi.examples.map((example: CodeExample) => (
                   <Card key={example.language}>

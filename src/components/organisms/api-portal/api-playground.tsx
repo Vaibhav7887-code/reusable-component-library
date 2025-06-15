@@ -17,6 +17,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import Link from "next/link";
 import { ApiPortalService, mockApiProducts } from '@/lib/api-portal-data';
 
 // Expanded mock data for endpoints
@@ -190,6 +191,55 @@ const Playground = () => {
         });
     };
 
+    const handleExportPostman = () => {
+        const postmanCollection = {
+            info: {
+                name: "FleetEdge Vehicle Telemetry API",
+                description: "Complete collection of Vehicle Telemetry API endpoints",
+                schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+            },
+            auth: {
+                type: "bearer",
+                bearer: [{ key: "token", value: "{{apiKey}}", type: "string" }]
+            },
+            variable: [
+                { key: "baseUrl", value: "https://api.fleetedge.com/v2", type: "string" },
+                { key: "apiKey", value: "your_api_key_here", type: "string" }
+            ],
+                  item: endpoints.map(endpoint => ({
+        name: endpoint.path,
+        request: {
+          method: endpoint.method,
+          header: [
+            { key: "Authorization", value: "Bearer {{apiKey}}", type: "text" },
+            { key: "Content-Type", value: "application/json", type: "text" }
+          ],
+          url: {
+            raw: `{{baseUrl}}${endpoint.path}`,
+            host: ["{{baseUrl}}"],
+            path: endpoint.path.split('/').filter(p => p)
+          },
+          description: endpoint.description
+        },
+        response: []
+      }))
+        };
+
+        const blob = new Blob([JSON.stringify(postmanCollection, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'FleetEdge-API-Collection.postman_collection.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        toast.success('Postman collection exported!', {
+            description: 'Collection downloaded successfully'
+        });
+    };
+
     const handleSendRequest = async () => {
         setIsLoading(true);
         setResponse(null);
@@ -279,7 +329,7 @@ const Playground = () => {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[300px_2fr_3fr] gap-4 h-[700px] border rounded-lg p-4">
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[300px_2fr_3fr] gap-4 h-[calc(100vh-16rem)] border rounded-lg p-4">
             {/* Left Panel (Endpoints) */}
             <div className="flex flex-col gap-1 overflow-y-auto">
                 <h3 className="font-semibold px-2">Endpoints</h3>
@@ -363,39 +413,60 @@ const Playground = () => {
     )
 }
 
-const Documentation = () => {
-    return (
-        <div className="prose max-w-none">
-            <h2>Vehicle Telemetry API Documentation</h2>
-            <p>Welcome to the documentation for the Vehicle Telemetry API. This API allows you to access real-time data from vehicles in your fleet.</p>
-            <h3>Authentication</h3>
-            <p>To use this API, you need an API key. You can generate one from your developer dashboard. Include your API key in the `Authorization` header of your requests.</p>
-            <pre><code>Authorization: Bearer YOUR_API_KEY</code></pre>
-        </div>
-    )
-}
-
-const Pricing = () => {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {pricingPlans.map((plan) => (
-                <Card key={plan.name} className={plan.current ? "border-primary" : ""}>
-                    <CardHeader>
-                        <CardTitle>{plan.name}</CardTitle>
-                        <CardDescription className="text-2xl font-bold">{plan.price}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="space-y-2">
-                            {plan.features.map(feature => <li key={feature} className="flex items-center gap-2"><Icon name="check" size="sm" /> {feature}</li>)}
-                        </ul>
-                    </CardContent>
-                </Card>
-            ))}
-        </div>
-    )
-}
+// Removed redundant Documentation and Pricing components
+// Documentation belongs in /api-portal/docs
+// Pricing belongs in /api-portal/marketplace
 
 export function ApiPlayground() {
+  const handleExportPostman = () => {
+    const postmanCollection = {
+      info: {
+        name: "FleetEdge Vehicle Telemetry API",
+        description: "Complete collection of Vehicle Telemetry API endpoints",
+        schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      auth: {
+        type: "bearer",
+        bearer: [{ key: "token", value: "{{apiKey}}", type: "string" }]
+      },
+      variable: [
+        { key: "baseUrl", value: "https://api.fleetedge.com/v2", type: "string" },
+        { key: "apiKey", value: "your_api_key_here", type: "string" }
+      ],
+      item: endpoints.map(endpoint => ({
+        name: `${endpoint.method} ${endpoint.path}`,
+        request: {
+          method: endpoint.method,
+          header: [
+            { key: "Authorization", value: "Bearer {{apiKey}}", type: "text" },
+            { key: "Content-Type", value: "application/json", type: "text" }
+          ],
+          url: {
+            raw: `{{baseUrl}}${endpoint.path}`,
+            host: ["{{baseUrl}}"],
+            path: endpoint.path.split('/').filter(p => p)
+          },
+          description: endpoint.description
+        },
+        response: []
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(postmanCollection, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'FleetEdge-API-Collection.postman_collection.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast.success('Postman collection exported!', {
+      description: 'Collection downloaded successfully'
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -404,7 +475,13 @@ export function ApiPlayground() {
           <Badge variant="secondary">BETA</Badge>
           <Badge>Pro Plan</Badge>
         </div>
-        <Button>Subscribe</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportPostman}>
+            <Icon name="download" className="w-4 h-4 mr-2" />
+            Export Postman
+          </Button>
+          <Button>Subscribe</Button>
+        </div>
       </div>
 
       <Alert>
@@ -415,22 +492,33 @@ export function ApiPlayground() {
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="playground" className="w-full">
-        <TabsList>
-          <TabsTrigger value="playground">Playground</TabsTrigger>
-          <TabsTrigger value="documentation">Documentation</TabsTrigger>
-          <TabsTrigger value="pricing">Pricing & Plans</TabsTrigger>
-        </TabsList>
-        <TabsContent value="playground" className="mt-4">
-          <Playground />
-        </TabsContent>
-        <TabsContent value="documentation" className="mt-4">
-            <Documentation />
-        </TabsContent>
-        <TabsContent value="pricing" className="mt-4">
-            <Pricing />
-        </TabsContent>
-      </Tabs>
+      {/* Pure Playground - No Redundant Tabs */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+          <div className="flex items-center gap-3">
+            <Icon name="play-circle" className="w-5 h-5 text-primary" />
+            <div>
+              <h3 className="font-semibold">Interactive API Testing</h3>
+              <p className="text-sm text-muted-foreground">Test endpoints with real fleet data</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/api-portal/docs">
+                <Icon name="book-open" className="w-4 h-4 mr-2" />
+                View Docs
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/api-portal/marketplace">
+                <Icon name="credit-card" className="w-4 h-4 mr-2" />
+                Pricing
+              </Link>
+            </Button>
+          </div>
+        </div>
+        <Playground />
+      </div>
     </div>
   );
 } 

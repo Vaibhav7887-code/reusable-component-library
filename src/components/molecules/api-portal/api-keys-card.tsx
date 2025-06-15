@@ -49,11 +49,17 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
   import { ListFilter } from "lucide-react";
-  import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
   const availableScopes = [
     { id: "vehicles:read", label: "Read vehicle data" },
     { id: "vehicles:write", label: "Write vehicle data" },
+    { id: "read:telemetry[fleet.region=west]", label: "Read telemetry - West region only" },
+    { id: "read:telemetry[fleet.region=east]", label: "Read telemetry - East region only" },
+    { id: "read:vehicles[fleet.type=truck]", label: "Read vehicles - Trucks only" },
+    { id: "read:vehicles[fleet.depot=chicago]", label: "Read vehicles - Chicago depot only" },
+    { id: "write:maintenance[fleet.type=truck]", label: "Write maintenance - Trucks only" },
     { id: "maintenance:read", label: "Read maintenance records" },
     { id: "maintenance:write", label: "Write maintenance records" },
     { id: "analytics:read", label: "Access analytics endpoints" },
@@ -64,14 +70,14 @@ const mockApiKeys = [
         name: "My Production App",
         status: "active",
         key: "fe_sk_...prod_xxxx",
-        scopes: ["vehicles:read", "maintenance:read"],
+        scopes: ["read:telemetry[fleet.region=west]", "maintenance:read"],
         lastUsed: "5 minutes ago"
     },
     {
         name: "Staging Tester Key",
         status: "expiring-soon",
         key: "fe_sk_...stag_yyyy",
-        scopes: ["vehicles:read"],
+        scopes: ["read:vehicles[fleet.type=truck]"],
         lastUsed: "2 days ago"
     },
     {
@@ -85,7 +91,7 @@ const mockApiKeys = [
         name: "Legacy Integration",
         status: "active",
         key: "fe_sk_...legi_aaaa",
-        scopes: ["vehicles:read", "vehicles:write"],
+        scopes: ["read:vehicles[fleet.depot=chicago]", "write:maintenance[fleet.type=truck]"],
         lastUsed: "2 hours ago"
     },
 ]
@@ -173,7 +179,22 @@ export const ApiKeysCard = () => {
                     <Badge variant={statusVariantMap[key.status] || "default"} className="capitalize">{key.status.replace('-', ' ')}</Badge>
                   </TableCell>
                   <TableCell>{key.key}</TableCell>
-                  <TableCell>{key.scopes.join(', ')}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {key.scopes.map(scope => (
+                        <Badge 
+                          key={scope} 
+                          variant={scope.includes('[fleet.') ? "default" : "outline"} 
+                          className={cn(
+                            "text-xs",
+                            scope.includes('[fleet.') && "bg-blue-100 text-blue-800 border-blue-200"
+                          )}
+                        >
+                          {scope}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
                   <TableCell>{key.lastUsed}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
@@ -181,6 +202,19 @@ export const ApiKeysCard = () => {
                       <RotateKeyDialog apiKeyName={key.name}>
                           <Button variant="ghost" size="icon" title="Rotate Key" disabled={key.status === 'revoked'}><Icon name="rotate-cw" size="sm" /></Button>
                       </RotateKeyDialog>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        title="CLI Rotate with PR" 
+                        disabled={key.status === 'revoked'}
+                        onClick={() => {
+                          toast.success('CLI command copied!', {
+                            description: `fleetedge keys rotate ${key.name.toLowerCase().replace(/\s+/g, '_')} --create-pr`
+                          });
+                        }}
+                      >
+                        <Icon name="git-pull-request" size="sm" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="text-destructive" title="Delete Key"><Icon name="trash-2" size="sm"/></Button>
                     </div>
                   </TableCell>

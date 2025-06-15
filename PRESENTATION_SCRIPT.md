@@ -24,7 +24,7 @@
 2. **Research-Driven Design** - "Every decision backed by user insights, not assumptions"  
 3. **Systems Thinking** - "Designing for scale and interconnected workflows"
 
-*"Now, let me show you how I applied these principles to solve complex identity challenges in the fleet industry."*
+*"Now, let me show you how I applied these principles to solve complex challenges in the fleet industry."*
 
 ---
 

@@ -73,6 +73,47 @@ const commands: TerminalCommand[] = [
 ✓ Rate limit: 99/100 requests remaining`
   },
   {
+    command: "fleetedge api call vehicles/INVALID-VIN --key staging_key",
+    description: "Example of CLI error with web bridge",
+    category: "api",
+    output: `❌ ERROR: Insufficient scope. This action requires 'read:telemetry[fleet.region=west]'
+
+🔗 View details: https://portal.fleetedge.com/keys/abc123/scopes
+🔗 Generate new key: https://portal.fleetedge.com/keys/new
+🔗 Check documentation: https://docs.fleetedge.com/scopes
+
+💡 Tip: Use 'fleetedge keys create --scope="read:telemetry[fleet.region=west]"' to create a key with the required permissions.`
+  },
+  {
+    command: "fleetedge keys rotate prod_key --create-pr",
+    description: "Advanced: CLI-to-PR workflow for automated key rotation",
+    category: "keys",
+    output: `🔄 Rotating key: prod_key (fe_sk_prod_abc123...)
+✓ New key generated: fe_sk_prod_def456...
+✓ Grace period: 48 hours (both keys active)
+
+🚀 GitHub Integration:
+✓ Branch created: feature/rotate-api-key-prod_key
+✓ Updated environment files:
+  - .env.production
+  - k8s/secrets/api-keys.yaml
+  - terraform/variables.tf
+
+📝 Pull Request Created:
+  Title: "feat(security): Rotate production API key"
+  URL: https://github.com/your-org/fleet-app/pull/431
+  
+✅ All checks passing:
+  ✓ Security scan passed
+  ✓ Tests passed  
+  ✓ Deployment preview ready
+
+💡 Next steps:
+  1. Review PR: https://github.com/your-org/fleet-app/pull/431
+  2. Merge when ready
+  3. Old key will be revoked after grace period (48h)`
+  },
+  {
     command: "fleetedge keys create --name 'Mobile App' --scopes vehicles:read,location:read",
     description: "Create a new API key with specific scopes",
     category: "keys",
@@ -396,7 +437,33 @@ export function CliExperience() {
                   </div>
                   {terminalHistory.map((line, index) => (
                     <div key={index} className={line.startsWith('$') ? 'text-blue-400' : 'text-gray-300'}>
-                      {line}
+                      {line.includes('https://') ? (
+                        <span>
+                          {line.split('https://').map((part, partIndex) => (
+                            partIndex === 0 ? part : (
+                              <span key={partIndex}>
+                                <button 
+                                  className="text-blue-400 underline hover:text-blue-300 cursor-pointer"
+                                  onClick={() => {
+                                    const url = `https://${part.split(' ')[0]}`;
+                                    if (url.includes('portal.fleetedge.com')) {
+                                      // Simulate navigation to portal
+                                      toast.success('Navigating to portal...', {
+                                        description: `Opening ${url}`
+                                      });
+                                    } else {
+                                      window.open(url, '_blank');
+                                    }
+                                  }}
+                                >
+                                  https://{part.split(' ')[0]}
+                                </button>
+                                {part.includes(' ') ? ' ' + part.split(' ').slice(1).join(' ') : ''}
+                              </span>
+                            )
+                          ))}
+                        </span>
+                      ) : line}
                     </div>
                   ))}
                   {isTyping && (
