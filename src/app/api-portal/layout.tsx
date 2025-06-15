@@ -47,6 +47,12 @@ const navigation = [
     href: "/api-portal/keys",
     icon: "key",
     description: "Manage credentials"
+  },
+  {
+    name: "CLI Experience",
+    href: "/api-portal/cli",
+    icon: "terminal",
+    description: "Command-line tools"
   }
 ];
 
@@ -58,9 +64,9 @@ const quickActions = [
     variant: "default" as const
   },
   {
-    name: "View Usage",
-    href: "/api-portal/analytics",
-    icon: "activity",
+    name: "CLI Tools",
+    href: "/api-portal/cli",
+    icon: "terminal",
     variant: "outline" as const
   }
 ];

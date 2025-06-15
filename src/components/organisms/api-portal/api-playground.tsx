@@ -352,20 +352,27 @@ const Playground = () => {
             </div>
 
             {/* Center Panel (Request) */}
-            <div className="flex flex-col gap-4 overflow-y-auto">
-                <h3 className="font-semibold">Request</h3>
-                {selectedEndpoint.parameters.map(param => (
-                    <div key={param.name} className="space-y-2">
-                        <Label htmlFor={param.name}>{param.name} <span className="text-muted-foreground text-xs">{param.type}</span></Label>
-                        <Input id={param.name} placeholder={param.description} />
+            <div className="flex flex-col relative">
+                <div className="flex-1 overflow-y-auto pb-20">
+                    <h3 className="font-semibold mb-4">Request</h3>
+                    <div className="space-y-4">
+                        {selectedEndpoint.parameters.map(param => (
+                            <div key={param.name} className="space-y-2">
+                                <Label htmlFor={param.name}>{param.name} <span className="text-muted-foreground text-xs">{param.type}</span></Label>
+                                <Input id={param.name} placeholder={param.description} />
+                            </div>
+                        ))}
+                        <div className="flex items-center space-x-2 pt-4">
+                            <Switch id="simulate-error" checked={simulateError} onCheckedChange={setSimulateError} />
+                            <Label htmlFor="simulate-error">Simulate API Error</Label>
+                        </div>
                     </div>
-                ))}
-                <div className="flex items-center space-x-2 pt-4">
-                    <Switch id="simulate-error" checked={simulateError} onCheckedChange={setSimulateError} />
-                    <Label htmlFor="simulate-error">Simulate API Error</Label>
                 </div>
-                <div className="mt-auto">
+                
+                {/* Sticky Send Button */}
+                <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-4">
                     <Button onClick={handleSendRequest} className="w-full" isLoading={isLoading}>
+                        <Icon name="play" className="w-4 h-4 mr-2" />
                         Send Request
                     </Button>
                 </div>
