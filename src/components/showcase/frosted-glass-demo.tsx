@@ -63,7 +63,12 @@ export function FrostedGlassDemo() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full">View RBAC Demo</Button>
+                <Button 
+                  className="w-full"
+                  onClick={() => window.open('/rbac/users', '_blank')}
+                >
+                  View RBAC Demo
+                </Button>
               </CardFooter>
             </Card>
           </motion.div>

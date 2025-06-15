@@ -492,13 +492,14 @@ export function CliExperience() {
                   size="sm"
                   onClick={handleRunCommand}
                   disabled={!terminalInput.trim() || isTyping}
+                  className="bg-green-600 hover:bg-green-700 text-white border-green-500"
                 >
                   Run
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
                   onClick={clearTerminal}
+                  className="bg-gray-600 hover:bg-gray-700 text-white border-gray-500"
                 >
                   Clear
                 </Button>

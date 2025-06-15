@@ -329,92 +329,100 @@ const Playground = () => {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[300px_2fr_3fr] gap-4 h-[calc(100vh-16rem)] border rounded-lg p-4">
-            {/* Left Panel (Endpoints) */}
-            <div className="flex flex-col gap-1 overflow-y-auto">
-                <h3 className="font-semibold px-2">Endpoints</h3>
-                {endpoints.map((endpoint) => (
-                <div 
-                    key={endpoint.path} 
-                    className={cn(
-                        "text-sm p-2 rounded-md hover:bg-muted cursor-pointer",
-                        selectedEndpoint.path === endpoint.path && "bg-muted"
-                    )}
-                    onClick={() => {
-                        setSelectedEndpoint(endpoint)
-                        setResponse(null);
-                    }}
-                >
-                    <span className={`font-semibold w-12 inline-block ${endpoint.method === "GET" ? "text-green-500" : "text-blue-500"}`}>{endpoint.method}</span>
-                    <span className="ml-2 text-muted-foreground">{endpoint.path}</span>
+        <div className="border rounded-lg overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-[300px_400px_1fr] gap-0">
+                {/* Left Panel (Endpoints) */}
+                <div className="border-r bg-muted/30 p-4 max-h-[600px] overflow-y-auto">
+                    <h3 className="font-semibold mb-4">Endpoints</h3>
+                    <div className="space-y-1">
+                        {endpoints.map((endpoint) => (
+                        <div 
+                            key={endpoint.path} 
+                            className={cn(
+                                "text-sm p-3 rounded-md hover:bg-background cursor-pointer transition-colors",
+                                selectedEndpoint.path === endpoint.path && "bg-background shadow-sm"
+                            )}
+                            onClick={() => {
+                                setSelectedEndpoint(endpoint)
+                                setResponse(null);
+                            }}
+                        >
+                            <span className={`font-semibold w-12 inline-block ${endpoint.method === "GET" ? "text-green-600" : "text-blue-600"}`}>{endpoint.method}</span>
+                            <span className="ml-2 text-muted-foreground">{endpoint.path}</span>
+                        </div>
+                        ))}
+                    </div>
                 </div>
-                ))}
-            </div>
 
-            {/* Center Panel (Request) */}
-            <div className="flex flex-col">
-                <div className="flex-1 overflow-y-auto">
-                    <h3 className="font-semibold mb-4">Request</h3>
+                {/* Center Panel (Request) */}
+                <div className="border-r p-4 space-y-4">
+                    <h3 className="font-semibold">Request</h3>
                     <div className="space-y-4">
                         {selectedEndpoint.parameters.map(param => (
                             <div key={param.name} className="space-y-2">
-                                <Label htmlFor={param.name}>{param.name} <span className="text-muted-foreground text-xs">{param.type}</span></Label>
-                                <Input id={param.name} placeholder={param.description} />
+                                <Label htmlFor={param.name}>{param.name} <span className="text-muted-foreground text-xs">({param.type})</span></Label>
+                                <Input id={param.name} placeholder={param.description} value={parameters[param.name] || ''} onChange={(e) => updateParameter(param.name, e.target.value)} />
                             </div>
                         ))}
                         <div className="flex items-center space-x-2 pt-4">
                             <Switch id="simulate-error" checked={simulateError} onCheckedChange={setSimulateError} />
                             <Label htmlFor="simulate-error">Simulate API Error</Label>
                         </div>
+                        <Button onClick={handleSendRequest} className="w-full" isLoading={isLoading}>
+                            <Icon name="play" className="w-4 h-4 mr-2" />
+                            Send Request
+                        </Button>
                     </div>
                 </div>
-                
-                {/* Sticky Send Button */}
-                <div className="mt-4 pt-4 border-t bg-background">
-                    <Button onClick={handleSendRequest} className="w-full" isLoading={isLoading}>
-                        <Icon name="play" className="w-4 h-4 mr-2" />
-                        Send Request
-                    </Button>
-                </div>
-            </div>
 
-            {/* Right Panel (Response) */}
-            <div className="flex flex-col gap-4 overflow-y-auto">
-                <h3 className="font-semibold">Response</h3>
-                <Tabs defaultValue="body" className="w-full">
-                    <TabsList>
-                        <TabsTrigger value="body">Body</TabsTrigger>
-                        <TabsTrigger value="headers">Headers</TabsTrigger>
-                        <TabsTrigger value="curl">cURL</TabsTrigger>
-                        <TabsTrigger value="javascript">JS</TabsTrigger>
-                        <TabsTrigger value="python">Python</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="body" className="mt-4">
-                        <SyntaxHighlighter language="json" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem', minHeight: '300px' }}>
-                            {isLoading ? "Loading..." : response ? JSON.stringify(response, null, 2) : "Response will appear here"}
-                        </SyntaxHighlighter>
-                    </TabsContent>
-                    <TabsContent value="headers" className="mt-4">
-                        <SyntaxHighlighter language="json" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem', minHeight: '300px' }}>
-                            {`{\n  "Content-Type": "application/json",\n  "X-Request-ID": "req_12345xyz"\n}`}
-                        </SyntaxHighlighter>
-                    </TabsContent>
-                    <TabsContent value="curl" className="mt-4">
-                        <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem', minHeight: '300px' }}>
-                            {selectedEndpoint.codeSamples.curl}
-                        </SyntaxHighlighter>
-                    </TabsContent>
-                    <TabsContent value="javascript" className="mt-4">
-                        <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem', minHeight: '300px' }}>
-                            {selectedEndpoint.codeSamples.javascript}
-                        </SyntaxHighlighter>
-                    </TabsContent>
-                    <TabsContent value="python" className="mt-4">
-                        <SyntaxHighlighter language="python" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem', minHeight: '300px' }}>
-                            {selectedEndpoint.codeSamples.python}
-                        </SyntaxHighlighter>
-                    </TabsContent>
-                </Tabs>
+                {/* Right Panel (Response) */}
+                <div className="p-4 space-y-4">
+                    <h3 className="font-semibold">Response</h3>
+                    <Tabs defaultValue="body" className="w-full">
+                        <TabsList className="grid w-full grid-cols-5">
+                            <TabsTrigger value="body">Body</TabsTrigger>
+                            <TabsTrigger value="headers">Headers</TabsTrigger>
+                            <TabsTrigger value="curl">cURL</TabsTrigger>
+                            <TabsTrigger value="javascript">JS</TabsTrigger>
+                            <TabsTrigger value="python">Python</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="body" className="mt-4">
+                            <div className="min-h-[400px] max-h-[600px] overflow-auto">
+                                <SyntaxHighlighter language="json" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem' }}>
+                                    {isLoading ? "Loading..." : response ? JSON.stringify(response, null, 2) : "Response will appear here"}
+                                </SyntaxHighlighter>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="headers" className="mt-4">
+                            <div className="min-h-[400px] max-h-[600px] overflow-auto">
+                                <SyntaxHighlighter language="json" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem' }}>
+                                    {response?.headers ? JSON.stringify(response.headers, null, 2) : `{\n  "Content-Type": "application/json",\n  "X-Request-ID": "req_12345xyz"\n}`}
+                                </SyntaxHighlighter>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="curl" className="mt-4">
+                            <div className="min-h-[400px] max-h-[600px] overflow-auto">
+                                <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem' }}>
+                                    {selectedEndpoint.codeSamples.curl}
+                                </SyntaxHighlighter>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="javascript" className="mt-4">
+                            <div className="min-h-[400px] max-h-[600px] overflow-auto">
+                                <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem' }}>
+                                    {selectedEndpoint.codeSamples.javascript}
+                                </SyntaxHighlighter>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="python" className="mt-4">
+                            <div className="min-h-[400px] max-h-[600px] overflow-auto">
+                                <SyntaxHighlighter language="python" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: '#1E1E1E', borderRadius: '0.5rem' }}>
+                                    {selectedEndpoint.codeSamples.python}
+                                </SyntaxHighlighter>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </div>
             </div>
         </div>
     )
