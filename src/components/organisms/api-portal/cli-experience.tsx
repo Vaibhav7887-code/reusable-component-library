@@ -251,6 +251,20 @@ export function CliExperience() {
     setTerminalHistory([]);
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
+  };
+
+  const runCommandInTerminal = (command: string) => {
+    setTerminalInput(command);
+    // Auto-run the command after a short delay
+    setTimeout(() => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter' });
+      handleRunCommand();
+    }, 100);
+  };
+
   const categories = Array.from(new Set(commands.map(cmd => cmd.category)));
 
   return (
@@ -294,19 +308,27 @@ export function CliExperience() {
                 </div>
                 <div className="space-y-2">
                   {step.commands.map((command, index) => (
-                    <div key={index}>
+                    <div key={index} className="relative group">
                       <SyntaxHighlighter
                         language="bash"
                         style={vscDarkPlus}
                         customStyle={{
                           margin: 0,
-                          padding: '0.5rem',
+                          padding: '0.5rem 2rem 0.5rem 0.5rem',
                           borderRadius: '0.375rem',
                           fontSize: '0.75rem'
                         }}
                       >
                         {command}
                       </SyntaxHighlighter>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                        onClick={() => copyToClipboard(command)}
+                      >
+                        <Icon name="copy" className="w-3 h-3" />
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -317,9 +339,9 @@ export function CliExperience() {
       </Card>
 
       {/* Interactive Terminal */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Command Reference */}
-        <Card>
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Command Reference</CardTitle>
             <CardDescription>
@@ -335,27 +357,51 @@ export function CliExperience() {
               </TabsList>
               
               <TabsContent value="all" className="mt-4">
-                <ScrollArea className="h-[400px]">
+                <ScrollArea className="h-[500px]">
                   <div className="space-y-2">
                     {commands.map((command, index) => (
                       <div
                         key={index}
                         className={cn(
-                          "p-3 rounded-lg border cursor-pointer transition-colors",
+                          "p-3 rounded-lg border cursor-pointer transition-colors group",
                           activeCommand.command === command.command
                             ? "bg-primary/10 border-primary/20"
                             : "hover:bg-muted/50"
                         )}
                         onClick={() => setActiveCommand(command)}
                       >
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-start justify-between gap-2 mb-2">
                           <Badge variant="outline" className="text-xs">
                             {command.category}
                           </Badge>
-                          <code className="text-sm font-mono">
-                            {command.command}
-                          </code>
+                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard(command.command);
+                              }}
+                            >
+                              <Icon name="copy" className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                runCommandInTerminal(command.command);
+                              }}
+                            >
+                              <Icon name="play" className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </div>
+                        <code className="text-sm font-mono block mb-1 break-all">
+                          {command.command}
+                        </code>
                         <p className="text-xs text-muted-foreground">
                           {command.description}
                         </p>
@@ -366,17 +412,43 @@ export function CliExperience() {
               </TabsContent>
               
               <TabsContent value="popular" className="mt-4">
-                <ScrollArea className="h-[400px]">
+                <ScrollArea className="h-[500px]">
                   <div className="space-y-2">
                     {commands.slice(0, 3).map((command, index) => (
                       <div
                         key={index}
-                        className="p-3 rounded-lg border cursor-pointer hover:bg-muted/50"
+                        className="p-3 rounded-lg border cursor-pointer hover:bg-muted/50 group"
                         onClick={() => setActiveCommand(command)}
                       >
-                        <code className="text-sm font-mono block mb-1">
-                          {command.command}
-                        </code>
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <code className="text-sm font-mono break-all">
+                            {command.command}
+                          </code>
+                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard(command.command);
+                              }}
+                            >
+                              <Icon name="copy" className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                runCommandInTerminal(command.command);
+                              }}
+                            >
+                              <Icon name="play" className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {command.description}
                         </p>
@@ -387,17 +459,43 @@ export function CliExperience() {
               </TabsContent>
               
               <TabsContent value="auth" className="mt-4">
-                <ScrollArea className="h-[400px]">
+                <ScrollArea className="h-[500px]">
                   <div className="space-y-2">
                     {commands.filter(cmd => cmd.category === 'auth').map((command, index) => (
                       <div
                         key={index}
-                        className="p-3 rounded-lg border cursor-pointer hover:bg-muted/50"
+                        className="p-3 rounded-lg border cursor-pointer hover:bg-muted/50 group"
                         onClick={() => setActiveCommand(command)}
                       >
-                        <code className="text-sm font-mono block mb-1">
-                          {command.command}
-                        </code>
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <code className="text-sm font-mono break-all">
+                            {command.command}
+                          </code>
+                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard(command.command);
+                              }}
+                            >
+                              <Icon name="copy" className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                runCommandInTerminal(command.command);
+                              }}
+                            >
+                              <Icon name="play" className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {command.description}
                         </p>
@@ -411,7 +509,7 @@ export function CliExperience() {
         </Card>
 
         {/* Interactive Terminal */}
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Icon name="terminal" className="w-5 h-5" />
@@ -430,13 +528,16 @@ export function CliExperience() {
                 <span className="ml-2 text-gray-400">FleetEdge CLI v1.2.0</span>
               </div>
               
-              <ScrollArea className="h-[300px] mb-4">
-                <div className="space-y-2 text-gray-300">
+              <ScrollArea className="h-[400px] mb-4">
+                <div className="space-y-1 text-gray-300">
                   <div className="text-green-400">
                     Welcome to FleetEdge CLI! Type a command or click one from the reference.
                   </div>
                   {terminalHistory.map((line, index) => (
-                    <div key={index} className={line.startsWith('$') ? 'text-blue-400' : 'text-gray-300'}>
+                    <div key={index} className={cn(
+                      "whitespace-pre-wrap break-words",
+                      line.startsWith('$') ? 'text-blue-400' : 'text-gray-300'
+                    )}>
                       {line.includes('https://') ? (
                         <span>
                           {line.split('https://').map((part, partIndex) => (
@@ -508,29 +609,6 @@ export function CliExperience() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Command Output Preview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Command Output</CardTitle>
-          <CardDescription>
-            Preview of: <code className="text-sm">{activeCommand.command}</code>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SyntaxHighlighter
-            language="bash"
-            style={vscDarkPlus}
-            customStyle={{
-              margin: 0,
-              borderRadius: '0.5rem',
-              fontSize: '0.875rem'
-            }}
-          >
-            {`$ ${activeCommand.command}\n${activeCommand.output}`}
-          </SyntaxHighlighter>
-        </CardContent>
-      </Card>
 
       {/* Features */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
